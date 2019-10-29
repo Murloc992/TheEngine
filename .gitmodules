@@ -1,0 +1,40 @@
+[submodule "libs/glfw"]
+	path = libs/glfw
+	url = https://github.com/glfw/glfw.git
+	branch = master
+[submodule "libs/freetype2"]
+	path = libs/freetype2
+	url = https://github.com/Murloc992/freetype2.git
+	branch = master
+[submodule "libs/glm"]
+	path = libs/glm
+	url = https://github.com/g-truc/glm.git
+	branch = master
+[submodule "libs/glad"]
+	path = libs/glad
+	url = https://github.com/Dav1dde/glad.git
+	branch = master
+[submodule "libs/libccd"]
+	path = libs/libccd
+	url = https://github.com/danfis/libccd.git
+	branch = master
+[submodule "libs/jsoncpp"]
+	path = libs/jsoncpp
+	url = https://github.com/open-source-parsers/jsoncpp.git
+	branch = master
+[submodule "libs/libsigcplusplus"]
+	path = libs/libsigcplusplus
+	url = https://github.com/libsigcplusplus/libsigcplusplus.git
+	branch = master
+[submodule "libs/physfs"]
+	path = libs/physfs
+	url = https://github.com/Didstopia/physfs.git
+	branch = master
+[submodule "libs/stb"]
+	path = libs/stb
+	url = https://github.com/nothings/stb.git
+	branch = master
+[submodule "libs/tinyxml2"]
+	path = libs/tinyxml2
+	url = https://github.com/leethomason/tinyxml2.git
+	branch = master
