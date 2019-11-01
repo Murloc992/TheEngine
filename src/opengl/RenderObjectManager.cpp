@@ -15,7 +15,7 @@ RenderaObjectManager::~RenderaObjectManager()
 
 }
 
-void RenderaObjectManager::RenderObjects(const vector<IRenderObject*> & renderObjects)
+void RenderaObjectManager::RenderObjects(const std::vector<IRenderObject*> & renderObjects)
 {
 	for (IRenderObject * object : renderObjects)
 	{

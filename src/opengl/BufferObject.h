@@ -2,7 +2,6 @@
 #define BUFFER_OBJECT_H
 
 #include "IBufferObject.h"
-#include "utility/Vector.h"
 
 #define RegisterBufferObject(type, gltype, components) \
 template <> \
@@ -27,7 +26,7 @@ void BufferObject<type>::Upload() \
 	glBufferData(GL_ARRAY_BUFFER, GetSize() * sizeof(type), data.size() > 0 ? &data[0] : 0, this->UsageHint); \
 } \
 template <> \
-void BufferObject<type>::UploadSubData(vector<type> subdata, uint32_t offset) \
+void BufferObject<type>::UploadSubData(std::vector<type> subdata, uint32_t offset) \
 { \
 	glBindBuffer(GL_ARRAY_BUFFER, this->Id); \
 	glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(type), subdata.size() * sizeof(type), &subdata[0]); \
@@ -37,7 +36,7 @@ template <class T>
 struct BufferObject : public IBufferObject
 {
 	uint32_t preallocatedSize;
-	vector<T> data;
+	std::vector<T> data;
 
 	BufferObject(IBufferObject::USAGE_HINT hint, uint32_t prealloc=0) : IBufferObject(hint), preallocatedSize(prealloc)
 	{
@@ -52,7 +51,7 @@ struct BufferObject : public IBufferObject
 	//void Init_buffers();
 	virtual void Init();
 	virtual void Upload();
-	virtual void UploadSubData(vector<T> subdata, uint32_t offset);
+	virtual void UploadSubData(std::vector<T> subdata, uint32_t offset);
 	virtual void Clear()
 	{
 		data.clear();
@@ -94,7 +93,7 @@ void IndexBufferObject<type>::Upload() \
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, GetSize() * sizeof(type), data.size() > 0 ? &data[0] : 0, this->UsageHint); \
 } \
 template <> \
-void IndexBufferObject<type>::UploadSubData(vector<type> subdata, uint32_t offset) \
+void IndexBufferObject<type>::UploadSubData(std::vector<type> subdata, uint32_t offset) \
 { \
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->Id); \
 	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset * sizeof(type), subdata.size() * sizeof(type), &subdata[0]); \
@@ -104,7 +103,7 @@ template <class T>
 struct IndexBufferObject : public IBufferObject
 {
 	uint32_t preallocatedSize;
-	vector<T> data;
+	std::vector<T> data;
 
 	IndexBufferObject(IBufferObject::USAGE_HINT hint, uint32_t prealloc = 0) : IBufferObject(hint), preallocatedSize(prealloc)
 	{
@@ -118,7 +117,7 @@ struct IndexBufferObject : public IBufferObject
 	//void Init_buffers();
 	virtual void Init();
 	virtual void Upload();
-	virtual void UploadSubData(vector<T> subdata, uint32_t offset);
+	virtual void UploadSubData(std::vector<T> subdata, uint32_t offset);
 	virtual void Clear()
 	{
 		data.clear();

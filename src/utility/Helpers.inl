@@ -213,3 +213,31 @@ inline float MakePOT(float v)
 {
 	return glm::pow(2.f, glm::ceil(glm::log((v)) / glm::log(2.f)));
 }
+
+template <class Container>
+inline void splitstr(const std::string& str, Container& cont,
+	const std::string& delims = " ")
+{
+	std::size_t current, previous = 0;
+	current = str.find_first_of(delims);
+	while (current != std::string::npos) {
+		cont.push_back(str.substr(previous, current - previous));
+		previous = current + 1;
+		current = str.find_first_of(delims, previous);
+	}
+	cont.push_back(str.substr(previous, current - previous));
+}
+
+template <class Container>
+inline void splitwstr(const std::wstring& str, Container& cont,
+	const std::wstring& delims = L" ")
+{
+	std::size_t current, previous = 0;
+	current = str.find_first_of(delims);
+	while (current != std::wstring::npos) {
+		cont.push_back(str.substr(previous, current - previous));
+		previous = current + 1;
+		current = str.find_first_of(delims, previous);
+	}
+	cont.push_back(str.substr(previous, current - previous));
+}

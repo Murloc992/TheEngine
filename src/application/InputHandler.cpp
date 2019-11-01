@@ -8,8 +8,8 @@ InputHandler::InputHandler(ApplicationWindow* win)
 	loop(i, GLFW_KEY_LAST) keys[i] = false;
 	loop(i, GLFW_MOUSE_BUTTON_LAST) mouseKeys[i] = false;
 
-	_sig_mouse_button = win->SigMouseKey().connect(sigc::mem_fun(this, &InputHandler::OnMouseButton));
-	_sig_key = win->SigKeyEvent().connect(sigc::mem_fun(this, &InputHandler::OnKey));
+	_sig_mouse_button = win->SigMouseKey().connect(sigc::mem_fun(*this,&InputHandler::OnMouseButton));
+	_sig_key = win->SigKeyEvent().connect(sigc::mem_fun(*this, &InputHandler::OnKey));
 }
 
 InputHandler::~InputHandler()

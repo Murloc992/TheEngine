@@ -2,7 +2,6 @@
 #define FILE_H
 
 #include "IFile.h"
-#include "boost/filesystem/path.hpp"
 
 #ifdef _WIN32
 #pragma message(": warning FS01: this should be predefined somewhere in single include.")
@@ -10,7 +9,7 @@
 #warning "should be predefined somewhere in single include."
 #endif
 
-using Path = boost::filesystem::path;
+using Path = std::filesystem::path;
 
 class File : public IFile
 {

@@ -29,8 +29,8 @@ public:
 	{
 
 	}
-	vector<GUIContainerCell> _cells;
-	vector<GUIContainer*> _children;
+	std::vector<GUIContainerCell> _cells;
+	std::vector<GUIContainer*> _children;
 	glm::ivec2 _size;
 	glm::ivec2 _cellSize;
 };

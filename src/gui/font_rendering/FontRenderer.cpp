@@ -8,8 +8,6 @@
 #include "gui/GUIEnvironment.h"
 #include "FontRenderer.h"
 #include "opengl/Texture.h"
-#include <boost/algorithm/string.hpp>
-#include <boost/filesystem/path.hpp>
 #include "resources/Image.h"
 
 FontRenderer::FontRenderer()
@@ -219,7 +217,8 @@ void FontRenderer::_FormatTags(TextLine& tl, std::wstring in, SubLineInfo inf)
         case L'c': {
             std::vector<std::wstring> tagvals;
             std::wstring tagvalsubstr = in.substr(firsttag + 4, tagclose - 4);
-            boost::split(tagvals, tagvalsubstr, boost::is_any_of(L", "));
+			helpers::splitwstr<std::vector<std::wstring>>(tagvalsubstr, tagvals, L", ");
+            //boost::split(tagvals, tagvalsubstr, boost::is_any_of(L", "));
 
             float r, g, b, a;
 
@@ -334,7 +333,7 @@ void FontRenderer::_RenderString(const std::wstring& text, glm::ivec2 pos, const
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-    vector<glm::vec4> coords;
+    std::vector<glm::vec4> coords;
     coords.resize(text.length() * 6);
 
     int c = 0;
@@ -398,11 +397,12 @@ void FontRenderer::RenderString(const std::wstring& text, const glm::ivec2& pos,
     bool canitalic = current->Has(FFT_ITALIC);
     bool canbolditalic = current->Has(FFT_BOLD_ITALIC);
 
-    vector<std::wstring> strs;
-    boost::split(strs, text, boost::is_any_of(L"\n"));
+    std::vector<std::wstring> strs;
+	helpers::splitwstr<std::vector<std::wstring>>(text, strs, L"\n");
+    //boost::split(strs, text, boost::is_any_of(L"\n"));
     if (strs.size() == 0) strs.push_back(text);
 
-    vector<TextLine> linesToDraw;
+    std::vector<TextLine> linesToDraw;
     linesToDraw.resize(strs.size());
 
     SubLineInfo inf;

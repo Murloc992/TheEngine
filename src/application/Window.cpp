@@ -40,37 +40,37 @@ void TextEvent(GLFWwindow * wnd, uint32_t scan_code)
 	ApplicationWindow::_windows[wnd]->SigTextEvent().emit(scan_code);
 }
 
-sigc::signal<void, double, double> & ApplicationWindow::SigMouseMoved()
+sigc::signal<void(double, double)> & ApplicationWindow::SigMouseMoved()
 {
 	return _sigMouseMoved;
 }
 
-sigc::signal<void, int32_t, int32_t, int32_t> & ApplicationWindow::SigMouseKey()
+sigc::signal<void(int32_t, int32_t, int32_t)> & ApplicationWindow::SigMouseKey()
 {
 	return _sigMouseKey;
 }
 
-sigc::signal<void, double, double> & ApplicationWindow::SigMouseScroll()
+sigc::signal<void(double, double)> & ApplicationWindow::SigMouseScroll()
 {
 	return _sigMouseScroll;
 }
 
-sigc::signal<void, int32_t, int32_t> & ApplicationWindow::SigWindowResized()
+sigc::signal<void(int32_t, int32_t)> & ApplicationWindow::SigWindowResized()
 {
 	return _sigWindowResized;
 }
 
-sigc::signal<void> & ApplicationWindow::SigWindowClosed()
+sigc::signal<void()> & ApplicationWindow::SigWindowClosed()
 {
 	return _sigWindowClosed;
 }
 
-sigc::signal<void, int32_t, int32_t, int32_t, int32_t> & ApplicationWindow::SigKeyEvent()
+sigc::signal<void(int32_t, int32_t, int32_t, int32_t)> & ApplicationWindow::SigKeyEvent()
 {
 	return _sigKeyEvent;
 }
 
-sigc::signal<void, uint32_t> & ApplicationWindow::SigTextEvent()
+sigc::signal<void(uint32_t)> & ApplicationWindow::SigTextEvent()
 {
 	return _sigTextEvent;
 }

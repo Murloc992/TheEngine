@@ -13,13 +13,13 @@ class ApplicationWindow
 protected:
 	GLFWwindow * _window;
 
-	sigc::signal<void, double, double> _sigMouseMoved;
-	sigc::signal<void, int32_t, int32_t, int32_t> _sigMouseKey;
-	sigc::signal<void, double, double> _sigMouseScroll;
-	sigc::signal<void, int32_t, int32_t> _sigWindowResized;
-	sigc::signal<void> _sigWindowClosed;
-	sigc::signal<void, int32_t, int32_t, int32_t, int32_t> _sigKeyEvent;
-	sigc::signal<void, uint32_t > _sigTextEvent;
+	sigc::signal<void(double, double)> _sigMouseMoved;
+	sigc::signal<void(int32_t, int32_t, int32_t)> _sigMouseKey;
+	sigc::signal<void(double, double)> _sigMouseScroll;
+	sigc::signal<void(int32_t, int32_t)> _sigWindowResized;
+	sigc::signal<void()> _sigWindowClosed;
+	sigc::signal<void(int32_t, int32_t, int32_t, int32_t)> _sigKeyEvent;
+	sigc::signal<void(uint32_t)> _sigTextEvent;
 
 	friend void MouseMoveEvent(GLFWwindow * wnd, double x, double y);
 	friend void MouseKeyEvent(GLFWwindow * wnd, int32_t button, int32_t action, int32_t mod);
@@ -32,13 +32,13 @@ protected:
 	bool _shouldClose;
 
 public: ///signals
-	sigc::signal<void, double, double> & SigMouseMoved();
-	sigc::signal<void, int32_t, int32_t, int32_t> & SigMouseKey();
-	sigc::signal<void, double, double> & SigMouseScroll();
-	sigc::signal<void, int32_t, int32_t> & SigWindowResized();
-	sigc::signal<void> & SigWindowClosed();
-	sigc::signal<void, int32_t, int32_t, int32_t, int32_t> & SigKeyEvent();
-	sigc::signal<void, uint32_t> & SigTextEvent();
+	sigc::signal<void(double, double)> & SigMouseMoved();
+	sigc::signal<void(int32_t, int32_t, int32_t)> & SigMouseKey();
+	sigc::signal<void(double, double)> & SigMouseScroll();
+	sigc::signal<void(int32_t, int32_t)> & SigWindowResized();
+	sigc::signal<void()> & SigWindowClosed();
+	sigc::signal<void(int32_t, int32_t, int32_t, int32_t)> & SigKeyEvent();
+	sigc::signal<void(uint32_t)> & SigTextEvent();
 
 public:
 	static std::map<GLFWwindow*, ApplicationWindow*> _windows;

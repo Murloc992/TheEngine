@@ -51,7 +51,7 @@ private:
 	GUIImage* graphImage;
 	ImagePtr img;
 	TexturePtr tex;
-	std::map<std::string, vector<float>> valueGroups;
+	std::map<std::string, std::vector<float>> valueGroups;
 	std::map<std::string, GraphValueProperties> valueProperties;
 	std::map<std::string, GUIStaticText*> valueTexts;
 	float minValue, maxValue;

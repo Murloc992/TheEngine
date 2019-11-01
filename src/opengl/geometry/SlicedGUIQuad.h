@@ -88,7 +88,7 @@ public:
 		indices = new IndexBufferObject<uint32_t>(IBufferObject::USAGE_HINT::STATIC);
 	}
 
-	void CreateTCoords(vector<glm::vec2> uvs)
+	void CreateTCoords(std::vector<glm::vec2> uvs)
 	{
 		tex_coords->data.resize(16);
 
@@ -128,7 +128,7 @@ public:
 	{
 		glmesh = share(new Mesh());
 		CreateVerts();
-		vector<glm::vec2> defuv;
+		std::vector<glm::vec2> defuv;
 		defuv.push_back(glm::vec2(0, 1));
 		defuv.push_back(glm::vec2(1, 1));
 		defuv.push_back(glm::vec2(1, 0));
@@ -155,7 +155,7 @@ public:
 		//        glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	}
 
-	void SetTCoords(vector<glm::vec2> tcoords)
+	void SetTCoords(std::vector<glm::vec2> tcoords)
 	{
 		CreateTCoords(tcoords);
 

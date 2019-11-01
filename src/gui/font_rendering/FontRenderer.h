@@ -2,8 +2,6 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#include <boost/unordered_map.hpp>
-#include <boost/functional/hash.hpp>
 #include "Font.h"
 #include "FontFamily.h"
 #include "ForwardDecl.h"
@@ -14,7 +12,7 @@ class GUIEnvironment;
 class Shader;
 
 typedef std::shared_ptr<Shader> ShaderPtr;
-typedef boost::unordered_map<std::string, FontFamily *> FontFamilyMap;
+typedef std::unordered_map<std::string, FontFamily *> FontFamilyMap;
 
 struct SubLineInfo {
     std::wstring text;
@@ -31,7 +29,7 @@ struct SubLineInfo {
 };
 
 struct TextLine {
-    vector<SubLineInfo> content;
+    std::vector<SubLineInfo> content;
 };
 
 class FontRenderer

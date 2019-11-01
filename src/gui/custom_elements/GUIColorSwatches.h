@@ -18,7 +18,7 @@ private:
 
 	glm::vec4 color;
 
-	vector<glm::vec4> swatches;
+	std::vector<glm::vec4> swatches;
 	glm::ivec2 swatchSize;
 public:
 	GUIColorSwatches(GUIEnvironment* env, Rect2D<int> dimensions, const glm::ivec2 &swatchSize, GUIColorPicker* picker=nullptr);

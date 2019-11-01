@@ -17,7 +17,7 @@ class sound_manager
 {
 private:
 	ISoundEngine* eng;
-	vector<sound_resource*> sounds;
+	std::vector<sound_resource*> sounds;
 public:
 	sound_manager()
 	{
@@ -64,7 +64,7 @@ public:
 	}
 	void remove_sound(std::string name)
 	{
-		for (vector<sound_resource*>::iterator it = sounds.begin(); it != sounds.end(); it++)
+		for (std::vector<sound_resource*>::iterator it = sounds.begin(); it != sounds.end(); it++)
 		{
 			if ((*it)->name == name)
 			{

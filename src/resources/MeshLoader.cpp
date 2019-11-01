@@ -5,7 +5,6 @@
 #include "opengl/Mesh.h"
 #include "utility/Logger.h"
 #include "core/FileSystem.h"
-#include "boost/filesystem/path.hpp"
 
 MeshLoader::MeshLoader()
 {

@@ -67,7 +67,7 @@ void GUIElement::Render()
 
 void GUIElement::AddChild(GUIElement *child)
 {
-    vector<GUIElement *>::iterator i = std::find(children.begin(), children.end(), child);
+    std::vector<GUIElement *>::iterator i = std::find(children.begin(), children.end(), child);
     if (i != children.end()) return;
 
     child->parent = this;
@@ -79,7 +79,7 @@ void GUIElement::AddChild(GUIElement *child)
 
 void GUIElement::RemoveChild(GUIElement *child)
 {
-    vector<GUIElement *>::iterator i = std::find(children.begin(), children.end(), child);
+    std::vector<GUIElement *>::iterator i = std::find(children.begin(), children.end(), child);
     if (i != children.end()) {
         (*i)->relative_rect = (*i)->absolute_rect;
         (*i)->parent = nullptr;
@@ -89,7 +89,7 @@ void GUIElement::RemoveChild(GUIElement *child)
 
 void GUIElement::BringToFront(GUIElement *e)
 {
-    vector<GUIElement *>::iterator i = std::find(children.begin(), children.end(), e);
+    std::vector<GUIElement *>::iterator i = std::find(children.begin(), children.end(), e);
     if (i != children.end()) {
         i = children.erase(i);
         children.push_back(e);
@@ -99,7 +99,7 @@ void GUIElement::BringToFront(GUIElement *e)
 
 void GUIElement::SendToBack(GUIElement* e)
 {
-	vector<GUIElement*>::iterator i = std::find(children.begin(), children.end(), e);
+	std::vector<GUIElement*>::iterator i = std::find(children.begin(), children.end(), e);
 	if (i != children.end()) {
 		i = children.erase(i);
 		children.insert(children.begin(),e);
@@ -299,7 +299,7 @@ GUIElement *GUIElement::GetParent()
     return this->parent;
 }
 
-vector<GUIElement *> &GUIElement::GetChildren()
+std::vector<GUIElement *> &GUIElement::GetChildren()
 {
     return this->children;
 }
@@ -312,7 +312,7 @@ std::string GUIElement::GetName()
 GUIElement *GUIElement::GetElementFromPoint(int x, int y)
 {
     GUIElement *ret = nullptr;
-    vector<GUIElement *>::reverse_iterator i = children.rbegin();
+    std::vector<GUIElement *>::reverse_iterator i = children.rbegin();
     for (; i != children.rend(); i++) {
         if (*i != nullptr) {
             ret = (*i)->GetElementFromPoint(x, y);

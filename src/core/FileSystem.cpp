@@ -107,9 +107,9 @@ bool FileSystem::CreateDirectory(const Path & path)
 }
 
 void AppendFiles(void *data, const char *directory, const char * fileName);
-vector<Path> FileSystem::GetFilesInDirectory(const Path & directory)
+std::vector<Path> FileSystem::GetFilesInDirectory(const Path & directory)
 {
-	vector<Path> paths;
+	std::vector<Path> paths;
 	PHYSFS_enumerateFilesCallback(directory.generic_string().c_str(), AppendFiles, &paths);
 	return paths;
 }
@@ -120,7 +120,7 @@ void AppendFiles(void *data, const char *directory, const char * fileName)
 	Path path(directory);
 	path.append(fileName);
 
-	auto paths = static_cast<vector<Path>*>(data);
+	auto paths = static_cast<std::vector<Path>*>(data);
 	paths->push_back(path);
 }
 

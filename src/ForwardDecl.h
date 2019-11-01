@@ -54,7 +54,7 @@ typedef std::shared_ptr<VarGroup> VarGroupPtr;
 
 typedef uint32_t GLEnum;
 
-namespace boost
+namespace std
 {
 namespace filesystem
 {
@@ -62,6 +62,6 @@ namespace filesystem
 }
 }
 
-using Path = boost::filesystem::path;
+using Path = std::filesystem::path;
 
 #endif

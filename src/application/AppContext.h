@@ -2,12 +2,11 @@
 #define APP_CONTEXT_H
 
 #include "ForwardDecl.h"
-#include <boost/core/noncopyable.hpp>
 
 class AppContext;
 AppContext & GetContext();
 
-class AppContext: private boost::noncopyable
+class AppContext
 {
 protected:
 	AppContext();

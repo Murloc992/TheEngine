@@ -13,7 +13,7 @@ private:
 public:
 	ToggleGroup(bool multitoggle = false);
 
-	ToggleGroup(vector<GUIButton*> predef, bool multitoggle = false);
+	ToggleGroup(std::vector<GUIButton*> predef, bool multitoggle = false);
 
 	void AddButton(GUIButton* btn);
 

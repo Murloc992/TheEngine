@@ -2,8 +2,8 @@
 #define IFILE_H
 
 #include "EFileMode.h"
-#include "utility/Vector.h"
-typedef vector<uint8_t> ByteBuffer;
+
+typedef std::vector<uint8_t> ByteBuffer;
 typedef std::shared_ptr<ByteBuffer> ByteBufferPtr;
 
 class IFile 

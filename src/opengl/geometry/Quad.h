@@ -17,7 +17,7 @@ public:
 
     };
 
-    void SetUV(vector<glm::vec2> uvs);
+    void SetUV(std::vector<glm::vec2> uvs);
 };
 
 typedef std::shared_ptr<Quad> QuadPtr;
