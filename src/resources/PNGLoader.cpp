@@ -1,6 +1,7 @@
 #include "Precomp.h"
 
 #include "PNGLoader.h"
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 #include "application/AppContext.h"

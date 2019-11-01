@@ -15,7 +15,7 @@ endif()
 
 set(ENGINE_SRC_PATH "src" )
 set(LIB_PATH "libs" )
-set(LIBBIN_PATH "build/libs" )
+set(LIBBIN_PATH "${CMAKE_CURRENT_BINARY_DIR}/libs" )
 
 #define output library path for solutions
 foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
@@ -61,5 +61,7 @@ add_library(engine STATIC
 	${ENGINE_SOURCES}
 	${ENGINE_INCLUDES}
 )
+
+target_link_libraries(engine)
 
 add_dependencies(engine glad sigc-3.0)

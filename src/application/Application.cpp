@@ -138,7 +138,7 @@ bool Application::InitWindowAndOpenGL(const std::string & title)
 	}
 
 
-	if (0) {
+	if (1) {
 		std::cout << "Register OpenGL debug callback " << std::endl;
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glDebugMessageCallback(openglCallbackFunction, nullptr);
