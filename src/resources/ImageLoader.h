@@ -8,7 +8,7 @@ class AppContext;
 class ImageLoader : public ResourceCache<Image>
 {
 protected:
-	vector<IImageLoader*> m_loaders;
+	std::vector<IImageLoader*> m_loaders;
 public:
 	ImageLoader();
 	virtual ~ImageLoader();

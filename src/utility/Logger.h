@@ -32,7 +32,7 @@ public:
 private:
 	int m_verbosity;
 	FilePtr m_logfile;
-	//vector< std::pair<debuglevel,std::string> > outputs; //wrapped outputs for easy output
+	//std::vector< std::pair<debuglevel,std::string> > outputs; //wrapped outputs for easy output
 
 	std::string GenerateTimestamp(); //timestamp generation
 	std::string FormatMessage(loglevel lev, const char* st, va_list & variableArgumentList);

@@ -1,7 +1,6 @@
 #pragma once
 #include "GUIEventListener.h"
 #include "utility/Rect2d.h"
-#include "utility/Vector.h"
 
 enum GUIElementType
 {
@@ -112,7 +111,7 @@ public:
 
 	GUIElement *GetParent();
 
-	vector<GUIElement*> & GetChildren();
+	std::vector<GUIElement*> & GetChildren();
 
 	std::string GetName();
 
@@ -136,7 +135,7 @@ protected:
 	int disp_w, disp_h;
 	std::string name;
 	GUIElement *parent;
-	vector<GUIElement*> children;
+	std::vector<GUIElement*> children;
 	GUIEnvironment *environment;
 	GUIEventListener *event_listener;
 	GUIElementHAlignment _hAlign;

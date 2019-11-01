@@ -3,7 +3,6 @@
 
 #include "ResourceCache.h"
 #include "ForwardDecl.h"
-#include "boost/filesystem/path.hpp"
 
 class AppContext;
 class ShaderLoader : public ResourceCache<Shader>

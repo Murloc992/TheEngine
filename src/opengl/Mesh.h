@@ -4,10 +4,9 @@
 #include "AABB.h"
 #include "IBufferObject.h"
 #include "BufferObject.h"
-#include "utility/Vector.h"
 
-typedef vector<glm::mat3x4> frame;
-typedef vector<frame> frame_vec;
+typedef std::vector<glm::mat3x4> frame;
+typedef std::vector<frame> frame_vec;
 
 struct bone
 {
@@ -17,7 +16,7 @@ struct bone
 	glm::quat rot;
 	glm::vec3 scale;
 };
-typedef vector<bone> bone_vec;
+typedef std::vector<bone> bone_vec;
 
 struct animation_info
 {
@@ -26,7 +25,7 @@ struct animation_info
 	float framerate;
 	bool loop;
 };
-typedef vector<animation_info> anim_info_vec;
+typedef std::vector<animation_info> anim_info_vec;
 
 struct animation
 {
@@ -58,7 +57,7 @@ struct Triangle
 	{
 		points.clear();
 	}
-	vector<T> points;
+	std::vector<T> points;
 	glm::vec3 normal;
 };
 
@@ -80,8 +79,8 @@ public:
 	};
 
 	uint32_t vao;
-	vector<IBufferObject*> buffers;
-	vector<sub_mesh>   sub_meshes;
+	std::vector<IBufferObject*> buffers;
+	std::vector<sub_mesh>   sub_meshes;
 	animation * anim;
 	AABB aabb;
 
@@ -99,7 +98,7 @@ public:
 	void UploadBuffers();
 
 	template <typename T, typename U>
-	vector<Triangle<T> > GetTriangles();
+	std::vector<Triangle<T> > GetTriangles();
 
 	template <typename T>
 	void HardScale(const glm::vec3& scale);
@@ -108,7 +107,7 @@ public:
 	void HardMove(const glm::vec3& trans);
 
 	template<typename T>
-	void UploadBufferSubData(BUFFER_OBJECT_INDEX ind, vector<T> subdata, uint32_t offset);
+	void UploadBufferSubData(BUFFER_OBJECT_INDEX ind, std::vector<T> subdata, uint32_t offset);
 
 	void free();
 
@@ -117,9 +116,9 @@ public:
 };
 
 template <typename T, typename U>
-vector<Triangle<T> > Mesh::GetTriangles()
+std::vector<Triangle<T> > Mesh::GetTriangles()
 {
-	vector<Triangle<T> > vec;
+	std::vector<Triangle<T> > vec;
 	Triangle<T> tri;
 
 	BufferObject<T>* vbo = (BufferObject<T>*)this->buffers[Mesh::POSITION];
@@ -201,7 +200,7 @@ void Mesh::RecalculateAABB()
 }
 
 template <class T>
-void Mesh::UploadBufferSubData(BUFFER_OBJECT_INDEX ind, vector<T> subdata, uint32_t offset)
+void Mesh::UploadBufferSubData(BUFFER_OBJECT_INDEX ind, std::vector<T> subdata, uint32_t offset)
 {
 	glBindVertexArray(vao);
 

@@ -71,7 +71,7 @@ Quad::Quad(const Plane3d &plane)
 	Init();
 }
 
-void Quad::SetUV(vector<glm::vec2> uvs)
+void Quad::SetUV(std::vector<glm::vec2> uvs)
 {
 	auto buffer = static_cast<BufferObject<glm::vec2>* >(buffers[Mesh::TEXCOORD]);
 	buffer->data = uvs;

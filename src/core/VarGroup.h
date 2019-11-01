@@ -1,11 +1,8 @@
 #ifndef VARGROUP_H
 #define VARGROUP_H
 
-#include "utility/Vector.h"
-#include <boost/core/noncopyable.hpp>
-
 class Var;
-class VarGroup: private boost::noncopyable
+class VarGroup
 {
 public:
 	static VarGroup Null;
@@ -18,10 +15,10 @@ public:
 	virtual ~VarGroup();
 	const char * Name() const;
 
-	vector<Var> & Vars();
-	const vector<Var> & Vars() const;
-	vector<VarGroup> & Groups();
-	const vector<VarGroup> & Groups() const;
+	std::vector<Var> & Vars();
+	const std::vector<Var> & Vars() const;
+	std::vector<VarGroup> & Groups();
+	const std::vector<VarGroup> & Groups() const;
 	Var & GetVar(const char * name);
 	VarGroup & AddGroup(const char * name);
 	VarGroup & AddGroup(const VarGroup & vGroup);
@@ -30,8 +27,8 @@ public:
 
 private:
 	char * m_name;
-	vector<Var> m_vars;
-	vector<VarGroup> m_groups;
+	std::vector<Var> m_vars;
+	std::vector<VarGroup> m_groups;
 };
 
 typedef std::shared_ptr<VarGroup> VarGroupPtr;

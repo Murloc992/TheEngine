@@ -30,7 +30,7 @@ GUIGraph::~GUIGraph()
 
 void GUIGraph::AddValueGroup(const std::string &valueName, int spacing, const glm::vec4 &color, bool trackMinMax)
 {
-	valueGroups[valueName] = vector<float>();
+	valueGroups[valueName] = std::vector<float>();
 	valueProperties[valueName] = GraphValueProperties(spacing, color, trackMinMax);
 	if (trackMinMax)
 	{

@@ -15,7 +15,7 @@ public:
 	virtual MeshPtr Load(const Path & file);
 
 protected:
-	vector<IMeshLoader*> m_loaders;
+	std::vector<IMeshLoader*> m_loaders;
 };
 
 #endif // MESH_LOADER_H

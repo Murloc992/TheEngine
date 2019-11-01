@@ -10,7 +10,7 @@
  * sh->set();
  **/
 
-#include "utility/Vector.h"
+
 #include "ForwardDecl.h"
 #include "ShaderBinding.h"
 
@@ -29,7 +29,7 @@ public:
 	void Set();
 	const std::string & GetName() const;
 
-	const vector<ShaderBinding> & GetBindings() const;
+	const std::vector<ShaderBinding> & GetBindings() const;
 	ShaderBinding & GetBinding(const std::string & name);
 	bool HasBinding(const std::string & name);
 	const uint32_t GetProgramId() const;
@@ -43,7 +43,7 @@ private:
 private:
 	std::string name, vsstr, fsstr, gsstr;
 	uint32_t program, vsobj, fsobj, gsobj;
-	vector<ShaderBinding> m_bindings;
+	std::vector<ShaderBinding> m_bindings;
 	ShaderBinding m_nullBinding;
 };
 

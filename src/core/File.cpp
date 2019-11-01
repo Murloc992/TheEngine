@@ -1,7 +1,5 @@
 #include "Precomp.h"
 
-#include "boost/filesystem/operations.hpp"
-
 #include "File.h"
 
 #include "PathTools.h"

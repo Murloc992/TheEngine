@@ -23,7 +23,7 @@ public:
 	//virtual void RunApplication(std::string name, int argc, const char ** argv);
 
 protected:
-	vector<std::tuple<std::string, CreateAppFunc> > m_creationFuncs;
+	std::vector<std::tuple<std::string, CreateAppFunc> > m_creationFuncs;
 	Application * m_currentApplication;
 private:
 };

@@ -1,8 +1,6 @@
 #ifndef AABB_H
 #define AABB_H
 
-#include "utility/Vector.h"
-
 class AABB
 {
 public:

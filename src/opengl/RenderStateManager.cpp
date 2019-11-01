@@ -24,7 +24,7 @@ void RenderStateManager::Enable(GLEnum glCapability)
 	glEnable(glCapability);
 }
 
-void RenderStateManager::Enable(vector<GLEnum> glCapabilities)
+void RenderStateManager::Enable(std::vector<GLEnum> glCapabilities)
 {
 	for (GLEnum glCapability : glCapabilities)
 		glEnable(glCapability);
@@ -35,7 +35,7 @@ void RenderStateManager::Disable(GLEnum glCapability)
 	glDisable(glCapability);
 }
 
-void RenderStateManager::Disable(vector<GLEnum> glCapabilities)
+void RenderStateManager::Disable(std::vector<GLEnum> glCapabilities)
 {
 	for (GLEnum glCapability : glCapabilities)
 		glDisable(glCapability);

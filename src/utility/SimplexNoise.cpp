@@ -509,7 +509,7 @@ float raw_noise_4d(const float x, const float y, const float z, const float w)
 	int i2, j2, k2, l2; // The integer offsets for the third simplex corner
 	int i3, j3, k3, l3; // The integer offsets for the fourth simplex corner
 
-	// simplex[c] is a 4-vector with the numbers 0, 1, 2 and 3 in some order.
+	// simplex[c] is a 4-std::vector with the numbers 0, 1, 2 and 3 in some order.
 	// Many values of c will never occur, since e.g. x>y>z>w makes x<z, y<w and x<w
 	// impossible. Only the 24 indices which have non-zero entries make any sense.
 	// We use a thresholding to set the coordinates in turn from the largest magnitude.

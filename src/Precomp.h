@@ -16,6 +16,7 @@
 #include <condition_variable>
 #include <mutex>
 #include <random>
+#include <filesystem>
 
 #include <string.h>
 #include <string>

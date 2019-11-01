@@ -17,11 +17,11 @@ GUIEnvironment::GUIEnvironment() : GUIElement(nullptr, Rect2D<int>(0, 0, GetCont
 
     this->m_window = GetContext().GetWindow();
 
-    _sig_mouse_move = m_window->SigMouseMoved().connect(sigc::mem_fun(this, &GUIEnvironment::OnMouseMove));
-    _sig_mouse_button = m_window->SigMouseKey().connect(sigc::mem_fun(this, &GUIEnvironment::OnMouseClick));
-    _sig_mouse_scroll = m_window->SigMouseScroll().connect(sigc::mem_fun(this, &GUIEnvironment::OnMouseScroll));
-    _sig_key = m_window->SigKeyEvent().connect(sigc::mem_fun(this, &GUIEnvironment::OnKeyEvent));
-    _sig_text = m_window->SigTextEvent().connect(sigc::mem_fun(this, &GUIEnvironment::OnCharacterTyped));
+    _sig_mouse_move = m_window->SigMouseMoved().connect(sigc::mem_fun(*this, &GUIEnvironment::OnMouseMove));
+    _sig_mouse_button = m_window->SigMouseKey().connect(sigc::mem_fun(*this, &GUIEnvironment::OnMouseClick));
+    _sig_mouse_scroll = m_window->SigMouseScroll().connect(sigc::mem_fun(*this, &GUIEnvironment::OnMouseScroll));
+    _sig_key = m_window->SigKeyEvent().connect(sigc::mem_fun(*this, &GUIEnvironment::OnKeyEvent));
+    _sig_text = m_window->SigTextEvent().connect(sigc::mem_fun(*this, &GUIEnvironment::OnCharacterTyped));
 
     glm::ivec2 win_dims = m_window->GetWindowSize();
     this->disp_w = win_dims.x;

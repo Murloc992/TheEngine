@@ -69,7 +69,7 @@ public:
 
 	void set_style_element(int32_t style, Rect2D<int> atlas_info);
 
-	vector<glm::vec2> get_uv(uint32_t style);
+	std::vector<glm::vec2> get_uv(uint32_t style);
 
 	glm::vec2 get_style_metrics(uint32_t style)
 	{
@@ -85,9 +85,9 @@ public:
 	{
 	}
 private:
-	vector<Rect2D<int> > rects;
-	vector<glm::vec2> uvs;
-	vector<int> margins;
+	std::vector<Rect2D<int> > rects;
+	std::vector<glm::vec2> uvs;
+	std::vector<int> margins;
 
 	std::string name, atlas;
 	uint32_t atlas_size;

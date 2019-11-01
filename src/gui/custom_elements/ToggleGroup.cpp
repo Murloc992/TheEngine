@@ -9,7 +9,7 @@ ToggleGroup::ToggleGroup(bool multitoggle)
 	this->_multiToggle = multitoggle;
 }
 
-ToggleGroup::ToggleGroup(vector<GUIButton*> predef, bool multitoggle)
+ToggleGroup::ToggleGroup(std::vector<GUIButton*> predef, bool multitoggle)
 {
 	this->_multiToggle = multitoggle;
 

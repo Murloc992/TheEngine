@@ -42,29 +42,29 @@ const char * VarGroup::Name() const
 	return m_name;
 }
 
-vector<Var> & VarGroup::Vars()
+std::vector<Var> & VarGroup::Vars()
 {
 	return m_vars;
 }
 
-const vector<Var> & VarGroup::Vars() const
+const std::vector<Var> & VarGroup::Vars() const
 {
 	return m_vars;
 }
 
-vector<VarGroup> & VarGroup::Groups()
+std::vector<VarGroup> & VarGroup::Groups()
 {
 	return m_groups;
 }
 
-const vector<VarGroup> & VarGroup::Groups() const
+const std::vector<VarGroup> & VarGroup::Groups() const
 {
 	return m_groups;
 }
 
 Var & VarGroup::GetVar(const char * name)
 {
-	auto it = boost::range::find_if(m_vars,
+	auto it = std::find_if(m_vars.begin(), m_vars.end(),
 		[&name](const Var & var)
 	{
 		return strcmp(var.Name(), name) == 0;
@@ -79,7 +79,7 @@ Var & VarGroup::GetVar(const char * name)
 
 VarGroup & VarGroup::AddGroup(const char * name)
 {
-	vector<VarGroup>::iterator it = std::find_if(m_groups.begin(), m_groups.end(),
+	std::vector<VarGroup>::iterator it = std::find_if(m_groups.begin(), m_groups.end(),
 		[&name](const VarGroup & varGroup)
 	{
 		return strcmp(varGroup.Name(), name) == 0;
@@ -100,7 +100,7 @@ VarGroup & VarGroup::AddGroup(const VarGroup & vGroup)
 	if (vGroup.Name() == nullptr)
 		throw std::string("Group name cannot be null");
 
-	auto it = boost::range::find_if(m_groups,
+	auto it = std::find_if(m_groups.begin(), m_groups.end(),
 		[&vGroup](const VarGroup & varGroup)
 	{
 		return strcmp(varGroup.Name(), vGroup.Name()) == 0;
@@ -118,7 +118,7 @@ VarGroup & VarGroup::AddGroup(const VarGroup & vGroup)
 
 bool VarGroup::AddVar(const Var & variable)
 {
-	vector<Var>::iterator it = std::find_if(m_vars.begin(), m_vars.end(),
+	std::vector<Var>::iterator it = std::find_if(m_vars.begin(), m_vars.end(),
 		[&variable](const Var & var)
 	{
 		return strcmp(var.Name(), variable.Name()) == 0;
@@ -138,7 +138,7 @@ bool VarGroup::AddVar(const Var & variable)
 
 VarGroup & VarGroup::GetGroup(const char * name)
 {
-	vector<VarGroup>::iterator it = std::find_if(m_groups.begin(), m_groups.end(),
+	std::vector<VarGroup>::iterator it = std::find_if(m_groups.begin(), m_groups.end(),
 		[&name](const VarGroup & varGroup)
 	{
 		return strcmp(varGroup.Name(), name) == 0;

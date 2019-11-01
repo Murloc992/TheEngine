@@ -1,5 +1,5 @@
 #include "Precomp.h"
-#include "utility/Vector.h"
+
 #include "utility/Rect2d.h"
 #include "GUISkin.h"
 
@@ -66,9 +66,9 @@ void GUISkin::set_style_element(int32_t style, Rect2D<int> atlas_info)
 	rects[style] = atlas_info;
 }
 
-vector<glm::vec2> GUISkin::get_uv(uint32_t style)
+std::vector<glm::vec2> GUISkin::get_uv(uint32_t style)
 {
-	vector<glm::vec2> ret;
+	std::vector<glm::vec2> ret;
 	ret.resize(4);
 	ret[0] = uvs[style * 4];
 	ret[1] = uvs[style * 4 + 1];

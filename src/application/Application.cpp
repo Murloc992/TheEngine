@@ -4,13 +4,12 @@
 #include "utility/Timer.h"
 #include "utility/Logger.h"
 #include "utility/StringUtil.h"
-#include "boost/filesystem/path.hpp"
-#include "boost/filesystem/operations.hpp"
 #include "core/FileSystem.h"
 #include "Application.h"
 #include "SettingsManager.h"
 #include "resources/ResourceManager.h"
 #include "opengl/OpenGLExtensionLoader.h"
+#include "application/InputHandler.h"
 #include "gui/GUI.h"
 
 Application::Application(int32_t argc, const char ** argv)
@@ -127,7 +126,7 @@ bool Application::InitWindowAndOpenGL(const std::string & title)
 		return false;
 	}
 
-	GetContext().GetWindow()->SigWindowClosed().connect(sigc::mem_fun(this, &Application::OnWindowClose));
+	GetContext().GetWindow()->SigWindowClosed().connect(sigc::mem_fun(*this, &Application::OnWindowClose));
 
 	///REFACTOR: Opengl initialization should have it's own place, worst case: extract method.
 	GetContext().p_openGLExtensionLoader = new OpenGLExtensionLoader();

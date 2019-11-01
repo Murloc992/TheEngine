@@ -2,16 +2,12 @@
 
 #ifdef _WIN32
 
-#include "boost/filesystem/path.hpp"
-#include "boost/algorithm/string/replace.hpp"
-#include "boost/filesystem/operations.hpp"
-
-using Path = boost::filesystem::path;
+using Path = std::filesystem::path;
 
 static std::string _WorkaroundVisualStudio(const Path & path)
 {
-	auto pathString = boost::filesystem::canonical(path).string();
-	boost::replace_all(pathString, "/", "\\");
+	auto pathString = std::filesystem::canonical(path).string();
+	std::replace(pathString.begin(), pathString.end(), '/', '\\');
 	return pathString;
 }
 
@@ -19,7 +15,7 @@ static Path _MakePosix(const Path& path)
 {
 	std::wstring pathWstr = std::wstring(path.c_str());
 	std::string pathStr = std::string(pathWstr.begin(), pathWstr.end());
-	boost::replace_all(pathStr, "\\", "/");
+	std::replace(pathStr.begin(), pathStr.end(), '\\', '/');
 	return Path(pathStr);
 }
 

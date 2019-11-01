@@ -35,7 +35,7 @@ Font::Font(FT_Face face, int height, std::string name)
             rowh = 0;
         }
         roww += g->bitmap.width + 1;
-        rowh = glm::max(rowh, g->bitmap.rows);
+        rowh = glm::max((uint32_t)rowh, g->bitmap.rows);
     }
 
     w = glm::max(w, roww);
@@ -94,7 +94,7 @@ Font::Font(FT_Face face, int height, std::string name)
         std::copy(g->bitmap.buffer, g->bitmap.buffer + g->bitmap.width * g->bitmap.rows, c[i].bitmap);
         // memcpy(c[i].bitmap, (void*)g->bitmap.buffer, g->bitmap.width * g->bitmap.rows * sizeof(unsigned char));
 
-        rowh = glm::max(rowh, g->bitmap.rows);
+        rowh = glm::max((uint32_t)rowh, g->bitmap.rows);
         ox += g->bitmap.width + 1;
     }
     avgheight = avgheight / (float)cnth;

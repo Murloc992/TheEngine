@@ -1,7 +1,5 @@
 #pragma once
-#include "utility/Vector.h"
 #include "ForwardDecl.h"
-#include "boost/filesystem/path.hpp"
 
 template <class T>
 struct Resource
@@ -69,11 +67,11 @@ public:
 	}
 
 protected:
-	vector< Resource<T> >  m_resources;
+	std::vector< Resource<T> >  m_resources;
 };
 
 template <class T>
-vector<std::shared_ptr<T> > * create_resource_cache()
+std::vector<std::shared_ptr<T> > * create_resource_cache()
 {
-	return new vector<std::shared_ptr<T> >();
+	return new std::vector<std::shared_ptr<T> >();
 }
