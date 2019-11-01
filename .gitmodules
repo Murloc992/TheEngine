@@ -12,7 +12,7 @@
 	branch = master
 [submodule "libs/glad"]
 	path = libs/glad
-	url = https://github.com/Dav1dde/glad.git
+	url = https://github.com/Murloc992/glad.git
 	branch = master
 [submodule "libs/libccd"]
 	path = libs/libccd
@@ -20,11 +20,11 @@
 	branch = master
 [submodule "libs/jsoncpp"]
 	path = libs/jsoncpp
-	url = https://github.com/open-source-parsers/jsoncpp.git
+	url = https://github.com/Murloc992/jsoncpp.git
 	branch = master
 [submodule "libs/libsigcplusplus"]
 	path = libs/libsigcplusplus
-	url = https://github.com/libsigcplusplus/libsigcplusplus.git
+	url = https://github.com/Murloc992/libsigcplusplus.git
 	branch = master
 [submodule "libs/physfs"]
 	path = libs/physfs
