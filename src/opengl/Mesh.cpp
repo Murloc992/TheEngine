@@ -10,8 +10,9 @@ void animation::set_frame(uint32_t frame)
 
 	for (uint32_t i = 0; i < this->bones.size(); i++)
 	{
-		if (this->bones[i].parent >= 0) current_frame[i] = mul(current_frame[this->bones[i].parent], frames[offset][i]);
-		else current_frame[i] = frames[offset][i];
+		//transpose to opengl order
+		if (this->bones[i].parent >= 0) current_frame[i] = glm::transpose(current_frame[bones[i].parent] * frames[offset][i]);
+		else current_frame[i] = glm::transpose(frames[offset][i]);
 	}
 }
 
@@ -33,9 +34,10 @@ void animation::set_interp_frame(float f)
 
 	for (uint32_t i = 0; i < bones.size(); i++)
 	{
-		glm::mat3x4 mat = mat1[i] * (1 - frameoffset) + mat2[i] * frameoffset;
-		if (bones[i].parent >= 0) current_frame[i] = mul(current_frame[bones[i].parent], mat);
-		else current_frame[i] = mat;
+		glm::mat4 mat = mat1[i] * (1 - frameoffset) + mat2[i] * frameoffset;
+		//transpose to opengl order
+		if (bones[i].parent >= 0) current_frame[i] = glm::transpose(current_frame[bones[i].parent] * mat);
+		else current_frame[i] = glm::transpose(mat);
 	}
 }
 

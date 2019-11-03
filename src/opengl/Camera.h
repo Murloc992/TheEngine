@@ -48,6 +48,7 @@ public:
 	const float GetFar() const;
 	const float GetNear() const;
 	const float GetFOV() const;
+	void SetFOV(const float & fov);
 	const float GetAspectRatio() const;
 
 	virtual void Update(float dt);

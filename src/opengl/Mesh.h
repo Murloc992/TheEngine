@@ -5,7 +5,7 @@
 #include "IBufferObject.h"
 #include "BufferObject.h"
 
-typedef std::vector<glm::mat3x4> frame;
+typedef std::vector<glm::mat4> frame;
 typedef std::vector<frame> frame_vec;
 
 struct bone

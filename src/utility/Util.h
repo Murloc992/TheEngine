@@ -99,11 +99,6 @@ template<class T> T getbig(FILE *f)
 }
 
 void print_glm(const glm::mat4 & m);
-void invert(glm::mat3x4 & dest, const glm::mat3x4 & o);
-void convertquat(glm::mat3x4 & mat, const glm::quat & q);
-void scale(glm::vec4 & v, const glm::vec3& s);
-void makeJointMatrix(glm::mat3x4 & mat, const glm::quat & rot, const glm::vec3& pos, const glm::vec3& s);
-glm::mat3x4 mul(const glm::mat3x4 & m1, const glm::mat3x4 & m2);
 
 #ifdef swap
 #undef swap

@@ -28,7 +28,7 @@ Camera::Camera(const glm::vec3 &pos, const glm::vec3 &target, const glm::vec3 &u
 	farHeight = m_far*tang;
 	farWidth = farHeight*m_aspect_ratio;
 
-	m_P = glm::perspective(field_of_view, aspect_ratio, near_z, far_z);
+	m_P = glm::perspective(glm::radians(field_of_view), aspect_ratio, near_z, far_z);
 }
 
 Camera::~Camera()
@@ -200,6 +200,12 @@ glm::mat4 & Camera::GetProjectionMat()
 const float Camera::GetFOV() const
 {
 	return m_fov;
+}
+
+void Camera::SetFOV(const float& fov)
+{
+	m_fov = fov;
+	m_P = glm::perspective(glm::radians(m_fov), m_aspect_ratio, m_near, m_far);
 }
 
 const float Camera::GetFar() const

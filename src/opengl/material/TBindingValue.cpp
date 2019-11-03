@@ -21,6 +21,18 @@ void TBindingValue<glm::mat4x4>::Set(int32_t index)
 }
 
 template <>
+void TBindingValue<std::vector<glm::mat4x4>>::Set(int32_t index)
+{
+	glUniformMatrix4fv(index, m_value.size(), GL_FALSE, glm::value_ptr(m_value[0]));
+}
+
+template <>
+void TBindingValue<std::vector<glm::mat3x4>>::Set(int32_t index)
+{
+	glUniformMatrix3x4fv(index, m_value.size(), GL_FALSE, glm::value_ptr(m_value[0]));
+}
+
+template <>
 void TBindingValue<glm::mat3x3>::Set(int32_t index) 
 {
 	glUniformMatrix3fv(index, 1, GL_FALSE, glm::value_ptr(m_value));

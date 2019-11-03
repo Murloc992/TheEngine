@@ -17,6 +17,8 @@ public:
 	void Set(float value);
 	void Set(int32_t value);
 	void Set(glm::mat4x4 value);
+	void Set(std::vector<glm::mat4x4> value);
+	void Set(std::vector<glm::mat3x4> value);
 	void Set(glm::mat3x3 value);
 	void Set(glm::vec2 value);
 	void Set(glm::vec3 value);
