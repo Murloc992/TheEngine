@@ -98,7 +98,8 @@ template<class T> T getbig(FILE *f)
 	return bigswap(getval<T>(f));
 }
 
-void print_glm(const glm::mat4 & m);
+void print_glm(const glm::mat4& m);
+void print_glm2(const glm::mat4 & m);
 
 #ifdef swap
 #undef swap

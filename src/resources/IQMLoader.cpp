@@ -179,17 +179,16 @@ void IQMLoader::loadiqmanims(std::shared_ptr<Mesh> m, const char* data, iqmheade
 
 		glm::mat4 jmat = glm::mat4(1.f);
 		jmat = glm::translate(jmat, b.pos);
-		jmat = jmat * glm::toMat4(b.rot);
 		jmat = glm::scale(jmat, b.scale);
+		jmat = jmat * glm::toMat4(b.rot);
 
 		base_frame[i] = jmat;
-
-		inverse_base_frame[i] = glm::inverse(base_frame[i]);
+		inverse_base_frame[i] = glm::inverse(jmat);
 
 		if (j.parent >= 0)
 		{
-			base_frame[i] = (base_frame[j.parent] * base_frame[i]);
-			inverse_base_frame[i] = (inverse_base_frame[i] * inverse_base_frame[j.parent]);
+			base_frame[i] = base_frame[j.parent] * base_frame[i];
+			inverse_base_frame[i] = inverse_base_frame[i] * inverse_base_frame[j.parent];
 		}
 	}
 
@@ -230,13 +229,22 @@ void IQMLoader::loadiqmanims(std::shared_ptr<Mesh> m, const char* data, iqmheade
 
 			glm::mat4 mat = glm::mat4(1.f);
 			mat = glm::translate(mat, translate);
-			mat = mat * glm::toMat4(glm::normalize(rotate));
 			mat = glm::scale(mat, scale);
-
-			if (p.parent >= 0) m->anim->frames[i][j] = (base_frame[p.parent] * mat * inverse_base_frame[j]);
-			else m->anim->frames[i][j] = (mat * inverse_base_frame[j]);
+			mat = mat * glm::toMat4(glm::normalize(rotate));
+			
+			if (p.parent >= 0)
+			{
+				m->anim->frames[i][j] = base_frame[p.parent] * mat * inverse_base_frame[j];
+			}
+			else
+			{
+				m->anim->frames[i][j] = mat * inverse_base_frame[j];
+			}
 		}
 	}
+
+	delete[] base_frame;
+	delete[] inverse_base_frame;
 
 	for (int i = 0; i < (int)header.num_anims; i++)
 	{

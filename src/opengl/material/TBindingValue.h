@@ -17,8 +17,8 @@ private:
 
 template <> void TBindingValue<float>::Set(int32_t index);
 template <> void TBindingValue<int32_t>::Set(int32_t index);
-template <> void TBindingValue<glm::mat4x4>::Set(int32_t index);
-template <> void TBindingValue<std::vector<glm::mat4x4>>::Set(int32_t index);
+template <> void TBindingValue<glm::mat4>::Set(int32_t index);
+template <> void TBindingValue<std::vector<glm::mat4>>::Set(int32_t index);
 template <> void TBindingValue<std::vector<glm::mat3x4>>::Set(int32_t index);
 template <> void TBindingValue<glm::mat3x3>::Set(int32_t index);
 template <> void TBindingValue<glm::vec3>::Set(int32_t index);

@@ -15,13 +15,13 @@ void TBindingValue<float>::Set(int32_t index)
 }
 
 template <>
-void TBindingValue<glm::mat4x4>::Set(int32_t index) 
+void TBindingValue<glm::mat4>::Set(int32_t index) 
 {
 	glUniformMatrix4fv(index, 1, GL_FALSE, glm::value_ptr(m_value));
 }
 
 template <>
-void TBindingValue<std::vector<glm::mat4x4>>::Set(int32_t index)
+void TBindingValue<std::vector<glm::mat4>>::Set(int32_t index)
 {
 	glUniformMatrix4fv(index, m_value.size(), GL_FALSE, glm::value_ptr(m_value[0]));
 }

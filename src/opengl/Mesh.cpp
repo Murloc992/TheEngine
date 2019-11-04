@@ -6,13 +6,24 @@
 
 void animation::set_frame(uint32_t frame)
 {
-	const uint32_t offset = (frame%this->frames.size());
+	const uint32_t offset = (frame % this->frames.size());
 
 	for (uint32_t i = 0; i < this->bones.size(); i++)
 	{
 		//transpose to opengl order
-		if (this->bones[i].parent >= 0) current_frame[i] = glm::transpose(current_frame[bones[i].parent] * frames[offset][i]);
-		else current_frame[i] = glm::transpose(frames[offset][i]);
+		if (this->bones[i].parent >= 0)
+		{
+			current_frame[i] = current_frame[bones[i].parent] * frames[offset][i];
+		}
+		else
+		{
+			current_frame[i] = frames[offset][i];
+		}
+	}
+
+	for (uint32_t i = 0; i < bones.size(); i++)
+	{
+		current_frame[i] = glm::transpose(current_frame[i]);
 	}
 }
 
@@ -26,8 +37,8 @@ void animation::set_interp_frame(float f)
 	float frameoffset = f - frame1;
 	frame1 %= this->frames.size();
 	frame2 %= this->frames.size();
-	frame &mat1 = frames[frame1],
-		&mat2 = frames[frame2];
+	frame& mat1 = frames[frame1],
+		& mat2 = frames[frame2];
 	// Interpolate matrixes between the two closest frames and concatenate with parent matrix if necessary.
 	// Concatenate the result with the inverse of the base pose.
 	// You would normally do animation blending and inter-frame blending here in a 3D engine.
@@ -36,8 +47,19 @@ void animation::set_interp_frame(float f)
 	{
 		glm::mat4 mat = mat1[i] * (1 - frameoffset) + mat2[i] * frameoffset;
 		//transpose to opengl order
-		if (bones[i].parent >= 0) current_frame[i] = glm::transpose(current_frame[bones[i].parent] * mat);
-		else current_frame[i] = glm::transpose(mat);
+		if (bones[i].parent >= 0)
+		{
+			current_frame[i] = current_frame[bones[i].parent] * mat;
+		}
+		else
+		{
+			current_frame[i] = mat;
+		}
+	}
+
+	for (uint32_t i = 0; i < bones.size(); i++)
+	{
+		current_frame[i] = glm::transpose(current_frame[i]);
 	}
 }
 
@@ -51,7 +73,7 @@ Mesh::Mesh() : vao(0), anim(nullptr)
 Mesh::~Mesh()
 {
 	glBindVertexArray(vao);
-	for (IBufferObject * b : buffers)
+	for (IBufferObject* b : buffers)
 		delete b;
 	glDeleteVertexArrays(1, &vao);
 }
@@ -92,7 +114,7 @@ void Mesh::Render(uint32_t sub_mesh_index)
 	glBindVertexArray(vao);
 
 	if (sub_meshes.size() != 0)
-		glDrawElements(GL_TRIANGLES, sub_meshes[sub_mesh_index].num_indices, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t)*sub_meshes[sub_mesh_index].start));
+		glDrawElements(GL_TRIANGLES, sub_meshes[sub_mesh_index].num_indices, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * sub_meshes[sub_mesh_index].start));
 	else
 		glDrawElements(GL_TRIANGLES, static_cast<IndexBufferObject<uint32_t>*>(buffers[INDICES])->data.size(), GL_UNSIGNED_INT, (void*)(0));
 
@@ -106,7 +128,7 @@ void Mesh::Render()
 
 	if (sub_meshes.size() != 0)
 		for (uint32_t i = 0; i < sub_meshes.size(); i++)
-			glDrawElements(GL_TRIANGLES, sub_meshes[i].num_indices, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t)*sub_meshes[i].start));
+			glDrawElements(GL_TRIANGLES, sub_meshes[i].num_indices, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * sub_meshes[i].start));
 	else
 		glDrawElements(GL_TRIANGLES, buffers[INDICES]->GetSize(), GL_UNSIGNED_INT, 0);
 
@@ -154,7 +176,7 @@ void Mesh::UploadBuffers()
 		if (buffers[i])
 		{
 			///enable on upload. MIGHT NOT BE A REALLY GOOD SOLUTION
-			if (buffers[i]->GetSize()>0)
+			if (buffers[i]->GetSize() > 0)
 			{
 				buffers[i]->Upload();
 

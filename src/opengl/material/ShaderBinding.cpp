@@ -56,14 +56,14 @@ void ShaderBinding::Set(int32_t value)
 	m_value = share(new TBindingValue<int32_t>(value));
 }
 
-void ShaderBinding::Set(glm::mat4x4 value)
+void ShaderBinding::Set(glm::mat4 value)
 {
-	m_value = share(new TBindingValue<glm::mat4x4>(value));
+	m_value = share(new TBindingValue<glm::mat4>(value));
 }
 
-void ShaderBinding::Set(std::vector<glm::mat4x4> value)
+void ShaderBinding::Set(std::vector<glm::mat4> value)
 {
-	m_value = share(new TBindingValue<std::vector<glm::mat4x4>>(value));
+	m_value = share(new TBindingValue<std::vector<glm::mat4>>(value));
 }
 
 void ShaderBinding::Set(std::vector<glm::mat3x4> value)
