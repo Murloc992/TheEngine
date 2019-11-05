@@ -49,7 +49,14 @@ add_library(engine STATIC
 
 #Only supporting gcc on linux, mingw(gcc)/nmake on windows
 if(WIN32 AND NOT MINGW)
+	foreach(_source IN ITEMS ${ENGINE_SOURCES} ${ENGINE_INCLUDES})
+		get_filename_component(_source_path "${_source}" PATH)
+		string(REPLACE "${CMAKE_SOURCE_DIR}" "" _group_path "${_source_path}")
+		string(REPLACE "/" "\\" _group_path "${_group_path}")
+		source_group("${_group_path}" FILES "${_source}")
+	endforeach()
 	set_target_properties(engine PROPERTIES COMPILE_FLAGS "${CPP_NMAKE_COMPILE_FLAGS}")
+	add_definitions(-DMSVC_COMPILE)# -DCMAKE_UNITY_BUILD=ON)
 else()
 	set_target_properties(engine PROPERTIES COMPILE_FLAGS "${CPP_GCC_COMPILE_FLAGS}")
 endif()
