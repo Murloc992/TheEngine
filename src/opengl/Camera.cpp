@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "utility/Logger.h"
 #include "Camera.h"
 #include "application/AppContext.h"

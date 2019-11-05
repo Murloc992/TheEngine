@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "IQM.h"
 #include "IQMLoader.h"
 #include "opengl/Mesh.h"

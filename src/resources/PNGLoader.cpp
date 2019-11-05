@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 
 #include "PNGLoader.h"
 #define STB_IMAGE_IMPLEMENTATION

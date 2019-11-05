@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "ImageLoader.h"
 #include "ShaderLoader.h"
 #include "MeshLoader.h"

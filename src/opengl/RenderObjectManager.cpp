@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "RenderObjectManager.h"
 #include "RenderStateManager.h"
 #include "application/AppContext.h"

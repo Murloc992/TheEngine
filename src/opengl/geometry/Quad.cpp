@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 
 #include "opengl/OpenGLInc.h"
 #include "utility/Plane3d.h"

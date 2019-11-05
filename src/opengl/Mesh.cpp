@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "Mesh.h"
 #include "IBufferObject.h"
 #include "BufferObject.h"

@@ -6,24 +6,9 @@ MESSAGE(STATUS "CMAKE_CXX_COMPILER_VERSION: " "${CMAKE_CXX_COMPILER_VERSION}")
 set(CPP_GCC_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -w -std=c++17 -include Precomp.h")
 set(CPP_NMAKE_COMPILE_FLAGS  "${CMAKE_CXX_FLAGS} /Gm- /std:c++latest /MP /O2 /W3")
 
-#Only supporting gcc on linux, mingw(gcc)/nmake on windows
-if(WIN32 AND NOT MINGW)
-	set(CMAKE_CXX_FLAGS "${CPP_NMAKE_COMPILE_FLAGS}")
-else()
-	set(CMAKE_CXX_FLAGS "${CPP_GCC_COMPILE_FLAGS}")
-endif()
-
 set(ENGINE_SRC_PATH "src" )
 set(LIB_PATH "libs" )
 set(LIBBIN_PATH "${CMAKE_CURRENT_BINARY_DIR}/libs" )
-
-#define output library path for solutions
-#foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
-#    string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-#    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${LIB_PATH} )
-#    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${LIB_PATH} )
-#    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${LIB_PATH} )
-#endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
 #Includes
 include_directories("${ENGINE_SRC_PATH}/"
@@ -61,6 +46,15 @@ add_library(engine STATIC
 	${ENGINE_SOURCES}
 	${ENGINE_INCLUDES}
 )
+
+#Only supporting gcc on linux, mingw(gcc)/nmake on windows
+if(WIN32 AND NOT MINGW)
+	set_target_properties(engine PROPERTIES COMPILE_FLAGS "${CPP_NMAKE_COMPILE_FLAGS}")
+else()
+	set_target_properties(engine PROPERTIES COMPILE_FLAGS "${CPP_GCC_COMPILE_FLAGS}")
+endif()
+
+target_precompile_headers(engine PRIVATE "${ENGINE_SRC_PATH}/Precomp.h")
 
 target_link_libraries(engine)
 

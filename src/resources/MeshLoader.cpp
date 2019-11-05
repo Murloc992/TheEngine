@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "application/AppContext.h"
 #include "MeshLoader.h"
 #include "IQMLoader.h"

@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "IBindingValue.h"
 #include "TBindingValue.h"
 #include "ShaderBinding.h"

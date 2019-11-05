@@ -31,6 +31,7 @@
 #include "gtc/matrix_transform.hpp"
 #include "gtc/matrix_inverse.hpp"
 #include "gtx/rotate_vector.hpp"
+#include "gtx/matrix_decompose.hpp"
 
 #include "gtc/type_ptr.hpp"
 

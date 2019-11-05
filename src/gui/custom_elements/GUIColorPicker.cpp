@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "gui/GUI.h"
 #include "resources/Image.h"
 #include "GUIColorPicker.h"

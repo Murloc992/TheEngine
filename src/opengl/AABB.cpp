@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "AABB.h"
 
 AABB::AABB() : m_halfSize(0.5)

@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "opengl/geometry/Quad.h"
 #include "GUI.h"
 

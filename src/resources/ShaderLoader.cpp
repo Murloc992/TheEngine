@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "ShaderLoader.h"
 #include "opengl/material/Shader.h"
 #include "utility/Logger.h"

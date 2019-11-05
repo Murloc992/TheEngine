@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "resources/Image.h"
 #include "Texture.h"
 

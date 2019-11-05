@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 
 #include "Window.h"
 #include "utility/Timer.h"

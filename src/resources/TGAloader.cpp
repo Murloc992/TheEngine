@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 
 #include "TGAloader.h"
 #include "glm.hpp"

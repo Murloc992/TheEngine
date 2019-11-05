@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "IBufferObject.h"
 
 IBufferObject::IBufferObject(USAGE_HINT hint) : Id(0), UsageHint(hint)

@@ -15,6 +15,7 @@ struct bone
 	glm::vec3 pos;
 	glm::quat rot;
 	glm::vec3 scale;
+	std::vector<int> children;
 };
 typedef std::vector<bone> bone_vec;
 

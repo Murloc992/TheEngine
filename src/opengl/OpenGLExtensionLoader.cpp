@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "OpenGLExtensionLoader.h"
 #include "application/AppContext.h"
 #include "utility/Logger.h"

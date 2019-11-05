@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "ft2build.h"
 #include FT_FREETYPE_H
 #include "Font.h"

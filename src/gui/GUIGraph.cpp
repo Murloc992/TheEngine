@@ -1,4 +1,4 @@
-#include "Precomp.h"
+//#include "Precomp.h"
 #include "GUIGraph.h"
 #include "GUI.h"
 
