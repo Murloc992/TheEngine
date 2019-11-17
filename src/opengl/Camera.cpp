@@ -5,7 +5,7 @@
 #include "opengl/AABB.h"
 #include "application/Window.h"
 
-Camera::Camera(const glm::vec3 &pos, const glm::vec3 &target, const glm::vec3 &up, float aspect_ratio, float field_of_view, float near_z, float far_z)
+Camera::Camera(const glm::vec3& pos, const glm::vec3& target, const glm::vec3& up, float aspect_ratio, float field_of_view, float near_z, float far_z)
 {
 	m_fps = true;
 	m_hasFrustum = false;
@@ -20,13 +20,6 @@ Camera::Camera(const glm::vec3 &pos, const glm::vec3 &target, const glm::vec3 &u
 	m_far = far_z;
 	m_near = near_z;
 	m_aspect_ratio = aspect_ratio;
-
-	float tang = (float)glm::tan(glm::radians(m_fov)*0.5);
-
-	nearHeight = m_near*tang;
-	nearWidth = nearHeight*m_aspect_ratio;
-	farHeight = m_far*tang;
-	farWidth = farHeight*m_aspect_ratio;
 
 	m_P = glm::perspective(glm::radians(field_of_view), aspect_ratio, near_z, far_z);
 }
@@ -51,91 +44,60 @@ void Camera::ResetOrientation(glm::vec3 lookDir)
 void Camera::InitFrustum()
 {
 	m_hasFrustum = true;
-
 	auto proj = GetViewProjMat();
-	frustumPlanes[FP_RIGHT].SetNormalsAndD(
-		proj[0][3] - proj[0][0],
-		proj[1][3] - proj[1][0],
-		proj[2][3] - proj[2][0],
-		proj[3][3] - proj[3][0]);
+	glm::vec4 row0 = glm::row(proj, 0);
+	glm::vec4 row1 = glm::row(proj, 1);
+	glm::vec4 row2 = glm::row(proj, 2);
+	glm::vec4 row3 = glm::row(proj, 3);
 
-	frustumPlanes[FP_LEFT].SetNormalsAndD(
-		proj[0][3] + proj[0][0],
-		proj[1][3] + proj[1][0],
-		proj[2][3] + proj[2][0],
-		proj[3][3] + proj[3][0]);
+	frustumPlanes[FP_RIGHT].SetNormalsAndD(-row0 + row3);
 
-	frustumPlanes[FP_BOTTOM].SetNormalsAndD(
-		proj[0][3] + proj[0][1],
-		proj[1][3] + proj[1][1],
-		proj[2][3] + proj[2][1],
-		proj[3][3] + proj[3][1]);
+	frustumPlanes[FP_LEFT].SetNormalsAndD(row3 + row0);
 
-	frustumPlanes[FP_TOP].SetNormalsAndD(
-		proj[0][3] - proj[0][1],
-		proj[1][3] - proj[1][1],
-		proj[2][3] - proj[2][1],
-		proj[3][3] - proj[3][1]);
+	frustumPlanes[FP_BOTTOM].SetNormalsAndD(row3 + row1);
 
-	frustumPlanes[FP_FAR].SetNormalsAndD(
-		proj[0][3] - proj[0][2],
-		proj[1][3] - proj[1][2],
-		proj[2][3] - proj[2][2],
-		proj[3][3] - proj[3][2]);
+	frustumPlanes[FP_TOP].SetNormalsAndD(-row1 + row3);
 
-	frustumPlanes[FP_NEAR].SetNormalsAndD(
-		proj[0][3] + proj[0][2],
-		proj[1][3] + proj[1][2],
-		proj[2][3] + proj[2][2],
-		proj[3][3] + proj[3][2]);
+	frustumPlanes[FP_FAR].SetNormalsAndD(-row2 + row3);
+
+	frustumPlanes[FP_NEAR].SetNormalsAndD(row3 + row2);
+
+	float tang = glm::tan(glm::radians(m_fov) * 0.5f);
+
+	float farmod = m_far / 1.f;
+
+	nearHeight = m_near * tang;
+	nearWidth = nearHeight * m_aspect_ratio;
+	farHeight = farmod * tang;
+	farWidth = farHeight * m_aspect_ratio;
+
+	auto nearclip = m_pos + glm::normalize(m_look) * m_near;
+	auto farclip = m_pos + glm::normalize(m_look) * farmod;
+
+	nearTopLeft = nearclip + (m_up * nearHeight / 2.f) - (m_right * nearWidth / 2.f);
+	nearTopRight = nearclip + (m_up * nearHeight / 2.f) + (m_right * nearWidth / 2.f);
+	nearBottomLeft = nearclip - (m_up * nearHeight / 2.f) - (m_right * nearWidth / 2.f);
+	nearBottomRight = nearclip - (m_up * nearHeight / 2.f) + (m_right * nearWidth / 2.f);
+
+	farTopLeft = farclip + (m_up * farHeight / 2.f) - (m_right * farWidth / 2.f);
+	farTopRight = farclip + (m_up * farHeight / 2.f) + (m_right * farWidth / 2.f);
+	farBottomLeft = farclip - (m_up * farHeight / 2.f) - (m_right * farWidth / 2.f);
+	farBottomRight = farclip - (m_up * farHeight / 2.f) + (m_right * farWidth / 2.f);
+
+	frustumPlanes[FP_TOP].SetPoints(farTopRight, farTopLeft, nearTopLeft, nearTopRight); // top plane
+	frustumPlanes[FP_BOTTOM].SetPoints(farBottomLeft, farBottomRight, nearBottomRight, nearBottomLeft); // bottom plane
+	frustumPlanes[FP_LEFT].SetPoints(farTopLeft, farBottomLeft, nearBottomLeft, nearTopLeft); // left plane
+	frustumPlanes[FP_RIGHT].SetPoints(farBottomRight, farTopRight, nearTopRight, nearBottomRight); // right plane
+	frustumPlanes[FP_FAR].SetPoints(farBottomRight, farBottomLeft, farTopLeft, farTopRight); // far plane
+	frustumPlanes[FP_NEAR].SetPoints(nearBottomLeft, nearBottomRight, nearTopRight, nearTopLeft); // near plane
 }
 
-//void Camera::InitFrustum()
-//{
-//	glm::vec3 Z = glm::normalize(-m_look);
-//
-//	glm::vec3 X = glm::normalize(glm::cross(m_up, Z));
-//
-//	glm::vec3 Y = glm::cross(Z, X);
-//
-//	glm::vec3 nearCenter = m_pos - Z * m_near;
-//	glm::vec3 farCenter = m_pos - Z * m_far;
-//
-//	// compute the 4 corners of the frustum on the near plane
-//	nearTopLeft = nearCenter + Y * nearHeight - X * nearWidth;
-//	nearTopRight = nearCenter + Y * nearHeight + X * nearWidth;
-//	nearBottomLeft = nearCenter - Y * nearHeight - X * nearWidth;
-//	nearBottomRight = nearCenter - Y * nearHeight + X * nearWidth;
-//
-//	// compute the 4 corners of the frustum on the far plane
-//	farTopLeft = farCenter + Y * farHeight - X * farWidth;
-//	farTopRight = farCenter + Y * farHeight + X * farWidth;
-//	farBottomLeft = farCenter - Y * farHeight - X * farWidth;
-//	farBottomRight = farCenter - Y * farHeight + X * farWidth;
-//
-//	// compute the six planes
-//	// the function set3Points assumes that the points
-//	// are given in counter clockwise order
-//	printf("FP_TOP");
-//	frustumPlanes[FP_TOP].SetPoints(nearTopRight, nearTopLeft, farTopLeft, farTopRight); // top plane
-//	printf("FP_BOTTOM");
-//	frustumPlanes[FP_BOTTOM].SetPoints(nearBottomLeft, nearBottomRight, farBottomRight, farBottomLeft); // bottom plane
-//	printf("FP_LEFT");
-//	frustumPlanes[FP_LEFT].SetPoints(nearTopLeft, nearBottomLeft, farBottomLeft, farTopLeft); // left plane
-//	printf("FP_RIGHT");
-//	frustumPlanes[FP_RIGHT].SetPoints(nearBottomRight, nearTopRight, farTopRight, farBottomRight); // right plane
-//	printf("FP_FAR");
-//	frustumPlanes[FP_FAR].SetPoints(farTopRight, farTopLeft, farBottomLeft, farBottomRight); // far plane
-//	printf("FP_NEAR");
-//	frustumPlanes[FP_NEAR].SetPoints(nearTopLeft, nearTopRight, nearBottomRight, nearBottomLeft); // near plane
-//}
-
-Plane3d * Camera::GetFrustumPlanes()
+Plane3d* Camera::GetFrustumPlanes()
 {
 	return frustumPlanes;
 }
 
-INTERSECT_RESULT Camera::PointInFrustum(const glm::vec3 &point)
+INTERSECT_RESULT Camera::PointInFrustum(const glm::vec3& point)
 {
 	INTERSECT_RESULT res = IR_INSIDE;
 	int out = 0;
@@ -151,7 +113,7 @@ INTERSECT_RESULT Camera::PointInFrustum(const glm::vec3 &point)
 	return res;
 }
 
-INTERSECT_RESULT Camera::SphereInFrustum(const glm::vec3 &center, float radius)
+INTERSECT_RESULT Camera::SphereInFrustum(const glm::vec3& center, float radius)
 {
 	INTERSECT_RESULT res = IR_INSIDE;
 
@@ -165,34 +127,41 @@ INTERSECT_RESULT Camera::SphereInFrustum(const glm::vec3 &center, float radius)
 	return res;
 }
 
-INTERSECT_RESULT Camera::BoxInFrustum(const AABB &box)
+INTERSECT_RESULT Camera::BoxInFrustum(const AABB& box)
 {
 	auto points = box.CalculatePoints();
 
 	INTERSECT_RESULT res = IR_INSIDE;
 
 	int in = 0;
+	int out = 0;
 
 	for (auto i = 0; i < 6; i++)
 	{
-		in = 0;
+		in = 0; out = 0;
 
 		for (int j = 0; j < 8 && in == 0; j++)
 		{
-			if (frustumPlanes[i].Distance(points[j]) <= 0)
-				return IR_OUTSIDE;
+			if (frustumPlanes[i].Distance(points[j]) < 0)
+				out++;
 			else
-			{
 				in++;
-				res = IR_INTERSECT;
-			}
+		}
+
+		if (!in)
+		{
+			return IR_OUTSIDE;
+		}
+		else if (out)
+		{
+			res = IR_INTERSECT;
 		}
 	}
 
 	return res;
 }
 
-glm::mat4 & Camera::GetProjectionMat()
+glm::mat4& Camera::GetProjectionMat()
 {
 	return m_P;
 }
@@ -243,7 +212,7 @@ void Camera::SetPosition(glm::vec3 pos)
 	m_pos = pos;
 }
 
-const glm::vec3 &Camera::GetTarget() const
+const glm::vec3& Camera::GetTarget() const
 {
 	return m_target;
 }
@@ -253,12 +222,12 @@ void Camera::SetTarget(glm::vec3 target)
 	m_target = target;
 }
 
-void Camera::SetRotation(const glm::quat &rotation)
+void Camera::SetRotation(const glm::quat& rotation)
 {
 	m_rot = rotation;
 }
 
-void Camera::SetProjection(const glm::mat4 &projection)
+void Camera::SetProjection(const glm::mat4& projection)
 {
 	m_P = projection;
 }
@@ -280,8 +249,8 @@ void Camera::Update(float dt)
 	else
 	{
 		//m_rot = glm::toQuat(glm::inverse(glm::lookAt(m_pos, m_target, m_up)));
-		m_look = glm::vec3(m_rot*glm::vec3(0, 0, -1));
-		m_up = glm::vec3(m_rot*glm::vec3(0, 1, 0));
+		m_look = glm::vec3(m_rot * glm::vec3(0, 0, -1));
+		m_up = glm::vec3(m_rot * glm::vec3(0, 1, 0));
 
 		m_right = glm::cross(m_look, m_up);
 	}
@@ -291,23 +260,23 @@ void Camera::Update(float dt)
 
 void Camera::Walk(const float amount)
 {
-	m_translation += (m_look*amount);
+	m_translation += (m_look * amount);
 }
 
 void Camera::Strafe(const float amount)
 {
-	m_translation += (m_right*amount);
+	m_translation += (m_right * amount);
 }
 
 void Camera::Lift(const float amount)
 {
-	m_translation += (m_up*amount);
+	m_translation += (m_up * amount);
 }
 
 glm::mat4x4 Camera::GetViewMat()
 {
-	m_look = glm::vec3(m_rot*glm::vec3(0, 0, -1));
-	m_up = glm::vec3(m_rot*glm::vec3(0, 1, 0));
+	m_look = glm::vec3(m_rot * glm::vec3(0, 0, -1));
+	m_up = glm::vec3(m_rot * glm::vec3(0, 1, 0));
 
 	m_right = glm::cross(m_look, m_up);
 
@@ -318,7 +287,7 @@ glm::mat4x4 Camera::GetViewMat()
 
 glm::mat4x4 Camera::GetViewProjMat()
 {
-	return GetProjectionMat()*GetViewMat();
+	return GetProjectionMat() * GetViewMat();
 }
 
 void Camera::Orbit(glm::vec3 point, float distance, float verticalAngle, float horizontalAngle)

@@ -63,7 +63,7 @@ void animation::set_interp_frame(float f)
 	}
 }
 
-Mesh::Mesh() : vao(0), anim(nullptr)
+Mesh::Mesh() : vao(0)
 {
 	buffers.resize(BUFFER_COUNT);
 

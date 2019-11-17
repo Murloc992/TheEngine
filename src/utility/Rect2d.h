@@ -27,7 +27,7 @@ public:
 	{
 		return ox > this->x&&oy > this->y&&ox < this->x2&&oy < this->y2;
 	}
-	void resize(int new_w, int new_h)
+	void resize(T new_w, T new_h)
 	{
 		this->w = new_w;
 		this->h = new_h;
@@ -70,7 +70,7 @@ public:
 	std::string to_string()
 	{
 		char buf[256];
-		sprintf(buf, "RECT: X %d Y %d X2 %d Y2 %d W %d H %d\n", x, y, x2, y2, w, h);
+		sprintf_s(buf, 255, "RECT: X %d Y %d X2 %d Y2 %d W %d H %d\n", x, y, x2, y2, w, h);
 		return std::string(buf);
 	}
 

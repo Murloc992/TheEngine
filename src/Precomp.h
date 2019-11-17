@@ -1,6 +1,10 @@
 #ifndef _Precomp_H_
 #define _Precomp_H_
 
+#ifdef _CRT_SECURE_NO_WARNINGS
+#undef _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "Config.h"
 
 // C/C++ SUITE INCLUDES
@@ -30,6 +34,7 @@
 #include "gtx/norm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "gtc/matrix_inverse.hpp"
+#include "gtc/matrix_access.hpp"
 #include "gtx/rotate_vector.hpp"
 #include "gtx/matrix_decompose.hpp"
 

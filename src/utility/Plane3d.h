@@ -14,31 +14,34 @@ public:
 
 	Plane3d()
 	{
-		n = glm::normalize(glm::vec3(1));
-		d = 0.f;
+		n = glm::normalize(glm::vec4(1));
 	}
 
 	~Plane3d()
 	{
 	}
 
-	void SetNormalsAndD(float x, float y, float z, float d)
+	void SetNormalsAndD(const glm::vec4 &normal)
 	{
-		this->n.x = x;
-		this->n.y = y;
-		this->n.z = z;
-		this->d = d;
+		this->n = normal;
 
 		Normalize();
 	}
 
+	void SetPoints(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec3& p4)
+	{
+		points[0] = p1;
+		points[1] = p2;
+		points[2] = p3;
+		points[3] = p4;
+	}
+
 	void Normalize()
 	{
-		float scale = 1.f / glm::length(n);
-		n.x *= scale;
-		n.y *= scale;
-		n.z *= scale;
-		d *= scale;
+		n = glm::normalize(n);
+		glm::vec3 normal(n.x, n.y, n.z);
+		float length = glm::length(normal);
+		n = n / length;
 	}
 
 	const glm::vec3* GetPoints() const
@@ -48,13 +51,12 @@ public:
 
 	float Distance(const glm::vec3 &p, float radius = 0.f)
 	{
-		auto distance = d + radius + glm::dot(n, p);
+		auto distance = (n.w + radius) + glm::dot(glm::vec3(n), p);
 		return distance;
 	}
 private:
 	glm::vec3 points[4];
-	glm::vec3 n;
-	float d;
+	glm::vec4 n;
 protected:
 };
 

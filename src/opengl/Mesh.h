@@ -15,7 +15,7 @@ struct bone
 	glm::vec3 pos;
 	glm::quat rot;
 	glm::vec3 scale;
-	std::vector<int> children;
+	std::vector<bone*> children;
 };
 typedef std::vector<bone> bone_vec;
 
@@ -33,7 +33,6 @@ struct animation
 	frame_vec       frames;
 	frame           current_frame;
 	bone_vec        bones;
-	anim_info_vec   info;
 
 	void set_frame(uint32_t frame);
 	void set_interp_frame(float frame);
@@ -81,8 +80,10 @@ public:
 
 	uint32_t vao;
 	std::vector<IBufferObject*> buffers;
-	std::vector<sub_mesh>   sub_meshes;
-	animation * anim;
+	std::vector<sub_mesh> sub_meshes;
+	std::unordered_map<std::string, std::shared_ptr<animation>> animations;
+	anim_info_vec animation_info;
+	std::shared_ptr<animation> current_animation;
 	AABB aabb;
 
 	Mesh();
@@ -114,6 +115,40 @@ public:
 
 	template <class T>
 	void RecalculateAABB();
+
+	void SetAnimation(const std::string& animName)
+	{
+		current_animation = animations[animName];
+	}
+
+	std::shared_ptr<animation> CurrentAnimation()
+	{
+		return current_animation;
+	}
+
+	void SetAnimationFrame(uint32_t frame)
+	{
+		if (current_animation)
+		{
+			current_animation->set_frame(frame);
+		}
+	}
+
+	void SetAnimationInterpFrame(float frame)
+	{
+		if (current_animation)
+		{
+			current_animation->set_interp_frame(frame);
+		}
+	}
+
+	const std::vector<glm::mat4>& GetCurrentFrame()
+	{
+		if (current_animation)
+		{
+			return current_animation->current_frame;
+		}
+	}
 };
 
 template <typename T, typename U>
@@ -139,9 +174,9 @@ std::vector<Triangle<T> > Mesh::GetTriangles()
 		glm::vec3 u = tri.points[1] - tri.points[0];
 		glm::vec3 v = tri.points[2] - tri.points[0];
 
-		glm::vec3 norm((u.y*v.z) - (u.z*v.y),
-			(u.z*v.x) - (u.x*v.z),
-			(u.x*v.y) - (u.y*v.x));
+		glm::vec3 norm((u.y * v.z) - (u.z * v.y),
+			(u.z * v.x) - (u.x * v.z),
+			(u.x * v.y) - (u.y * v.x));
 
 		norm = glm::normalize(norm);
 		tri.normal = norm;
@@ -155,7 +190,7 @@ std::vector<Triangle<T> > Mesh::GetTriangles()
 template <typename T>
 void Mesh::HardScale(const glm::vec3& scale)
 {
-	BufferObject<T> *verts = (BufferObject<T> *)this->buffers[Mesh::POSITION];
+	BufferObject<T>* verts = (BufferObject<T>*)this->buffers[Mesh::POSITION];
 
 	loop(i, verts->data.size())
 	{
@@ -170,7 +205,7 @@ void Mesh::HardScale(const glm::vec3& scale)
 template <typename T>
 void Mesh::HardMove(const glm::vec3& trans)
 {
-	BufferObject<T> *verts = (BufferObject<T> *)this->buffers[Mesh::POSITION];
+	BufferObject<T>* verts = (BufferObject<T>*)this->buffers[Mesh::POSITION];
 
 	loop(i, verts->data.size())
 	{
@@ -185,7 +220,7 @@ void Mesh::HardMove(const glm::vec3& trans)
 template <class T>
 void Mesh::RecalculateAABB()
 {
-	BufferObject<T> * bo = static_cast<BufferObject<T> *>(buffers[0]);
+	BufferObject<T>* bo = static_cast<BufferObject<T>*>(buffers[0]);
 
 	if (bo->data.size() > 0)
 	{
