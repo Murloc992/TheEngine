@@ -148,6 +148,8 @@ public:
 		{
 			return current_animation->current_frame;
 		}
+
+		return std::vector<glm::mat4>();
 	}
 };
 
