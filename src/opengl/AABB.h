@@ -19,8 +19,8 @@ public:
 	void Translate(const glm::vec3 &point);
 	void SetCenter(const glm::vec3 &point);
 
-	glm::vec3 GetHalfSize() const;
-	glm::vec3 GetCenter() const;
+	const glm::vec3& GetHalfSize() const;
+	const glm::vec3& GetCenter() const;
 	glm::vec3 GetMin() const;
 	glm::vec3 GetMax() const;
 

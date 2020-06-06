@@ -46,11 +46,11 @@ namespace helpers
 
 	inline int FloorDiv(int a, int b)
 	{
-		if (b == 0)
-			return 0;
-		int d = a / b;
-		int r = a % b; // optimizes into single division.
-		return r ? (d - ((a < 0) ^ (b < 0))) : d;
+		auto r = std::div(a, b);
+
+		if (r.rem != 0 && ((a < 0) ^ (b < 0)))
+			r.quot--;
+		return r.quot;
 	}
 
 	inline float MakePOT(float v);

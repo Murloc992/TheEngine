@@ -197,12 +197,12 @@ bool AABB::CollidesWithRay(const glm::vec3 & rayStart, const glm::vec3 & rayDire
 	return tmax >= tmin;
 }
 
-glm::vec3 AABB::GetHalfSize() const
+const glm::vec3& AABB::GetHalfSize() const
 {
 	return m_halfSize;
 }
 
-glm::vec3 AABB::GetCenter() const
+const glm::vec3& AABB::GetCenter() const
 {
 	return m_center;
 }
