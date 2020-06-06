@@ -17,31 +17,40 @@
 namespace helpers
 {
 	[[deprecated("Use filesystem functionality instead.")]]
-	uint32_t read(const std::string & file, char *& buf);
+	uint32_t read(const std::string& file, char*& buf);
 
 	template <typename T> inline std::string to_str(const T& t);
 	template <typename T> inline std::wstring to_wstr(const T& t);
 	template <typename T> inline T limit(T val, T min, T max);
 	const inline glm::vec4 color255(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
-	inline void invert(glm::vec3 & vec);
-	template <class T> inline bool equals(const T & v1, const T & v2);
+	inline void invert(glm::vec3& vec);
+	template <class T> inline bool equals(const T& v1, const T& v2);
 	inline float coslerp(float y1, float y2, float mu);
 	inline glm::vec3 hsv2rgb(float h, float s, float v);
 
 	inline glm::vec3 rgb2hsv(float r, float g, float b);
 
-	inline glm::vec3 VectorMin(const glm::vec3 &vec1, const glm::vec3 &vec2);
-	inline glm::vec3 VectorMax(const glm::vec3 &vec1, const glm::vec3 &vec2);
+	inline glm::vec3 VectorMin(const glm::vec3& vec1, const glm::vec3& vec2);
+	inline glm::vec3 VectorMax(const glm::vec3& vec1, const glm::vec3& vec2);
 
-	inline int wtoi(const wchar_t *str)
+	inline int wtoi(const wchar_t* str)
 	{
 		return (int)wcstol(str, 0, 10);
 	}
 
-	inline bool IsNan(const glm::vec3 &vec)
+	inline bool IsNan(const glm::vec3& vec)
 	{
 		auto nanCheck = glm::isnan(vec);
 		return nanCheck.x || nanCheck.y || nanCheck.z;
+	}
+
+	inline int FloorDiv(int a, int b)
+	{
+		if (b == 0)
+			return 0;
+		int d = a / b;
+		int r = a % b; // optimizes into single division.
+		return r ? (d - ((a < 0) ^ (b < 0))) : d;
 	}
 
 	inline float MakePOT(float v);
