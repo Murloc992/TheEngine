@@ -99,6 +99,21 @@ public:
 	void render_triangle_strip();
 	void UploadBuffers();
 
+	void ClearDataBuffers()
+	{
+		for (uint32_t i = 0; i < buffers.size(); i++)
+		{
+			if (buffers[i])
+			{
+				///enable on upload. MIGHT NOT BE A REALLY GOOD SOLUTION
+				if (buffers[i]->GetSize() > 0)
+				{
+					buffers[i]->Clear();
+				}
+			}
+		}
+	}
+
 	template <typename T, typename U>
 	std::vector<Triangle<T> > GetTriangles();
 

@@ -70,6 +70,7 @@ struct BufferObject : public IBufferObject
 	virtual void Clear()
 	{
 		data.clear();
+		//data.shrink_to_fit();
 	}
 
 	virtual IBufferObject::IBO_TYPE GetType()
@@ -80,7 +81,8 @@ struct BufferObject : public IBufferObject
 	virtual uint32_t GetComponentCount();
 	virtual uint32_t GetSize()
 	{
-		return (uint32_t)(data.size() > 0 ? data.size() : (data.capacity() > 0 ? data.capacity() : preallocatedSize));
+		return (uint32_t)(data.size() > 0 ? data.size() : preallocatedSize);
+		//return (uint32_t)(data.size() > 0 ? data.size() : (data.capacity() > 0 ? data.capacity() : preallocatedSize));
 	}
 };
 
@@ -151,6 +153,7 @@ struct IndexBufferObject : public IBufferObject
 	virtual void Clear()
 	{
 		data.clear();
+		//data.shrink_to_fit();
 	}
 
 	virtual IBufferObject::IBO_TYPE GetType()
@@ -161,7 +164,8 @@ struct IndexBufferObject : public IBufferObject
 	virtual uint32_t GetComponentCount();
 	virtual uint32_t GetSize()
 	{
-		return (uint32_t)(data.size() > 0 ? data.size() : (data.capacity() > 0 ? data.capacity() : preallocatedSize));
+		return (uint32_t)(data.size() > 0 ? data.size() : preallocatedSize);
+		//return (uint32_t)(data.size() > 0 ? data.size() : (data.capacity() > 0 ? data.capacity() : preallocatedSize));
 	}
 };
 
