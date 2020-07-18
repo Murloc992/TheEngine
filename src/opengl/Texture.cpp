@@ -110,6 +110,7 @@ void Texture::Init(const uint8_t* data, uint32_t target, uint32_t image_format, 
 
 	switch (internalFormat)
 	{
+	case GL_RGBA16F:
 	case GL_RGBA32F:
 	case GL_DEPTH_COMPONENT:
 	case GL_DEPTH_COMPONENT16:

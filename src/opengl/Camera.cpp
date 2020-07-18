@@ -166,7 +166,7 @@ glm::mat4& Camera::GetProjectionMat()
 	return m_P;
 }
 
-const float Camera::GetFOV() const
+const float& Camera::GetFOV() const
 {
 	return m_fov;
 }
@@ -177,32 +177,32 @@ void Camera::SetFOV(const float& fov)
 	m_P = glm::perspective(glm::radians(m_fov), m_aspect_ratio, m_near, m_far);
 }
 
-const float Camera::GetFar() const
+const float& Camera::GetFar() const
 {
 	return m_far;
 }
 
-const float Camera::GetNear() const
+const float& Camera::GetNear() const
 {
 	return m_near;
 }
 
-const float Camera::GetAspectRatio() const
+const float& Camera::GetAspectRatio() const
 {
 	return m_aspect_ratio;
 }
 
-const glm::vec3 Camera::GetLook() const
+const glm::vec3& Camera::GetLook() const
 {
 	return m_look;
 }
 
-const glm::vec3 Camera::GetRight() const
+const glm::vec3& Camera::GetRight() const
 {
 	return m_right;
 }
 
-const glm::vec3 Camera::GetPosition() const
+const glm::vec3& Camera::GetPosition() const
 {
 	return m_pos;
 }

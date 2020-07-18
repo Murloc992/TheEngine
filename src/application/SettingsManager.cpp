@@ -35,4 +35,5 @@ void ApplicationSettingsManager::InitSettings()
 	videoVarGroup.AddVar(Var("window_height", 768));
 	videoVarGroup.AddVar(Var("windowed", true));
 	videoVarGroup.AddVar(Var("fullscreen", false));
+	videoVarGroup.AddVar(Var("msaa", 0));
 }

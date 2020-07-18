@@ -48,46 +48,55 @@ ShaderBinding& ShaderBinding::operator=(ShaderBinding && other)
 ///REFACTOR: Might want to not recreate value each time, check for dynamic cast or sth?
 void ShaderBinding::Set(float value)
 {
+	if(m_value) static_cast<TBindingValue<float>*>(m_value.get())->Update(value);
 	m_value = share(new TBindingValue<float>(value));
 }
 
 void ShaderBinding::Set(int32_t value)
 {
+	if (m_value) static_cast<TBindingValue<int32_t>*>(m_value.get())->Update(value);
 	m_value = share(new TBindingValue<int32_t>(value));
 }
 
 void ShaderBinding::Set(glm::mat4 value)
 {
+	if (m_value) static_cast<TBindingValue<glm::mat4>*>(m_value.get())->Update(value);
 	m_value = share(new TBindingValue<glm::mat4>(value));
 }
 
 void ShaderBinding::Set(std::vector<glm::mat4> value)
 {
+	if (m_value) static_cast<TBindingValue<std::vector<glm::mat4>>*>(m_value.get())->Update(value);
 	m_value = share(new TBindingValue<std::vector<glm::mat4>>(value));
 }
 
 void ShaderBinding::Set(std::vector<glm::mat3x4> value)
 {
+	if (m_value) static_cast<TBindingValue<std::vector<glm::mat3x4>>*>(m_value.get())->Update(value);
 	m_value = share(new TBindingValue<std::vector<glm::mat3x4>>(value));
 }
 
 void ShaderBinding::Set(glm::mat3x3 value)
 {
+	if (m_value) static_cast<TBindingValue<glm::mat3x3>*>(m_value.get())->Update(value);
 	m_value = share(new TBindingValue<glm::mat3x3>(value));
 }
 
 void ShaderBinding::Set(glm::vec2 value)
 {
+	if (m_value) static_cast<TBindingValue<glm::vec2>*>(m_value.get())->Update(value);
 	m_value = share(new TBindingValue<glm::vec2>(value));
 }
 
 void ShaderBinding::Set(glm::vec3 value)
 {
+	if (m_value) static_cast<TBindingValue<glm::vec3>*>(m_value.get())->Update(value);
 	m_value = share(new TBindingValue<glm::vec3>(value));
 }
 
 void ShaderBinding::Set(glm::vec4 value)
 {
+	if (m_value) static_cast<TBindingValue<glm::vec4>*>(m_value.get())->Update(value);
 	m_value = share(new TBindingValue<glm::vec4>(value));
 }
 

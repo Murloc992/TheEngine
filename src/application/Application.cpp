@@ -117,8 +117,9 @@ bool Application::InitWindowAndOpenGL(const std::string & title)
 		height = GetContext().GetApplicationSettingsManager()->GetGroup("video").GetVar("window_height").ValueI();
 	bool windowed = GetContext().GetApplicationSettingsManager()->GetGroup("video").GetVar("windowed").ValueB();
 	bool fullscreen = GetContext().GetApplicationSettingsManager()->GetGroup("video").GetVar("fullscreen").ValueB();
+	uint32_t msaa = GetContext().GetApplicationSettingsManager()->GetGroup("video").GetVar("msaa").ValueI();
 
-	if (!GetContext().GetWindow()->Init(title, width, height, fullscreen, windowed))
+	if (!GetContext().GetWindow()->Init(title, width, height, fullscreen, windowed, msaa))
 	{
 		GetContext().GetLogger()->log(LOG_LOG, "Could not initialize ApplicationWindow with dimensions %ix%i", width, height);
 		delete GetContext().p_window;

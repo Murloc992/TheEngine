@@ -10,6 +10,10 @@ public:
 	TBindingValue(T value);
 	virtual ~TBindingValue();
 	virtual void Set(int32_t index);
+	virtual void Update(T value)
+	{
+		m_value = value;
+	}
 
 private:
 	T m_value;
