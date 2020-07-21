@@ -1,13 +1,17 @@
 #ifndef FORWARD_DECL_H
 #define FORWARD_DECL_H
 
-#define DECLARE_PTR(var) \
+#define DECLARE_SHARED_PTR(var) \
     class var;           \
     typedef std::shared_ptr<var> var##Ptr;
 
-#define DECLARE_UNIQUE(var) \
+#define DECLARE_UNIQUE_PTR(var) \
     class var;           \
     typedef std::unique_ptr<var> var##Ptr;
+
+#define DECLARE_WEAK_PTR(var) \
+    class var;           \
+    typedef std::weak_ptr<var> var##Ptr;
 
 namespace std
 {
