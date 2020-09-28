@@ -161,4 +161,10 @@ inline void APIENTRY openglCallbackFunction(GLenum source, GLenum type, GLuint i
 #define GL_CHECK(stmt) stmt
 #endif
 
+template <typename T>
+inline bool is_uninitialized(std::weak_ptr<T> const& weak) {
+	using wt = std::weak_ptr<T>;
+	return !weak.owner_before(wt{}) && !wt{}.owner_before(weak);
+}
+
 #endif // _HELPERS_H_INCLUDED_
