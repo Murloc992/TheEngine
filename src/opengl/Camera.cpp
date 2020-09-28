@@ -50,17 +50,17 @@ void Camera::InitFrustum()
 	glm::vec4 row2 = glm::row(proj, 2);
 	glm::vec4 row3 = glm::row(proj, 3);
 
-	frustumPlanes[FP_RIGHT].SetNormalsAndD(-row0 + row3);
+	frustumPlanes[(uint32_t)FRUSTUM_PLANES::FP_RIGHT].SetNormalsAndD(-row0 + row3);
 
-	frustumPlanes[FP_LEFT].SetNormalsAndD(row3 + row0);
+	frustumPlanes[(uint32_t)FRUSTUM_PLANES::FP_LEFT].SetNormalsAndD(row3 + row0);
 
-	frustumPlanes[FP_BOTTOM].SetNormalsAndD(row3 + row1);
+	frustumPlanes[(uint32_t)FRUSTUM_PLANES::FP_BOTTOM].SetNormalsAndD(row3 + row1);
 
-	frustumPlanes[FP_TOP].SetNormalsAndD(-row1 + row3);
+	frustumPlanes[(uint32_t)FRUSTUM_PLANES::FP_TOP].SetNormalsAndD(-row1 + row3);
 
-	frustumPlanes[FP_FAR].SetNormalsAndD(-row2 + row3);
+	frustumPlanes[(uint32_t)FRUSTUM_PLANES::FP_FAR].SetNormalsAndD(-row2 + row3);
 
-	frustumPlanes[FP_NEAR].SetNormalsAndD(row3 + row2);
+	frustumPlanes[(uint32_t)FRUSTUM_PLANES::FP_NEAR].SetNormalsAndD(row3 + row2);
 
 	float tang = glm::tan(glm::radians(m_fov) * 0.5f);
 
@@ -84,12 +84,12 @@ void Camera::InitFrustum()
 	farBottomLeft = farclip - (m_up * farHeight / 2.f) - (m_right * farWidth / 2.f);
 	farBottomRight = farclip - (m_up * farHeight / 2.f) + (m_right * farWidth / 2.f);
 
-	frustumPlanes[FP_TOP].SetPoints(farTopRight, farTopLeft, nearTopLeft, nearTopRight); // top plane
-	frustumPlanes[FP_BOTTOM].SetPoints(farBottomLeft, farBottomRight, nearBottomRight, nearBottomLeft); // bottom plane
-	frustumPlanes[FP_LEFT].SetPoints(farTopLeft, farBottomLeft, nearBottomLeft, nearTopLeft); // left plane
-	frustumPlanes[FP_RIGHT].SetPoints(farBottomRight, farTopRight, nearTopRight, nearBottomRight); // right plane
-	frustumPlanes[FP_FAR].SetPoints(farBottomRight, farBottomLeft, farTopLeft, farTopRight); // far plane
-	frustumPlanes[FP_NEAR].SetPoints(nearBottomLeft, nearBottomRight, nearTopRight, nearTopLeft); // near plane
+	frustumPlanes[(uint32_t)FRUSTUM_PLANES::FP_TOP].SetPoints(farTopRight, farTopLeft, nearTopLeft, nearTopRight); // top plane
+	frustumPlanes[(uint32_t)FRUSTUM_PLANES::FP_BOTTOM].SetPoints(farBottomLeft, farBottomRight, nearBottomRight, nearBottomLeft); // bottom plane
+	frustumPlanes[(uint32_t)FRUSTUM_PLANES::FP_LEFT].SetPoints(farTopLeft, farBottomLeft, nearBottomLeft, nearTopLeft); // left plane
+	frustumPlanes[(uint32_t)FRUSTUM_PLANES::FP_RIGHT].SetPoints(farBottomRight, farTopRight, nearTopRight, nearBottomRight); // right plane
+	frustumPlanes[(uint32_t)FRUSTUM_PLANES::FP_FAR].SetPoints(farBottomRight, farBottomLeft, farTopLeft, farTopRight); // far plane
+	frustumPlanes[(uint32_t)FRUSTUM_PLANES::FP_NEAR].SetPoints(nearBottomLeft, nearBottomRight, nearTopRight, nearTopLeft); // near plane
 }
 
 Plane3d* Camera::GetFrustumPlanes()
@@ -99,7 +99,7 @@ Plane3d* Camera::GetFrustumPlanes()
 
 INTERSECT_RESULT Camera::PointInFrustum(const glm::vec3& point)
 {
-	INTERSECT_RESULT res = IR_INSIDE;
+	INTERSECT_RESULT res = INTERSECT_RESULT::IR_INSIDE;
 	int out = 0;
 	loop(i, 6)
 	{
@@ -108,20 +108,20 @@ INTERSECT_RESULT Camera::PointInFrustum(const glm::vec3& point)
 	}
 	if (out > 0)
 	{
-		res = IR_OUTSIDE;
+		res = INTERSECT_RESULT::IR_OUTSIDE;
 	}
 	return res;
 }
 
 INTERSECT_RESULT Camera::SphereInFrustum(const glm::vec3& center, float radius)
 {
-	INTERSECT_RESULT res = IR_INSIDE;
+	INTERSECT_RESULT res = INTERSECT_RESULT::IR_INSIDE;
 
 	int out = 0;
 	loop(i, 6)
 	{
 		if (frustumPlanes[i].Distance(center, radius) <= 0)
-			return IR_OUTSIDE;
+			return INTERSECT_RESULT::IR_OUTSIDE;
 	}
 
 	return res;
@@ -131,7 +131,7 @@ INTERSECT_RESULT Camera::BoxInFrustum(const AABB& box)
 {
 	auto points = box.CalculatePoints();
 
-	INTERSECT_RESULT res = IR_INSIDE;
+	INTERSECT_RESULT res = INTERSECT_RESULT::IR_INSIDE;
 
 	int in = 0;
 	int out = 0;
@@ -150,11 +150,11 @@ INTERSECT_RESULT Camera::BoxInFrustum(const AABB& box)
 
 		if (!in)
 		{
-			return IR_OUTSIDE;
+			return INTERSECT_RESULT::IR_OUTSIDE;
 		}
 		else if (out)
 		{
-			res = IR_INTERSECT;
+			res = INTERSECT_RESULT::IR_INTERSECT;
 		}
 	}
 

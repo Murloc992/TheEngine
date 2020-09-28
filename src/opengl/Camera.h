@@ -5,7 +5,7 @@
 
 ///REFACTOR: WTF HAPPENED IN THIS FILE... WW3??!
 
-enum FRUSTUM_PLANES
+enum class FRUSTUM_PLANES : uint32_t
 {
 	FP_TOP,
 	FP_BOTTOM,
@@ -17,7 +17,7 @@ enum FRUSTUM_PLANES
 	FP_COUNT
 };
 
-enum INTERSECT_RESULT
+enum class INTERSECT_RESULT : uint32_t 
 {
 	IR_OUTSIDE,
 	IR_INSIDE,
@@ -94,7 +94,7 @@ protected:
 	float m_fov, m_aspect_ratio, m_far, m_near;
 	static glm::vec3 UP;
 	//frustrum
-	Plane3d frustumPlanes[FP_COUNT];
+	Plane3d frustumPlanes[FRUSTUM_PLANES::FP_COUNT];
 	glm::vec3 nearTopLeft, nearTopRight, nearBottomLeft, nearBottomRight, farTopLeft, farTopRight, farBottomLeft, farBottomRight;
 	float nearWidth, nearHeight, farWidth, farHeight;
 	//frustrum
