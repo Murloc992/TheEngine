@@ -167,4 +167,9 @@ inline bool is_uninitialized(std::weak_ptr<T> const& weak) {
 	return !weak.owner_before(wt{}) && !wt{}.owner_before(weak);
 }
 
+template <typename E>
+constexpr typename std::underlying_type<E>::type to_underlying(E e) {
+	return static_cast<typename std::underlying_type<E>::type>(e);
+}
+
 #endif // _HELPERS_H_INCLUDED_
