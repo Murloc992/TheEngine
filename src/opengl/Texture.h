@@ -48,6 +48,7 @@ public:
 
 	void Init(ImagePtr img);
 	void Init(const uint8_t* data, uint32_t target, uint32_t image_format, uint32_t internal_format, int32_t w, int32_t h, int32_t d = 0);
+	void InitArray(ImagePtr img, uint32_t tile_size_x, uint32_t tile_size_y);
 
 	void SetFilters(TextureFilterMin fmin, TextureFilterMag fmag);
 	void SetClampMode(TextureClamp x, TextureClamp y, TextureClamp z = TextureClamp::REPEAT);

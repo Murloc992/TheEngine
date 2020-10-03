@@ -76,7 +76,7 @@ void Texture::Init(const uint8_t* data, uint32_t target, uint32_t image_format, 
 
 	glTexParameteri(Type, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(Type, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	if(Type==GL_TEXTURE_3D)
+	if (Type == GL_TEXTURE_3D)
 		glTexParameteri(Type, GL_TEXTURE_WRAP_R, GL_REPEAT);
 	glTexParameteri(Type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(Type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -89,6 +89,7 @@ void Texture::Init(const uint8_t* data, uint32_t target, uint32_t image_format, 
 	case GL_RED:
 	case GL_RGB:
 	case GL_BGR:
+	case GL_RGBA:
 	case GL_COMPRESSED_RED:
 	case GL_COMPRESSED_RGB:
 	case GL_COMPRESSED_RGBA:
@@ -133,6 +134,56 @@ void Texture::Init(const uint8_t* data, uint32_t target, uint32_t image_format, 
 		break;
 	}
 	//glinitMipmap(Type);
+
+	glBindTexture(Type, current);
+}
+
+void Texture::InitArray(ImagePtr img, uint32_t tile_size_x, uint32_t tile_size_y)
+{
+	Type = GL_TEXTURE_2D_ARRAY;
+	if (img->num_channels == 3)
+	{
+		imageFormat = GL_RGB;
+		internalFormat = GL_RGB8;
+	}
+	else
+	{
+		imageFormat = GL_RGBA;
+		internalFormat = GL_RGBA8;
+	}
+
+	dataType = GL_UNSIGNED_BYTE;
+
+	glGenTextures(1, &Id);
+	glBindTexture(Type, Id);
+
+	glTexParameteri(Type, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(Type, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(Type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(Type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glTexParameteri(Type, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, img->width);
+
+	const uint32_t tile_count_x = img->width / tile_size_x;
+	const uint32_t tile_count_y = img->height / tile_size_y;
+	const uint32_t bytes_per_subimage = tile_size_x * tile_size_y * img->num_channels;
+	glTexStorage3D(Type, 1, internalFormat, tile_size_x, tile_size_y, tile_count_x * tile_count_y);
+
+	//glPixelStorei(GL_UNPACK_ROW_LENGTH, img->width);
+	//glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, img->height);
+	//glPixelStorei(GL_UNPACK_ALIGNMENT, (uint32_t)TextureUnpackAlignment::BYTE);
+
+	auto data = img->data;
+
+	for (auto x = 0; x < tile_count_x; x++)
+	{
+		for (auto y = 0; y < tile_count_y; y++)
+		{
+			glTexSubImage3D(Type, 0, 0, 0, x * tile_count_y + y, tile_size_x, tile_size_y, 1, imageFormat, dataType, data + (x * tile_size_y * img->width + y * tile_size_x) * img->num_channels);
+		}
+	}
 
 	glBindTexture(Type, current);
 }
