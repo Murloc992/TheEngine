@@ -22,7 +22,7 @@ GUIButton::GUIButton(GUIEnvironment* env, Rect2D<int> dimensions, std::wstring t
 
 	_imageOverlay = nullptr;
 
-	glm::vec2 textDim = this->environment->GetFontRenderer()->GetTextDimensions(text);
+	glm::vec2 textDim = this->environment->GetFontRenderer()->GetFormattedTextDimensions(text);
 	//printf("Text dim X: %f Y: %f\n", textDim.x, textDim.y);
 	_textOverlay = env->AddGUIStaticText(Rect2D<int>(0, 0, textDim.x, textDim.y), text, false);
 	_textOverlay->SetParent(this);

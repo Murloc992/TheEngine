@@ -28,7 +28,7 @@ GUIWindow::GUIWindow(GUIEnvironment* env, Rect2D<int> dimensions, std::wstring t
 	_background->SetListening(false);
 	_background->SetParent(this);
 
-	auto textDimensions = env->GetFontRenderer()->GetTextDimensions(tittleBarText);
+	auto textDimensions = env->GetFontRenderer()->GetFormattedTextDimensions(tittleBarText);
 	_titlebarText = env->AddGUIStaticText(Rect2D<int>(0, 0, textDimensions.x, textDimensions.y), tittleBarText);
 	_titlebarText->SetParent(_titlebar);
 	_titlebarText->SetListening(false);

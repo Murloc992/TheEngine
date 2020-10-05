@@ -33,7 +33,7 @@ FontRenderer::FontRenderer()
 	glBindVertexArray(_VAO);
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 65536, nullptr, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 16384, nullptr, GL_STREAM_DRAW);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 	_fontShader = GetContext().GetResourceManager()->LoadShader(Path("res/engine/shaders/font"));
@@ -267,7 +267,7 @@ Image* FontRenderer::RenderStringToImage(const std::wstring& text, glm::tvec3<ui
 	this->UseFontFamily(fontFamilyName);
 	Font* a = _currentFont;
 
-	glm::vec2 textDimensions = this->GetTextDimensions(text);
+	glm::vec2 textDimensions = this->GetFormattedTextDimensions(text);
 
 	Image* img = new Image();
 
@@ -434,7 +434,7 @@ void FontRenderer::RenderString(const std::wstring& text, const glm::ivec2& pos,
 		TextLine _current = linesToDraw[i];
 		loop(j, _current.content.size())
 		{
-			SubLineInfo _celem = _current.content[j];
+			SubLineInfo& _celem = _current.content[j];
 			if (_celem.bold && canbold && !_celem.italic) {
 				currentStyle = current->currentType;
 				UseFont(FFT_BOLD);
@@ -447,13 +447,15 @@ void FontRenderer::RenderString(const std::wstring& text, const glm::ivec2& pos,
 				currentStyle = current->currentType;
 				UseFont(FFT_BOLD_ITALIC);
 			}
-			if (j != 0) {
-				_RenderString(_celem.text, pos + glm::ivec2(dims.x, i * (dims.y + dims.y / 2.f)), _celem.color, _celem.shadow);
-			}
-			else {
+			//if (j != 0) {
+			//	_RenderString(_celem.text, pos + glm::ivec2(dims.x, i * (dims.y + dims.y / 2.f)), _celem.color, _celem.shadow);
+			//}
+			//else {
 				_RenderString(_celem.text, pos + glm::ivec2(0, i * (dims.y + dims.y / 2.f)), _celem.color, _celem.shadow);
-			}
-			dims = glm::vec2(dims.x + GetTextDimensions(_celem.text).x, dims.y);
+			//}
+			//auto textdims = GetTextDimensions(_celem.text).x;
+			//auto textdims = GetTextDimensions(_current).x;
+			//dims = glm::vec2(dims.x + textdims, dims.y);
 			if (_celem.bold || _celem.italic) {
 				UseFont(currentStyle);
 			}
@@ -470,14 +472,8 @@ void FontRenderer::_SetFontColor(const glm::vec4& color)
 	SetBindingSafe(_fontShader, "color", color);
 }
 
-glm::vec2 FontRenderer::GetTextDimensions(const std::wstring& text)
+glm::vec2 FontRenderer::GetTextDimensions(const TextLine& lineToDraw)
 {
-	TextLine lineToDraw;
-
-	SubLineInfo inf;
-
-	_FormatTags(lineToDraw, text, inf);
-
 	float len = 0;
 	float height = 0;
 
@@ -499,7 +495,71 @@ glm::vec2 FontRenderer::GetTextDimensions(const std::wstring& text)
 			currentStyle = _currentFamily->currentType;
 			UseFont(FFT_BOLD_ITALIC);
 		}
-		for (wchar_t& glyph : content.text) {
+		for (auto& glyph : content.text) {
+			auto& glyphData = _currentFont->glyphs[(int)glyph];
+			len += glyphData.ax;
+		}
+
+		height = _currentFont->avgheight;
+
+		if (height < _currentFont->realHeight) {
+			height = _currentFont->realHeight;
+		}
+
+		if (content.bold || content.italic) {
+			UseFont(currentStyle);
+		}
+	}
+
+	return glm::vec2(len, height);
+}
+
+glm::vec2 FontRenderer::GetRawTextDimensions(const std::wstring& text)
+{
+	float len = 0;
+	float height = 0;
+
+	for (auto& glyph : text) {
+		auto& glyphData = _currentFont->glyphs[(int)glyph];
+		len += glyphData.ax;
+	}
+
+	height = _currentFont->avgheight;
+
+	if (height < _currentFont->realHeight) {
+		height = _currentFont->realHeight;
+	}
+
+	return glm::vec2(len, height);
+}
+
+glm::vec2 FontRenderer::GetFormattedTextDimensions(const std::wstring& text)
+{
+	TextLine lineToDraw;
+	SubLineInfo inf;
+	_FormatTags(lineToDraw, text, inf);
+	float len = 0;
+	float height = 0;
+
+	FONT_FAMILY_TYPE currentStyle = _currentFamily->currentType;
+	bool canbold = _currentFamily->Has(FFT_BOLD);
+	bool canitalic = _currentFamily->Has(FFT_ITALIC);
+	bool canbolditalic = _currentFamily->Has(FFT_BOLD_ITALIC);
+
+	for (auto& content : lineToDraw.content) {
+		if (content.bold && canbold && !content.italic) {
+			currentStyle = _currentFamily->currentType;
+			UseFont(FFT_BOLD);
+		}
+		else if (content.italic && canitalic && !content.bold) {
+			currentStyle = _currentFamily->currentType;
+			UseFont(FFT_ITALIC);
+		}
+		else if (content.bold && content.italic && canbolditalic) {
+			currentStyle = _currentFamily->currentType;
+			UseFont(FFT_BOLD_ITALIC);
+		}
+		for (wchar_t glyph : content.text) {
 			auto& glyphData = _currentFont->glyphs[(int)glyph];
 			len += glyphData.ax;
 		}

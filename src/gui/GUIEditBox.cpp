@@ -53,15 +53,18 @@ void GUIEditBox::Update(float dt)
 
 void GUIEditBox::Render()
 {
+	FontRenderer* fr = this->environment->GetFontRenderer();
+
 	_mx = absolute_rect.x + 5;
 	_mw = absolute_rect.w - 5;
 	_my = absolute_rect.y + (absolute_rect.h - font_size) / 2;
 
-	sx = _mw - 8 - environment->GetFontRenderer()->GetTextDimensions(m_text.substr(0, curspos)).x;
+	auto text_width = fr->GetRawTextDimensions(m_text.substr(0, curspos)).x;
+
+	// TODO: most likely not formatted text here
+	sx = _mw - 8 - text_width;
 	if (sx > 0)
 		sx = 0;
-
-	FontRenderer* fr = this->environment->GetFontRenderer();
 
 	// RECT
 	if (cur_style != gui_skin_input_disabled && !enabled)
@@ -76,7 +79,7 @@ void GUIEditBox::Render()
 
 	fr->RenderString(L"['s]" + m_text + L"[s']", glm::ivec2(_mx + sx, _my));
 	if (focused&&blink)
-		fr->RenderString(L"['s]|[s']", glm::ivec2(_mx - 1 + sx + fr->GetTextDimensions(m_text.substr(0, curspos)).x, _my - 2));
+		fr->RenderString(L"['s]|[s']", glm::ivec2(_mx - 1 + sx + text_width, _my - 2));
 
 	glDisable(GL_SCISSOR_TEST);
 
