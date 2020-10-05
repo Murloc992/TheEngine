@@ -118,22 +118,25 @@ void Mesh::Render(uint32_t sub_mesh_index)
 	else
 		glDrawElements(GL_TRIANGLES, static_cast<IndexBufferObject<uint32_t>*>(buffers[INDICES])->data.size(), GL_UNSIGNED_INT, (void*)(0));
 
-	glBindVertexArray(0);
+	//glBindVertexArray(0);
 }
 
 void Mesh::Render()
 {
 	glBindVertexArray(vao);
-	glBindBuffer(GL_ARRAY_BUFFER, buffers[INDICES]->Id);
+	//glBindBuffer(GL_ARRAY_BUFFER, buffers[INDICES]->Id);
 
 	if (sub_meshes.size() != 0)
 		for (uint32_t i = 0; i < sub_meshes.size(); i++)
 			glDrawElements(GL_TRIANGLES, sub_meshes[i].num_indices, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * sub_meshes[i].start));
 	else
-		glDrawElements(GL_TRIANGLES, buffers[INDICES]->GetSize(), GL_UNSIGNED_INT, 0);
+	{
+		auto sizeuh = buffers[INDICES]->GetSize();
+		glDrawElements(GL_TRIANGLES, sizeuh, GL_UNSIGNED_INT, nullptr);
+	}
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindVertexArray(0);
 }
 
 void Mesh::render_lines(uint32_t lineWidth)
@@ -150,7 +153,7 @@ void Mesh::render_lines(uint32_t lineWidth)
 	if (buffers[POSITION] && buffers[POSITION]->GetSize())
 		glDrawArrays(GL_LINES, 0, size);
 
-	glBindVertexArray(0);
+	//glBindVertexArray(0);
 
 	if (lineWidth != 1)
 	{
@@ -164,7 +167,7 @@ void Mesh::render_triangle_strip()
 
 	glDrawArrays(GL_TRIANGLES, 0, buffers[POSITION]->GetSize());
 
-	glBindVertexArray(0);
+	//glBindVertexArray(0);
 }
 
 void Mesh::UploadBuffers()
@@ -188,5 +191,5 @@ void Mesh::UploadBuffers()
 			}
 		}
 	}
-	glBindVertexArray(0);
+	//glBindVertexArray(0);
 }

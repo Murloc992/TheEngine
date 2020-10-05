@@ -6,7 +6,7 @@
 
 uint32_t Shader::currentProgram = -1;
 
-void Shader::ShowCompilationInfo(uint32_t obj, const std::string & tname, const std::string & name)
+void Shader::ShowCompilationInfo(uint32_t obj, const std::string& tname, const std::string& name)
 {
 	int32_t length = 0;
 
@@ -17,7 +17,7 @@ void Shader::ShowCompilationInfo(uint32_t obj, const std::string & tname, const 
 
 	if (length > 1)
 	{
-		GLchar *log = new GLchar[length];
+		GLchar* log = new GLchar[length];
 
 		if (tname == "PROG")
 			glGetProgramInfoLog(obj, length, &length, log);
@@ -30,10 +30,10 @@ void Shader::ShowCompilationInfo(uint32_t obj, const std::string & tname, const 
 	}
 }
 
-bool Shader::CompileShaderObject(GLenum Type, uint32_t &obj, const std::string & def, const std::string & tname, const std::string & name)
+bool Shader::CompileShaderObject(GLenum Type, uint32_t& obj, const std::string& def, const std::string& tname, const std::string& name)
 {
 	obj = glCreateShader(Type);
-	char const * str = def.c_str();
+	char const* str = def.c_str();
 
 	glShaderSource(obj, 1, &str, nullptr);
 	glCompileShader(obj);
@@ -51,12 +51,12 @@ bool Shader::CompileShaderObject(GLenum Type, uint32_t &obj, const std::string &
 	return obj != 0;
 }
 
-Shader::Shader(const std::string & name, const std::string & vsstr, const std::string & fsstr)
+Shader::Shader(const std::string& name, const std::string& vsstr, const std::string& fsstr)
 	: name(name), vsstr(vsstr), fsstr(fsstr), program(0), vsobj(0), fsobj(0), gsobj(0)
 {
 }
 
-Shader::Shader(const std::string & name, const std::string & vsstr, const std::string & fsstr, const std::string & gsstr)
+Shader::Shader(const std::string& name, const std::string& vsstr, const std::string& fsstr, const std::string& gsstr)
 	: name(name), vsstr(vsstr), fsstr(fsstr), gsstr(gsstr), program(0), vsobj(0), fsobj(0), gsobj(0)
 {
 };
@@ -72,9 +72,9 @@ bool Shader::Compile()
 	bool vertexCompileSuccess = CompileShaderObject(GL_VERTEX_SHADER, vsobj, vsstr, "VS", name);
 	bool fragmentSuccess = CompileShaderObject(GL_FRAGMENT_SHADER, fsobj, fsstr, "PS", name);
 	bool geometrySuccess = true;
-	if(gsstr.size() > 0) geometrySuccess = CompileShaderObject(GL_GEOMETRY_SHADER, gsobj, gsstr, "GS", name);
+	if (gsstr.size() > 0) geometrySuccess = CompileShaderObject(GL_GEOMETRY_SHADER, gsobj, gsstr, "GS", name);
 
-	if(!vertexCompileSuccess && !fragmentSuccess && !geometrySuccess)
+	if (!vertexCompileSuccess && !fragmentSuccess && !geometrySuccess)
 		return false;
 
 	return Link();
@@ -124,34 +124,34 @@ bool Shader::IsCompiledAndLinked()
 
 void Shader::Set()
 {
-	if(program!=Shader::currentProgram)
+	if (program != Shader::currentProgram)
 	{
 		//GetContext().GetLogger()->log(loglevel::LOG_LOG, "stuff is set");
 		glUseProgram(program);
 		Shader::currentProgram = program;
 	}
 
-	for (ShaderBinding &t : m_bindings)
+	for (ShaderBinding& t : m_bindings)
 	{
 		if (t.HasValue())
 			t.Update();
 	}
 }
 
-bool Shader::HasBinding(const std::string & name)
+bool Shader::HasBinding(const std::string& name)
 {
-	for (ShaderBinding &t : m_bindings)
+	for (ShaderBinding& t : m_bindings)
 	{
-		if (t.GetName() == name)
+		if (strcmp(t.GetName().c_str(), name.c_str()) == 0)
 			return true;
 	}
 
 	return false;
 }
 
-ShaderBinding & Shader::GetBinding(const std::string & pname)
+ShaderBinding& Shader::GetBinding(const std::string& pname)
 {
-	for (ShaderBinding &t : m_bindings)
+	for (ShaderBinding& t : m_bindings)
 	{
 		if (t.GetName() == pname)
 			return t;
@@ -160,7 +160,7 @@ ShaderBinding & Shader::GetBinding(const std::string & pname)
 	return m_nullBinding;
 }
 
-const std::string & Shader::GetName() const
+const std::string& Shader::GetName() const
 {
 	return name;
 }

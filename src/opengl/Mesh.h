@@ -268,7 +268,7 @@ void Mesh::UploadBufferSubData(BUFFER_OBJECT_INDEX ind, std::vector<T> subdata, 
 			}
 		}
 	}
-	glBindVertexArray(0);
+	//glBindVertexArray(0);
 }
 
 typedef std::shared_ptr<Mesh> MeshPtr;

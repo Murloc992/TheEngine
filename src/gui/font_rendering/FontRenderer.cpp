@@ -30,6 +30,10 @@ FontRenderer::FontRenderer()
 
 	glGenVertexArrays(1, &_VAO);
 	glGenBuffers(1, &_VBO);
+	glBindVertexArray(_VAO);
+	glBindBuffer(GL_ARRAY_BUFFER,_VBO);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	_fontShader = GetContext().GetResourceManager()->LoadShader(Path("res/engine/shaders/font"));
 	printf("Font shader id:%d\n", _fontShader->GetProgramId());
@@ -330,12 +334,6 @@ void FontRenderer::_RenderString(const std::wstring& text, glm::ivec2 pos, const
 	SetBindingSafe(_fontShader, "tex", 0);
 	_fontShader->Set();
 
-	glBindVertexArray(_VAO);
-	/* Set up the VBO for our vertex data */
-	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
 	std::vector<glm::vec4> coords;
 	coords.resize(text.length() * 6);
 
@@ -372,11 +370,15 @@ void FontRenderer::_RenderString(const std::wstring& text, glm::ivec2 pos, const
 	}
 
 	/* Draw all the character on the screen in one go */
+	/* Set up the VBO for our vertex data */
+	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
 	glBufferData(GL_ARRAY_BUFFER, coords.size() * sizeof(glm::vec4), glm::value_ptr(coords[0]), GL_STREAM_DRAW);
+
+	glBindVertexArray(_VAO);
 	glDrawArrays(GL_TRIANGLES, 0, c);
 
-	glDisableVertexAttribArray(0);
-	glBindVertexArray(0);
+	//glDisableVertexAttribArray(0);
+	//glBindVertexArray(0);
 }
 
 void FontRenderer::_RenderString(const std::wstring& text, glm::ivec2 pos, const glm::vec4& color, bool drawShadow)
