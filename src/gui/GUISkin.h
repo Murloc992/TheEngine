@@ -76,7 +76,7 @@ public:
 		return glm::vec2(rects[style].w, rects[style].h);
 	}
 
-	int get_margin(uint32_t style)
+	const int& get_margin(uint32_t style) const
 	{
 		return margins[style];
 	}

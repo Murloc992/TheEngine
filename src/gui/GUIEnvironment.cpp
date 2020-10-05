@@ -421,7 +421,10 @@ void GUIEnvironment::DrawSlicedGUIQuad(Rect2D<int> size, uint32_t style)
 
     skin_atlas->Set(0);
 
-    sliced_quad->SetRatio(glm::vec2(size.w, size.h), skin->get_margin(style));
+    auto ratio_size = glm::vec2(size.w, size.h);
+    auto& margin = skin->get_margin(style);
+
+    sliced_quad->SetRatio(ratio_size, margin);
     sliced_quad->SetTCoords(skin->get_uv(style));
 
     glm::mat4 M = glm::mat4(1.0f);

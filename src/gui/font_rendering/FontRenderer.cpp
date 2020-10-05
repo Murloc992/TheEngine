@@ -31,9 +31,10 @@ FontRenderer::FontRenderer()
 	glGenVertexArrays(1, &_VAO);
 	glGenBuffers(1, &_VBO);
 	glBindVertexArray(_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER,_VBO);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 65536, nullptr, GL_STREAM_DRAW);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 	_fontShader = GetContext().GetResourceManager()->LoadShader(Path("res/engine/shaders/font"));
 	printf("Font shader id:%d\n", _fontShader->GetProgramId());
@@ -156,12 +157,12 @@ void FontRenderer::SetDefaultFontFamily(const std::string& familyName)
 
 int32_t FontRenderer::_FindTagEnd(std::wstring str, const wchar_t tag)
 {
-	wchar_t buf[32];
+	wchar_t buf[4];
 
-	swprintf(buf, 32, L"['%c", tag);
+	swprintf(buf, 4, L"['%c", tag);
 	std::wstring thistagopen = buf;
 
-	swprintf(buf, 32, L"[%c']", tag);
+	swprintf(buf, 4, L"[%c']", tag);
 	std::wstring thistagclose = buf;
 
 	int32_t tagstart = str.find(thistagopen);
@@ -205,14 +206,14 @@ void FontRenderer::_FormatTags(TextLine& tl, std::wstring in, SubLineInfo inf)
 		/// printf("no tag found\n");
 		if (in.length() > 0) {
 			inf.text = in;
-			tl.content.push_back(inf);
+			tl.content.emplace_back(inf);
 		}
 		return;
 	}
 	/// do we have pre-text? if yes, cut it and try again. keep formatting data.
 	if (firsttag != 0) {
 		inf.text = in.substr(0, firsttag);
-		tl.content.push_back(inf);
+		tl.content.emplace_back(inf);
 		in = in.substr(firsttag);
 		/// wprintf(L"pretag found applying formatting if any\nsubstr:%ls\n",in.c_str());
 		_FormatTags(tl, in, inf);
@@ -372,7 +373,8 @@ void FontRenderer::_RenderString(const std::wstring& text, glm::ivec2 pos, const
 	/* Draw all the character on the screen in one go */
 	/* Set up the VBO for our vertex data */
 	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-	glBufferData(GL_ARRAY_BUFFER, coords.size() * sizeof(glm::vec4), glm::value_ptr(coords[0]), GL_STREAM_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, coords.size() * sizeof(glm::vec4), glm::value_ptr(coords[0]), GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, coords.size() * sizeof(glm::vec4), &coords[0]);
 
 	glBindVertexArray(_VAO);
 	glDrawArrays(GL_TRIANGLES, 0, c);
@@ -411,6 +413,11 @@ void FontRenderer::RenderString(const std::wstring& text, const glm::ivec2& pos,
 
 	std::vector<TextLine> linesToDraw;
 	linesToDraw.resize(strs.size());
+
+	for (auto& line_info : linesToDraw)
+	{
+		line_info.content.reserve(256);
+	}
 
 	SubLineInfo inf;
 
