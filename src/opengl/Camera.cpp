@@ -13,13 +13,15 @@ Camera::Camera(const glm::vec3& pos, const glm::vec3& target, const glm::vec3& u
 	m_target = target;
 	m_rot = glm::toQuat(glm::inverse(glm::lookAt(pos, target, up)));
 
-	this->m_look = pos - target;
-	this->m_up = up;
+	m_look = pos - target;
+	m_up = up;
 
 	m_fov = field_of_view;
 	m_far = far_z;
 	m_near = near_z;
 	m_aspect_ratio = aspect_ratio;
+	m_translation = glm::vec3(0);
+	m_last_mouse_pos = m_current_mouse_pos = glm::vec2(0);
 
 	m_P = glm::perspective(glm::radians(field_of_view), aspect_ratio, near_z, far_z);
 }

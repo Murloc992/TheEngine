@@ -99,6 +99,21 @@ public:
 	void render_triangle_strip();
 	void UploadBuffers();
 
+	void FreeDataBuffers()
+	{
+		for (uint32_t i = 0; i < buffers.size(); i++)
+		{
+			if (buffers[i] && buffers[i]->GetType() != IBufferObject::IBO_TYPE::INDEX)
+			{
+				///enable on upload. MIGHT NOT BE A REALLY GOOD SOLUTION
+				if (buffers[i]->GetSize() > 0)
+				{
+					buffers[i]->Free();
+				}
+			}
+		}
+	}
+
 	void ClearDataBuffers()
 	{
 		for (uint32_t i = 0; i < buffers.size(); i++)

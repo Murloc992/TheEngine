@@ -67,6 +67,10 @@ struct BufferObject : public IBufferObject
 	virtual void UploadOrphan(size_t size);
 	virtual void UploadSubData(const std::vector<T> &subdata, uint32_t offset);
 	virtual void UploadOrphanSubData(size_t orphan_size, size_t data_size, const std::vector<T> &subdata, uint32_t offset);
+	virtual void Free()
+	{
+		std::vector<T>().swap(data);
+	}
 	virtual void Clear()
 	{
 		data.clear();
@@ -150,6 +154,10 @@ struct IndexBufferObject : public IBufferObject
 	virtual void UploadOrphan(size_t size);
 	virtual void UploadSubData(const std::vector<T> &subdata, uint32_t offset);
 	virtual void UploadOrphanSubData(size_t orphan_size, size_t data_size, const std::vector<T> &subdata, uint32_t offset);
+	virtual void Free()
+	{
+		std::vector<T>().swap(data);
+	}
 	virtual void Clear()
 	{
 		data.clear();
