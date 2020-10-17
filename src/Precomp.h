@@ -14,6 +14,7 @@
 #include <stdint.h>
 #include <map>
 #include <unordered_map>
+#include <vector>
 #include <memory>
 #include <thread>
 #include <atomic>

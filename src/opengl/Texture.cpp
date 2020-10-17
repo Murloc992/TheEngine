@@ -162,14 +162,23 @@ void Texture::InitArray(ImagePtr img, uint32_t tile_size_x, uint32_t tile_size_y
 	glTexParameteri(Type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(Type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-	glTexParameteri(Type, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+	//glTexParameteri(Type, GL_TEXTURE_COMPARE_MODE, GL_NONE);
 
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, img->width);
 
 	const uint32_t tile_count_x = img->width / tile_size_x;
 	const uint32_t tile_count_y = img->height / tile_size_y;
 	const uint32_t bytes_per_subimage = tile_size_x * tile_size_y * img->num_channels;
-	glTexStorage3D(Type, 1, internalFormat, tile_size_x, tile_size_y, tile_count_x * tile_count_y);
+
+	uint8_t miplevels = 1;
+	uint32_t mipsize = tile_size_x;
+	while (mipsize > 1)
+	{
+		mipsize = mipsize / 2;
+		miplevels++;
+	}
+
+	glTexStorage3D(Type, miplevels, internalFormat, tile_size_x, tile_size_y, tile_count_x * tile_count_y);
 
 	//glPixelStorei(GL_UNPACK_ROW_LENGTH, img->width);
 	//glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, img->height);
