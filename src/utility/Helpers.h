@@ -14,6 +14,9 @@
 #define SetBindingSafe(shader,binding,value) if(shader->HasBinding((binding))) { shader->GetBinding((binding)).Set((value)); }
 #define ROUNDING_ERROR 0.00001f
 
+#define MOVABLE_NOT_COPYABLE(class_name) class_name(const class_name&) = delete;\
+										 class_name& operator=(const class_name&) = delete
+
 namespace helpers
 {
 	[[deprecated("Use filesystem functionality instead.")]]
