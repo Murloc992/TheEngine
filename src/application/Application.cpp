@@ -12,7 +12,7 @@
 #include "application/InputHandler.h"
 #include "gui/GUI.h"
 
-Application::Application(int32_t argc, const char ** argv)
+Application::Application(int32_t argc, const char** argv)
 {
 	m_argc = argc;
 	m_argv = argv;
@@ -35,7 +35,7 @@ bool Application::InitContextBasics()
 	return true;
 }
 
-bool Application::InitSimple(const std::string  &title)
+bool Application::InitSimple(const std::string& title)
 {
 	InitContextBasics();
 	InitFileSystem();
@@ -84,7 +84,7 @@ bool Application::InitFileSystem()
 	GetContext().GetFileSystem()->AddSearchDirectory(appendedPath);
 
 
-	auto & fileSystemVars = GetContext().GetApplicationSettingsManager()->GetGroup("filesystem");
+	auto& fileSystemVars = GetContext().GetApplicationSettingsManager()->GetGroup("filesystem");
 
 	Path logPath(fileSystemVars.GetVar("log_path").ValueS());
 	Path configPath(fileSystemVars.GetVar("config_path").ValueS());
@@ -97,7 +97,7 @@ bool Application::InitFileSystem()
 
 bool Application::LoadConfig()
 {
-	auto & fileSystemVars = GetContext().GetApplicationSettingsManager()->GetGroup("filesystem");
+	auto& fileSystemVars = GetContext().GetApplicationSettingsManager()->GetGroup("filesystem");
 
 	Path logPath(fileSystemVars.GetVar("log_path").ValueS());
 	Path configPath(fileSystemVars.GetVar("config_path").ValueS());
@@ -111,7 +111,7 @@ bool Application::LoadConfig()
 	return true;
 }
 
-bool Application::InitWindowAndOpenGL(const std::string & title)
+bool Application::InitWindowAndOpenGL(const std::string& title)
 {
 	int32_t width = GetContext().GetApplicationSettingsManager()->GetGroup("video").GetVar("window_width").ValueI(),
 		height = GetContext().GetApplicationSettingsManager()->GetGroup("video").GetVar("window_height").ValueI();
@@ -138,6 +138,7 @@ bool Application::InitWindowAndOpenGL(const std::string & title)
 		return false;
 	}
 
+#define _OGL_DEBUG_
 #ifdef _OGL_DEBUG_
 	if (1) {
 		std::cout << "Register OpenGL debug callback " << std::endl;
@@ -213,7 +214,7 @@ bool Application::DestroyContext()
 	return true;
 }
 
-VarGroup & Application::GetEngineVars()
+VarGroup& Application::GetEngineVars()
 {
 	return *GetContext().GetApplicationSettingsManager();
 }

@@ -47,7 +47,7 @@ namespace helpers
 		return nanCheck.x || nanCheck.y || nanCheck.z;
 	}
 
-	inline int FloorDiv(int a, int b)
+	inline int FloorDiv(const int& a, const int& b)
 	{
 		auto r = std::div(a, b);
 
