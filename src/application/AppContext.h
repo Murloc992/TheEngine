@@ -26,6 +26,7 @@ public:
 	OpenGLExtensionLoader * GetOpenGLExtensionLoader();
 	ResourceManager * GetResourceManager();
 	TimerPtr GetTimer();
+	TimerPtr GetProfileTimer();
 
 	void SetInputHandler(InputHandler* inputHandler);
 	void SetGUIEnvironment(GUIEnvironment* guiEnvironment);
@@ -39,6 +40,7 @@ protected:
 	OpenGLExtensionLoader * p_openGLExtensionLoader;
 	ResourceManager * p_resourceManager;
 	TimerPtr p_timer;
+	TimerPtr profile_timer;
 };
 
 #endif

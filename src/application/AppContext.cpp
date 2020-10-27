@@ -11,6 +11,7 @@ AppContext::AppContext()
 	p_window = nullptr;
 	p_guiEnv = nullptr;
 	p_timer = nullptr;
+	profile_timer = nullptr;
 	p_logger = nullptr;
 	p_openGLExtensionLoader = nullptr;
 	p_inputHandler = nullptr;
@@ -34,12 +35,12 @@ AppContext & AppContext::Instance()
 
 bool AppContext::IsInitializedNoGL()
 {
-	return p_timer && p_logger && p_settingsManager && p_fileSystem && p_resourceManager;
+	return p_timer && profile_timer && p_logger && p_settingsManager && p_fileSystem && p_resourceManager;
 }
 
 bool AppContext::IsInitialized()
 {
-	return p_window && p_timer && p_logger && p_settingsManager && p_fileSystem && p_openGLExtensionLoader && p_resourceManager;
+	return p_window && p_timer && profile_timer && p_logger && p_settingsManager && p_fileSystem && p_openGLExtensionLoader && p_resourceManager;
 }
 
 
@@ -76,6 +77,11 @@ GUIEnvironment * AppContext::GetGUIEnvironment()
 TimerPtr AppContext::GetTimer()
 {
 	return p_timer;
+}
+
+TimerPtr AppContext::GetProfileTimer()
+{
+	return profile_timer;
 }
 
 InputHandler * AppContext::GetInputHandler()

@@ -447,15 +447,15 @@ void FontRenderer::RenderString(const std::wstring& text, const glm::ivec2& pos,
 				currentStyle = current->currentType;
 				UseFont(FFT_BOLD_ITALIC);
 			}
-			//if (j != 0) {
-			//	_RenderString(_celem.text, pos + glm::ivec2(dims.x, i * (dims.y + dims.y / 2.f)), _celem.color, _celem.shadow);
-			//}
-			//else {
+			if (j != 0) {
+				_RenderString(_celem.text, pos + glm::ivec2(dims.x, i * (dims.y + dims.y / 2.f)), _celem.color, _celem.shadow);
+			}
+			else {
 				_RenderString(_celem.text, pos + glm::ivec2(0, i * (dims.y + dims.y / 2.f)), _celem.color, _celem.shadow);
-			//}
-			//auto textdims = GetTextDimensions(_celem.text).x;
+			}
+			auto textdims = GetFormattedTextDimensions(_celem.text).x;
 			//auto textdims = GetTextDimensions(_current).x;
-			//dims = glm::vec2(dims.x + textdims, dims.y);
+			dims = glm::vec2(dims.x + textdims, dims.y);
 			if (_celem.bold || _celem.italic) {
 				UseFont(currentStyle);
 			}
