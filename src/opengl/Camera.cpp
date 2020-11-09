@@ -105,7 +105,7 @@ INTERSECT_RESULT Camera::PointInFrustum(const glm::vec3& point)
 	int out = 0;
 	loop(i, 6)
 	{
-		if (frustumPlanes[i].Distance(point) <= 0)
+		if (frustumPlanes[i].Distance(point, 0.f) <= 0)
 			out++;
 	}
 	if (out > 0)
@@ -144,7 +144,7 @@ INTERSECT_RESULT Camera::BoxInFrustum(const AABB& box)
 
 		for (int j = 0; j < 8 && in == 0; j++)
 		{
-			if (frustumPlanes[i].Distance(points[j]) < 0)
+			if (frustumPlanes[i].Distance(points[j], 0.f) < 0)
 				out++;
 			else
 				in++;

@@ -49,7 +49,7 @@ public:
 		return points;
 	}
 
-	float Distance(const glm::vec3 &p, float radius = 0.f)
+	float Distance(const glm::vec3 &p, const float& radius)
 	{
 		auto distance = (n.w + radius) + glm::dot(glm::vec3(n), p);
 		return distance;
