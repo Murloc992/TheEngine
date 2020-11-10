@@ -234,6 +234,7 @@ void IQMLoader::loadiqmanims(std::shared_ptr<Mesh> m, const char* data, iqmheade
 				{
 					auto child = children[j];
 					child->pos = bone.pos + bone.rot * (bone.scale * child->pos);
+					child->rot = bone.rot * child->rot;
 				}
 				children.clear();
 			}
