@@ -8,7 +8,7 @@ template <typename T> inline std::string to_str(const T& t)
 template <typename T> inline std::wstring to_wstr(const T& t)
 {
 	std::wostringstream os;    //magic..
-	os << t;
+	os << std::setprecision(10) << t;
 	return os.str();
 }
 

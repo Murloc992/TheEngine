@@ -25,7 +25,7 @@ Application::~Application()
 
 bool Application::InitContextBasics()
 {
-	GetContext().p_timer = timer_ptr(new Timer());
+	GetContext().p_timer = timer_ptr(new Timer(0, TimerResolution::MILLISECOND));
 	GetContext().profile_timer = timer_ptr(new Timer(0, TimerResolution::MICROSECOND));
 	GetContext().p_fileSystem = new FileSystem(m_argv[0]);
 	GetContext().p_settingsManager = new ApplicationSettingsManager();
