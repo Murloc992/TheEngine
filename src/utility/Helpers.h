@@ -47,10 +47,10 @@ namespace helpers
 		return nanCheck.x || nanCheck.y || nanCheck.z;
 	}
 
-	inline int FloorDiv(const int& a, const int& b)
+	inline int FloorDiv(int a, int b)
 	{
 		int d = a / b;
-		int r = a % b;  /* optimizes into single division. */
+		int r = a % b;  /* should optimize into single division. */
 		return r ? (d - ((a < 0) ^ (b < 0))) : d;
 	}
 
