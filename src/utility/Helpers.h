@@ -49,36 +49,9 @@ namespace helpers
 
 	inline int FloorDiv(const int& a, const int& b)
 	{
-		auto r = std::div(a, b);
-
-		if (r.rem != 0 && ((a < 0) ^ (b < 0)))
-			r.quot--;
-		return r.quot;
-	}
-
-	inline int64_t PyMod(const int64_t& a, const int64_t& b)
-	{
-		int64_t result = a % b;
-		if (result < 0)
-		{
-			result = b + result;
-		}
-
-		return result;
-	}
-
-	inline int64_t PyDiv(const int64_t& a, const int64_t& b)
-	{
-		int64_t result = a / b;
-		if ((a < 0) ^ (b < 0))
-		{
-			if (PyMod(a, b) != 0)
-			{
-				result -= 1;
-			}
-		}
-
-		return result;
+		int d = a / b;
+		int r = a % b;  /* optimizes into single division. */
+		return r ? (d - ((a < 0) ^ (b < 0))) : d;
 	}
 
 	inline float MakePOT(float v);
