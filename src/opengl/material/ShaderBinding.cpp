@@ -141,7 +141,7 @@ void ShaderBinding::Update()
 	if (m_value)
 		m_value->Set(m_bindingIndex);
 	else
-		GetContext().GetLogger()->log(LOG_WARN, "UpdateBinding(): Binding '%s' has no value", m_name);
+		GetContext().GetLogger()->log(LOG_WARN, "UpdateBinding(): Binding '%s' has no value", m_name.c_str());
 }
 
 bool ShaderBinding::HasValue()

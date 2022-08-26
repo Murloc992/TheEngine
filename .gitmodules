@@ -26,10 +26,6 @@
 	path = libs/libsigcplusplus
 	url = https://github.com/Murloc992/libsigcplusplus.git
 	branch = master
-[submodule "libs/physfs"]
-	path = libs/physfs
-	url = https://github.com/Didstopia/physfs.git
-	branch = master
 [submodule "libs/stb"]
 	path = libs/stb
 	url = https://github.com/nothings/stb.git
@@ -38,3 +34,6 @@
 	path = libs/tinyxml2
 	url = https://github.com/leethomason/tinyxml2.git
 	branch = master
+[submodule "libs/physfs"]
+	path = libs/physfs
+	url = https://github.com/icculus/physfs.git

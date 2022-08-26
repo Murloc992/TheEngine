@@ -103,7 +103,7 @@ bool Shader::Link()
 				program = 0;
 			}
 
-			GetContext().GetLogger()->log(LOG_ERROR, "Failed to link shader '%s'.", name);
+			GetContext().GetLogger()->log(LOG_ERROR, "Failed to link shader '%s'.", name.c_str());
 		}
 		else
 		{
