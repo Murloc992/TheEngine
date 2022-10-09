@@ -61,7 +61,11 @@ void GUIGraph::AddValue(const std::string &valueName, float value, int spacing, 
 		properties.maxValue = glm::max(value, properties.maxValue);
 		properties.minValue = glm::min(value, properties.minValue);
 		wchar_t buf[256];
+		#ifdef __linux__
+		swprintf(buf, 255, L"['s]['c %d %d %d]%s Min:%4.4f Max:%4.4f Current:%4.4f[c'][s']", (int)properties.color.r, (int)properties.color.g, (int)properties.color.b, helpers::to_wstr(valueName.c_str()).c_str(), properties.minValue, properties.maxValue, value);
+		#else
 		swprintf(buf, L"['s]['c %d %d %d]%s Min:%4.4f Max:%4.4f Current:%4.4f[c'][s']", (int)properties.color.r, (int)properties.color.g, (int)properties.color.b, helpers::to_wstr(valueName.c_str()).c_str(), properties.minValue, properties.maxValue, value);
+		#endif
 		valueTexts[valueName]->SetText(buf);
 	}
 	dataChanged = true;

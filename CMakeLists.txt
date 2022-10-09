@@ -3,7 +3,7 @@ project (ENGINE VERSION 1.0)
 
 MESSAGE(STATUS "CMAKE_CXX_COMPILER_VERSION: " "${CMAKE_CXX_COMPILER_VERSION}")
 
-set(CPP_GCC_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -w -std=c++17 -include Precomp.h")
+set(CPP_GCC_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 set(CPP_NMAKE_COMPILE_FLAGS  "${CMAKE_CXX_FLAGS} /Gm- /std:c++latest /MP /W3 /sdl-")
 
 set(ENGINE_SRC_PATH "src" )
@@ -63,6 +63,6 @@ endif()
 
 target_precompile_headers(engine PRIVATE "${ENGINE_SRC_PATH}/Precomp.h")
 
-target_link_libraries(engine)
+target_link_libraries(engine glfw freetype tinyxml2 jsoncpp_lib)
 
 add_dependencies(engine glad sigc-3.0)

@@ -70,7 +70,11 @@ public:
 	std::string to_string()
 	{
 		char buf[256];
+		#ifdef __linux__
+		snprintf(buf, 255, "RECT: X %d Y %d X2 %d Y2 %d W %d H %d\n", x, y, x2, y2, w, h);
+		#else
 		sprintf_s(buf, 255, "RECT: X %d Y %d X2 %d Y2 %d W %d H %d\n", x, y, x2, y2, w, h);
+		#endif
 		return std::string(buf);
 	}
 

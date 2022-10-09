@@ -58,6 +58,20 @@ typedef std::shared_ptr<VarGroup> VarGroupPtr;
 
 typedef uint32_t GLEnum;
 
+#ifdef __linux__
+namespace std
+{
+namespace filesystem
+{
+namespace __cxx11
+{
+    class path;
+}
+}
+}
+
+using Path = std::filesystem::__cxx11::path;
+#else
 namespace std
 {
 namespace filesystem
@@ -67,5 +81,7 @@ namespace filesystem
 }
 
 using Path = std::filesystem::path;
+#endif
+
 
 #endif

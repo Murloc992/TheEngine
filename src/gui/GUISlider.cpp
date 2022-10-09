@@ -152,6 +152,10 @@ void GUISlider::set_value(float value)
 void GUISlider::update_value_text()
 {
 	wchar_t buffer[128];
+	#ifdef __linux__
+	swprintf(buffer, 127, L"['s]%2f[s']", m_cur_value);
+	#else
 	swprintf(buffer, L"['s]%2f[s']", m_cur_value);
+	#endif
 	m_valueText->SetText(buffer);
 }
