@@ -12,6 +12,7 @@ Texture::Texture()
 	dataType = GL_UNSIGNED_BYTE;
 	internalFormat = GL_RGB;
 	imageFormat = GL_RGB;
+	is_array = false;
 }
 
 Texture::~Texture()
@@ -74,14 +75,24 @@ void Texture::Init(const uint8_t* data, uint32_t target, uint32_t image_format, 
 	glGenTextures(1, &Id);
 	glBindTexture(Type, Id);
 
-	glTexParameteri(Type, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(Type, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	if (Type == GL_TEXTURE_3D)
-		glTexParameteri(Type, GL_TEXTURE_WRAP_R, GL_REPEAT);
-	glTexParameteri(Type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(Type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	if (Type == GL_TEXTURE_2D_ARRAY && image_format == GL_DEPTH_COMPONENT)
+	{
+		glTexParameteri(Type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(Type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(Type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(Type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	}
+	else
+	{
+		glTexParameteri(Type, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(Type, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		if (Type == GL_TEXTURE_3D)
+			glTexParameteri(Type, GL_TEXTURE_WRAP_R, GL_REPEAT);
+		glTexParameteri(Type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(Type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	glTexParameteri(Type, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+		glTexParameteri(Type, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+	}
 
 	/// either use Texture with or without alpha channel
 	switch (image_format)
@@ -101,7 +112,7 @@ void Texture::Init(const uint8_t* data, uint32_t target, uint32_t image_format, 
 		break;
 
 	case GL_DEPTH_COMPONENT:
-		glPixelStorei(GL_UNPACK_ALIGNMENT, (uint32_t)TextureUnpackAlignment::BYTE);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, (uint32_t)TextureUnpackAlignment::WORD);
 		break;
 
 	default:
@@ -129,6 +140,7 @@ void Texture::Init(const uint8_t* data, uint32_t target, uint32_t image_format, 
 	case GL_TEXTURE_2D:
 		glTexImage2D(Type, 0, internalFormat, w, h, 0, imageFormat, dataType, data);
 		break;
+	case GL_TEXTURE_2D_ARRAY:
 	case GL_TEXTURE_3D:
 		glTexImage3D(Type, 0, internalFormat, w, h, d, 0, imageFormat, dataType, data);
 		break;
@@ -230,7 +242,7 @@ void Texture::SetBorderColor(const glm::vec4& color)
 	if (current != Id)
 		glBindTexture(Type, Id);
 
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &color[0]);
+	glTexParameterfv(Type, GL_TEXTURE_BORDER_COLOR, &color[0]);
 
 	if (current != Id)
 		glBindTexture(Type, current);

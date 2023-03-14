@@ -36,12 +36,12 @@ MeshPtr MeshLoader::Load(const Path & fileName)
 
 	if (res.resource)
 	{
-		GetContext().GetLogger()->log(LOG_LOG, "Found mesh in cache, skipping loading.");
+		GetContext().GetLogger()->log(LOG_INFO, "Found mesh in cache, skipping loading.");
 		return res.resource;
 	}
 
 	std::string ext = fileName.extension().generic_string();
-	GetContext().GetLogger()->log(LOG_LOG, "Mesh extension: '%s'", ext.c_str());
+	GetContext().GetLogger()->log(LOG_INFO, "Mesh extension: '%s'", ext.c_str());
 
 	///REFACTOR: Search loader by extension func, return loader. Then try loading.
 	if (GetContext().GetFileSystem()->FileExists(fileName.c_str()))
@@ -56,7 +56,7 @@ MeshPtr MeshLoader::Load(const Path & fileName)
 				if (file->IsOpen())
 				{
 					ByteBufferPtr buffer = file->Read();
-					GetContext().GetLogger()->log(LOG_LOG, "Mesh file size: %u", buffer->size());
+					GetContext().GetLogger()->log(LOG_INFO, "Mesh file size: %u", buffer->size());
 
 					res.path = fileName;
 					res.resource = MeshPtr(l->Load((const char*)buffer->data(), buffer->size()));

@@ -24,6 +24,11 @@ void WindowResize(GLFWwindow * wnd, int32_t w, int32_t h)
 	ApplicationWindow::_windows[wnd]->SigWindowResized().emit(w, h);
 }
 
+void FramebufferResize(GLFWwindow* wnd, int32_t w, int32_t h)
+{
+	ApplicationWindow::_windows[wnd]->SigFramebufferResized().emit(w, h);
+}
+
 void WindowClose(GLFWwindow * wnd)
 {
 	ApplicationWindow::_windows[wnd]->SigWindowClosed().emit();
@@ -60,6 +65,11 @@ sigc::signal<void(int32_t, int32_t)> & ApplicationWindow::SigWindowResized()
 	return _sigWindowResized;
 }
 
+sigc::signal<void(int32_t, int32_t)>& ApplicationWindow::SigFramebufferResized()
+{
+	return _sigFramebufferResized;
+}
+
 sigc::signal<void()> & ApplicationWindow::SigWindowClosed()
 {
 	return _sigWindowClosed;
@@ -85,6 +95,7 @@ ApplicationWindow::ApplicationWindow()
 {
 	_window = nullptr;
 	_shouldClose = false;
+	_window_size = glm::ivec2(1024, 768);
 }
 
 ApplicationWindow::~ApplicationWindow()
@@ -101,7 +112,7 @@ ApplicationWindow::~ApplicationWindow()
 	glfwTerminate();
 }
 
-bool ApplicationWindow::Init(const std::string  &title, uint32_t width, uint32_t height, bool fullscreen, bool windowed, uint32_t msaa, uint32_t r, uint32_t g, uint32_t b, uint32_t alpha, uint32_t depth, uint32_t stencil)
+bool ApplicationWindow::Init(const std::string  &title, uint32_t width, uint32_t height, bool fullscreen, bool windowed, bool vsync, uint32_t msaa, uint32_t r, uint32_t g, uint32_t b, uint32_t alpha, uint32_t depth, uint32_t stencil)
 {
 	if (!glfwInit())
 	{
@@ -111,7 +122,7 @@ bool ApplicationWindow::Init(const std::string  &title, uint32_t width, uint32_t
 
 	//glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4); // 4x antialiasing
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // We want OpenGL 4.2
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE); //We don't want the old OpenGL
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); //We don't want the old OpenGL
 #ifdef _DEBUG_OGL
@@ -124,7 +135,7 @@ bool ApplicationWindow::Init(const std::string  &title, uint32_t width, uint32_t
 	glfwWindowHint(GLFW_ALPHA_BITS, 8);
 	glfwWindowHint(GLFW_DEPTH_BITS, 24);
 
-	glfwWindowHint(GLFW_RESIZABLE, 0);
+	glfwWindowHint(GLFW_RESIZABLE, windowed && !fullscreen);
 
 	if(msaa>0)
 		glfwWindowHint(GLFW_SAMPLES, msaa);
@@ -162,8 +173,10 @@ bool ApplicationWindow::Init(const std::string  &title, uint32_t width, uint32_t
 
 	_windows[_window] = this;
 	glfwMakeContextCurrent(_window);
+	_window_size = glm::ivec2(width, height);
 
 	glfwSetWindowSizeCallback(_window, &WindowResize);
+	glfwSetFramebufferSizeCallback(_window, &FramebufferResize);
 	glfwSetWindowCloseCallback(_window, &WindowClose);
 	glfwSetCursorPosCallback(_window, &MouseMoveEvent);
 	glfwSetMouseButtonCallback(_window, &MouseKeyEvent);
@@ -173,7 +186,7 @@ bool ApplicationWindow::Init(const std::string  &title, uint32_t width, uint32_t
 
 	glfwSetWindowShouldClose(_window, GL_FALSE);
 
-	glfwSwapInterval(0);
+	glfwSwapInterval(static_cast<int>(vsync));
 
 	glfwSwapBuffers(_window);
 	glfwPollEvents();
@@ -192,6 +205,22 @@ glm::ivec2 ApplicationWindow::GetMousePos()
 	return glm::ivec2(x, y);
 }
 
+void ApplicationWindow::SetWindowMode(bool fullscreen, bool windowed)
+{
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+	if (fullscreen) {
+		glfwSetWindowMonitor(_window, monitor, 0, 0, _window_size.x, _window_size.y, GLFW_DONT_CARE);
+	}
+	else if (windowed) {
+		glfwSetWindowMonitor(_window, NULL, 0, 0, _window_size.x, _window_size.y, 0);
+	}
+	else if (fullscreen && windowed) {
+		glfwSetWindowMonitor(_window, monitor, 0, 0, _window_size.x, _window_size.y, GLFW_DONT_CARE);
+	}
+}
+
 void ApplicationWindow::SetWindowPosition(const glm::ivec2 &pos)
 {
 	glfwSetWindowPos(_window, pos.x, pos.y);
@@ -202,6 +231,10 @@ glm::ivec2 ApplicationWindow::GetWindowSize()
 	int32_t x, y;
 	glfwGetWindowSize(_window, &x, &y);
 	return glm::ivec2(x, y);
+}
+
+void ApplicationWindow::SetWindowSize(uint32_t width, uint32_t height)
+{
 }
 
 void ApplicationWindow::SetMousePos(const glm::ivec2 & pos)

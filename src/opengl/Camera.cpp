@@ -5,15 +5,16 @@
 #include "opengl/AABB.h"
 #include "application/Window.h"
 
-Camera::Camera(const glm::vec3& pos, const glm::vec3& target, const glm::vec3& up, float aspect_ratio, float field_of_view, float near_z, float far_z)
+Camera::Camera(const glm::vec3& pos, const glm::vec3& target, const glm::vec3& up, float aspect_ratio, float field_of_view, float near_z, float far_z, bool frustum_capable)
 {
 	m_fps = true;
 	m_hasFrustum = false;
+	m_frustumCapable = frustum_capable;
 	m_pos = pos;
 	m_target = target;
 	m_rot = glm::toQuat(glm::inverse(glm::lookAt(pos, target, up)));
 
-	m_look = pos - target;
+	m_look = glm::normalize(pos - target);
 	m_up = up;
 
 	m_fov = field_of_view;
@@ -39,8 +40,7 @@ void Camera::SetFPS(bool fps)
 
 void Camera::ResetOrientation(glm::vec3 lookDir)
 {
-	//m_rot = glm::toQuat(glm::inverse(glm::lookAt(m_pos, m_pos + lookDir * 10.f, m_up)));
-	m_P = glm::perspective(m_fov, m_aspect_ratio, m_near, m_far);
+	m_P = glm::perspective(glm::radians(m_fov), m_aspect_ratio, m_near, m_far);
 }
 
 void Camera::InitFrustum()
@@ -199,6 +199,11 @@ const glm::vec3& Camera::GetLook() const
 	return m_look;
 }
 
+const glm::vec3& Camera::GetDirection() const
+{
+	return m_direction;
+}
+
 const glm::vec3& Camera::GetRight() const
 {
 	return m_right;
@@ -207,6 +212,11 @@ const glm::vec3& Camera::GetRight() const
 const glm::vec3& Camera::GetPosition() const
 {
 	return m_pos;
+}
+
+const glm::quat& Camera::GetRotation() const
+{
+	return m_rot;
 }
 
 void Camera::SetPosition(glm::vec3 pos)
@@ -248,16 +258,11 @@ void Camera::Update(float dt)
 		m_last_mouse_pos = window->GetMousePos();
 		HandleMouse();
 	}
-	else
-	{
-		//m_rot = glm::toQuat(glm::inverse(glm::lookAt(m_pos, m_target, m_up)));
-		m_look = glm::vec3(m_rot * glm::vec3(0, 0, -1));
-		m_up = glm::vec3(m_rot * glm::vec3(0, 1, 0));
 
-		m_right = glm::cross(m_look, m_up);
-	}
+	CalculateOrientationVectors();
 
-	InitFrustum();
+	if(m_frustumCapable)
+		InitFrustum();
 }
 
 void Camera::Walk(const float amount)
@@ -277,13 +282,6 @@ void Camera::Lift(const float amount)
 
 glm::mat4x4 Camera::GetViewMat()
 {
-	m_look = glm::vec3(m_rot * glm::vec3(0, 0, -1));
-	m_up = glm::vec3(m_rot * glm::vec3(0, 1, 0));
-
-	m_right = glm::cross(m_look, m_up);
-
-	m_target = m_pos + m_look;
-
 	return glm::lookAt(m_pos, m_target, m_up);
 }
 
@@ -300,8 +298,7 @@ void Camera::Orbit(glm::vec3 point, float distance, float verticalAngle, float h
 
 	m_pos = point + glm::vec3(camX, camY, camZ);
 	m_rot = glm::toQuat(glm::inverse(glm::lookAt(m_pos, point, glm::vec3(0, 1, 0))));
-	m_target = point;
-	m_look = m_target - m_pos;
+	CalculateOrientationVectors();
 }
 
 void Camera::HandleMouse()
@@ -319,4 +316,14 @@ void Camera::HandleMouse()
 	r = r * rot_y;
 
 	m_rot = r;
+}
+
+void Camera::CalculateOrientationVectors()
+{
+	m_look = glm::normalize(glm::vec3(m_rot * WORLD_FORWARD));
+	m_up = glm::vec3(m_rot * WORLD_UP);
+	m_right = glm::cross(m_look, m_up);
+	m_target = m_pos + m_look;
+	// direction is the reverse of look
+	m_direction = glm::normalize(- 1.f * m_look);
 }

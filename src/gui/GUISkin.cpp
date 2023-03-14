@@ -2,6 +2,8 @@
 
 #include "utility/Rect2d.h"
 #include "GUISkin.h"
+#include "application/AppContext.h"
+#include "utility/Logger.h"
 
 GUISkin::GUISkin()
 {
@@ -13,11 +15,11 @@ GUISkin::GUISkin()
 void GUISkin::load(std::string filename)
 {
 	std::string skin_path = filename.substr(0, filename.rfind("/") + 1);
-	std::cout << "skin_path =" << skin_path.c_str() << std::endl;
+	GetContext().GetLogger()->log(LOG_DEBUG, "skin_path: %s", skin_path.c_str());
 
 	tinyxml2::XMLDocument xml;
 	uint32_t len;
-	char * buf;
+	char* buf;
 	len = helpers::read(filename, buf);
 
 	if (len == 0)
@@ -25,28 +27,32 @@ void GUISkin::load(std::string filename)
 
 	xml.Parse(buf);
 
-	XMLElement* root = xml.FirstChildElement();
-	printf("Loading a skin %s (%s) %i\n", root->Attribute("name"), root->Attribute("atlas_name"), root->IntAttribute("atlas_size"));
+	tinyxml2::XMLElement* root = xml.FirstChildElement();
+	GetContext().GetLogger()->log(LOG_DEBUG, "Loading a skin %s (%s) %i", root->Attribute("name"), root->Attribute("atlas_name"), root->IntAttribute("atlas_size"));
 
-	XMLElement* e = root->FirstChildElement();
+	this->name = root->Attribute("name");
+	this->atlas = skin_path + root->Attribute("atlas_name");
+	this->atlas_size = root->IntAttribute("atlas_size");
+
+	tinyxml2::XMLElement* e = root->FirstChildElement();
 	uint32_t i = 2;
 	while (e != nullptr)
 	{
 		if (e->NoChildren())
 		{
 			rects[i] = Rect2D<int>(e->IntAttribute("x"), e->IntAttribute("y"), e->IntAttribute("w"), e->IntAttribute("h"));
-			if (e->QueryAttribute("m", &margins[i]) == XML_NO_ATTRIBUTE)printf("WTF!");
+			if (e->QueryAttribute("m", &margins[i]) == tinyxml2::XML_NO_ATTRIBUTE)printf("WTF!");
 			e = e->NextSiblingElement();
 			i++;
 			continue;
 		}
 		else
 		{
-			XMLElement* ce = e->FirstChildElement();
+			tinyxml2::XMLElement* ce = e->FirstChildElement();
 			while (ce != nullptr)
 			{
 				rects[i] = Rect2D<int>(ce->IntAttribute("x"), ce->IntAttribute("y"), ce->IntAttribute("w"), ce->IntAttribute("h"));
-				if (ce->QueryAttribute("m", &margins[i]) == XML_NO_ATTRIBUTE)printf("WTF!");
+				if (ce->QueryAttribute("m", &margins[i]) == tinyxml2::XML_NO_ATTRIBUTE)printf("WTF!");
 				ce = ce->NextSiblingElement();
 				i++;
 			}

@@ -18,7 +18,9 @@ public:
 	virtual bool Init() = 0;
 	virtual bool Update() = 0;
 	virtual bool Exit() = 0;
-
+	
+	virtual void OnWindowResized(uint32_t w, uint32_t h) = 0;
+	virtual void OnFramebufferResized(uint32_t w, uint32_t h) = 0;
 	virtual void OnWindowClose() = 0;
 	virtual std::string GetApplicationId() = 0;
 

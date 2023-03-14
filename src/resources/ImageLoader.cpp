@@ -34,15 +34,14 @@ void ImageLoader::AddLoader(IImageLoader * loader)
 ImagePtr ImageLoader::Load(const Path & filePath)
 {
 	auto res = this->GetResource(filePath);
-
+	std::string filename = filePath.filename().generic_string();
 	if (res.resource)
 	{
-		GetContext().GetLogger()->log(LOG_LOG, "Found image in cache, skipping loading.");
+		GetContext().GetLogger()->log(LOG_INFO, "Found image '%s' in cache, skipping loading.", filename.c_str());
 		return res.resource;
 	}
-
 	std::string ext = filePath.extension().generic_string();
-	GetContext().GetLogger()->log(LOG_LOG, "Image extension: '%s'", ext.c_str());
+	GetContext().GetLogger()->log(LOG_INFO, "Image load. Name: '%s' extension: '%s'", filename.c_str(), ext.c_str());
 	auto fileSystem = GetContext().GetFileSystem();
 
 	if (fileSystem->OpenRead(filePath))
@@ -59,7 +58,7 @@ ImagePtr ImageLoader::Load(const Path & filePath)
 
 					if (buffer->size() != 0)
 					{
-						GetContext().GetLogger()->log(LOG_LOG, "Image file size: %u", buffer->size());
+						GetContext().GetLogger()->log(LOG_INFO, "Image file size: %u", buffer->size());
 
 						res.path = filePath;
 						res.resource = l->Load(buffer->data(), buffer->size());

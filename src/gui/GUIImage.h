@@ -12,9 +12,10 @@ class GUIImage :public GUIElement
 private:
 	std::shared_ptr<Texture> m_tex;
 	bool m_multichannel, m_gl;
+	uint8_t m_layer;
 	GUIStaticText* _caption;
 public:
-	GUIImage(GUIEnvironment* env, Rect2D<int> dimensions, std::shared_ptr<Texture> tex, bool multichannel = true, bool glTex = false);
+	GUIImage(GUIEnvironment* env, Rect2D<int> dimensions, std::shared_ptr<Texture> tex, bool multichannel = true, bool glTex = false, uint8_t layer = 0);
 	virtual ~GUIImage();
 
 	void SetImage(std::shared_ptr<Texture> tex);

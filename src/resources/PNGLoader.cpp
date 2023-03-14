@@ -22,7 +22,7 @@ ImagePtr png_loader::Load(void * buffer, const uint32_t size)
 	int32_t x = 0, y = 0, comp = 0;
 	uint8_t * data = stbi_load_from_memory((const uint8_t*)buffer, size, &x, &y, &comp, 0);
 
-	GetContext().GetLogger()->log(LOG_LOG, "Image loaded: w=%u; h=%u; comp=%u;", x, y, comp);
+	GetContext().GetLogger()->log(LOG_INFO, "Image loaded: w=%u; h=%u; comp=%u;", x, y, comp);
 
 	if (data)
 	{

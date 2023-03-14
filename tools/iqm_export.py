@@ -3,8 +3,8 @@
 bl_info = {
     "name": "Export Inter-Quake Model (.iqm/.iqe)",
     "author": "Lee Salzman",
-    "version": (2013, 10, 2),
-    "blender": (2, 6, 3),
+    "version": (2022, 10, 21),
+    "blender": (2, 93, 0),
     "location": "File > Export > Inter-Quake Model",
     "description": "Export to the Inter-Quake Model format (.iqm/.iqe)",
     "warning": "",
@@ -15,8 +15,7 @@ bl_info = {
 import os, struct, math
 import mathutils
 import bpy
-from bpy.props import *
-from bpy_extras.io_utils import ExportHelper
+import bpy_extras.io_utils
 
 IQM_POSITION     = 0
 IQM_TEXCOORD     = 1
@@ -230,7 +229,7 @@ class Bone:
         self.matrix = matrix
         self.localmatrix = matrix
         if self.parent:
-            self.localmatrix = parent.matrix.inverted() * self.localmatrix
+            self.localmatrix = parent.matrix.inverted() @ self.localmatrix
         self.numchannels = 0
         self.channelmask = 0
         self.channeloffsets = [ 1.0e10, 1.0e10, 1.0e10, 1.0e10, 1.0e10, 1.0e10, 1.0e10, 1.0e10, 1.0e10, 1.0e10 ]
@@ -351,16 +350,16 @@ class Animation:
         for i, bone in enumerate(bones):
             loc, quat, scale, mat = frame[i]
             if bone.parent:
-                mat = transforms[bone.parent.index] * mat
+                mat = transforms[bone.parent.index] @ mat
             transforms.append(mat)
         for i, mat in enumerate(transforms):
-            transforms[i] = mat * invbase[i]
+            transforms[i] = mat @ invbase[i]
         for mesh in meshes:
             for v in mesh.verts:
                 pos = mathutils.Vector((0.0, 0.0, 0.0))
                 for (weight, bone) in v.weights:
                     if weight > 0:
-                        pos += (transforms[bone] * v.coord) * (weight / 255.0)
+                        pos += (transforms[bone] @ v.coord) * (weight / 255.0)
                 if bbmin:
                     bbmin.x = min(bbmin.x, pos.x)
                     bbmin.y = min(bbmin.y, pos.y)
@@ -649,10 +648,16 @@ def findArmature(context):
                     break
     return armature
 
+def poseArmature(context, armature, pose):
+    if armature:
+        armature.data.pose_position = pose
+        armature.data.update_tag()
+        context.scene.frame_set(context.scene.frame_current)
 
 def derigifyBones(context, armature, scale):
     data = armature.data
 
+    defnames = []
     orgbones = {}
     defbones = {}
     org2defs = {}
@@ -664,6 +669,7 @@ def derigifyBones(context, armature, scale):
             orgbones[bone.name[4:]] = bone
             org2defs[bone.name[4:]] = []
         elif bone.name.startswith('DEF-'):
+            defnames.append(bone.name[4:])
             defbones[bone.name[4:]] = bone
             defchildren[bone.name[4:]] = []
     for name, bone in defbones.items():
@@ -683,7 +689,8 @@ def derigifyBones(context, armature, scale):
         def2org[name] = orgname
     for defs in org2defs.values():
         defs.sort()
-    for name, bone in defbones.items():
+    for name in defnames:
+        bone = defbones[name]
         orgname = def2org[name]
         orgbone = orgbones.get(orgname)
         defs = org2defs[orgname]
@@ -701,10 +708,10 @@ def derigifyBones(context, armature, scale):
 
     bones = {}
     worldmatrix = armature.matrix_world
-    worklist = [ bone for bone in defbones if bone not in defparent ]
+    worklist = [ bone for bone in defnames if bone not in defparent ]
     for index, bname in enumerate(worklist):
         bone = defbones[bname]
-        bonematrix = worldmatrix * bone.matrix_local
+        bonematrix = worldmatrix @ bone.matrix_local
         if scale != 1.0:
             bonematrix.translation *= scale
         bones[bone.name] = Bone(bname, bone.name, index, bname in defparent and bones.get(defbones[defparent[bname]].name), bonematrix)
@@ -719,7 +726,7 @@ def collectBones(context, armature, scale):
     worldmatrix = armature.matrix_world
     worklist = [ bone for bone in data.bones.values() if not bone.parent ]
     for index, bone in enumerate(worklist):
-        bonematrix = worldmatrix * bone.matrix_local
+        bonematrix = worldmatrix @ bone.matrix_local
         if scale != 1.0:
             bonematrix.translation *= scale
         bones[bone.name] = Bone(bone.name, bone.name, index, bone.parent and bones.get(bone.parent.name), bonematrix)
@@ -731,7 +738,7 @@ def collectBones(context, armature, scale):
 
 
 def collectAnim(context, armature, scale, bones, action, startframe = None, endframe = None):
-    if not startframe or not endframe:
+    if startframe is None or endframe is None:
         startframe, endframe = action.frame_range
         startframe = int(startframe)
         endframe = int(endframe)
@@ -747,13 +754,13 @@ def collectAnim(context, armature, scale, bones, action, startframe = None, endf
         for bone in bones:
             posematrix = pose.bones[bone.origname].matrix
             if bone.parent:
-                posematrix = pose.bones[bone.parent.origname].matrix.inverted() * posematrix
+                posematrix = pose.bones[bone.parent.origname].matrix.inverted() @ posematrix
             else:
-                posematrix = worldmatrix * posematrix
+                posematrix = worldmatrix @ posematrix
             if scale != 1.0:
                 posematrix.translation *= scale
             loc = posematrix.to_translation()
-            quat = posematrix.to_quaternion()
+            quat = posematrix.to_3x3().inverted().transposed().to_quaternion()
             quat.normalize()
             if quat.w > 0:
                 quat.negate()
@@ -805,100 +812,103 @@ def collectAnims(context, armature, scale, bones, animspecs):
     return anims
 
  
-def collectMeshes(context, bones, scale, matfun, useskel = True, usecol = False, filetype = 'IQM'):
+def collectMeshes(context, bones, scale, matfun, useskel = True, usecol = False, usemods = False, filetype = 'IQM', namedmaterialmeshes=False):
     vertwarn = []
     objs = context.selected_objects #context.scene.objects
     meshes = []
     for obj in objs:
         if obj.type == 'MESH':
-            data = obj.to_mesh(context.scene, False, 'PREVIEW')
-            if not data.tessfaces:
+            dg = context.evaluated_depsgraph_get()
+            data = obj.evaluated_get(dg).to_mesh(preserve_all_data_layers=True, depsgraph=dg) if usemods else obj.original.to_mesh(preserve_all_data_layers=True, depsgraph=dg)
+            if not data.polygons:
                 continue
+            data.calc_normals_split()
             coordmatrix = obj.matrix_world
             normalmatrix = coordmatrix.inverted().transposed()
             if scale != 1.0:
-                coordmatrix = mathutils.Matrix.Scale(scale, 4) * coordmatrix 
+                coordmatrix = mathutils.Matrix.Scale(scale, 4) @ coordmatrix 
             materials = {}
+            matnames = {}
             groups = obj.vertex_groups
-            uvfaces = data.tessface_uv_textures.active and data.tessface_uv_textures.active.data
+            uvlayer = data.uv_layers.active and data.uv_layers.active.data
             colors = None
             alpha = None
             if usecol:
-                if data.tessface_vertex_colors.active:
-                    if data.tessface_vertex_colors.active.name.startswith('alpha'):
-                        alpha = data.tessface_vertex_colors.active.data
+                if data.vertex_colors.active:
+                    if data.vertex_colors.active.name.startswith('alpha'):
+                        alpha = data.vertex_colors.active.data
                     else:
-                        colors = data.tessface_vertex_colors.active.data
-                for layer in data.tessface_vertex_colors:
+                        colors = data.vertex_colors.active.data
+                for layer in data.vertex_colors:
                     if layer.name.startswith('alpha'):
                         if not alpha:
                             alpha = layer.data
                     elif not colors:
                         colors = layer.data
-            for face in data.tessfaces:
+            if data.materials:
+                for idx, mat in enumerate(data.materials):
+                    if not mat:
+                        continue
+
+                    matprefix = mat.name or ''
+                    matimage = ''
+                    if mat.node_tree:
+                        for n in mat.node_tree.nodes:
+                            if n.type == 'TEX_IMAGE' and n.image:
+                                matimage = os.path.basename(n.image.filepath)
+                                break
+                    matnames[idx] = matfun(matprefix, matimage)
+            for face in data.polygons:
                 if len(face.vertices) < 3:
                     continue
                 
-                if all([ data.vertices[i].co == data.vertices[face.vertices[0]] for i in face.vertices[1:] ]):
+                if all([ data.vertices[i].co == data.vertices[face.vertices[0]].co for i in face.vertices[1:] ]):
                     continue
 
-                uvface = uvfaces and uvfaces[face.index]
-                facecol = colors and colors[face.index]
-                facealpha = alpha and alpha[face.index]
-                #material = os.path.basename(uvface.image.filepath) if uvface and uvface.image else 'no_tex.png'
-                material = "no_tex.png"
                 matindex = face.material_index
                 try:
-                    mesh = materials[obj.name, matindex, material] 
+                    mesh = materials[obj.name, matindex] 
                 except:
-                    matprefix = (data.materials and data.materials[matindex].name) or ''
-                    mesh = Mesh(obj.name, matfun(matprefix, material), data.vertices)
+                    matname = matnames.get(matindex, '')
+                    if namedmaterialmeshes and matname:
+                        newmeshname = f"{obj.name}_{matname}"
+                    else:
+                        newmeshname = obj.name
+
+                    mesh = Mesh(newmeshname, matname, data.vertices)
                     meshes.append(mesh)
-                    materials[obj.name, matindex, material] = mesh
+                    materials[obj.name, matindex] = mesh
 
                 verts = mesh.verts
                 vertmap = mesh.vertmap
                 faceverts = []
-                for i, vindex in enumerate(face.vertices):
-                    v = data.vertices[vindex]
-                    vertco = coordmatrix * v.co
+                for loopidx in face.loop_indices:
+                    loop = data.loops[loopidx]
+                    v = data.vertices[loop.vertex_index]
+                    vertco = coordmatrix @ v.co
 
                     if not face.use_smooth: 
                         vertno = mathutils.Vector(face.normal)
                     else:
-                        vertno = mathutils.Vector(v.normal)
-                    vertno = normalmatrix * vertno
+                        vertno = mathutils.Vector(loop.normal)
+                    vertno = normalmatrix @ vertno
                     vertno.normalize()
 
                     # flip V axis of texture space
-                    if uvface:
-                        uv = uvface.uv[i]
+                    if uvlayer:
+                        uv = uvlayer[loopidx].uv
                         vertuv = mathutils.Vector((uv[0], 1.0 - uv[1]))
                     else:
                         vertuv = mathutils.Vector((0.0, 0.0))
 
-                    if facecol:
-                        if i == 0:
-                            vertcol = facecol.color1
-                        elif i == 1:
-                            vertcol = facecol.color2
-                        elif i == 2:
-                            vertcol = facecol.color3
-                        else:
-                            vertcol = facecol.color4
+                    if colors:
+                        vertcol = colors[loopidx].color
                         vertcol = (int(round(vertcol[0] * 255.0)), int(round(vertcol[1] * 255.0)), int(round(vertcol[2] * 255.0)), 255)
                     else:
                         vertcol = None
 
-                    if facealpha:
-                        if i == 0:
-                            vertalpha = facealpha.color1
-                        elif i == 1:
-                            vertalpha = facealpha.color2
-                        elif i == 2:
-                            vertalpha = facealpha.color3
-                        else:
-                            vertalpha = facealpha.color4
+                    if alpha:
+                        vertalpha = alpha[loopidx].color
                         if vertcol:
                             vertcol = (vertcol[0], vertcol[1], vertcol[2], int(round(vertalpha[0] * 255.0)))
                         else:                            
@@ -944,6 +954,11 @@ def collectMeshes(context, bones, scale, matfun, useskel = True, usecol = False,
                 # Quake winding is reversed
                 for i in range(2, len(faceverts)):
                     mesh.tris.append((faceverts[0], faceverts[i], faceverts[i-1])) 
+            # Export materials in the order of their assigned index
+            for i in range(len(matnames)):
+                mesh = materials.get((obj.name, i))
+                if mesh:
+                    meshes.append(mesh)
  
     for mesh in meshes:
         mesh.optimize()
@@ -1012,7 +1027,7 @@ def exportIQE(file, meshes, bones, anims):
     file.write('\n')
 
 
-def exportIQM(context, filename, usemesh = True, useskel = True, usebbox = True, usecol = False, scale = 1.0, animspecs = None, matfun = (lambda prefix, image: prefix + "|" + image), derigify = False):
+def exportIQM(context, filename, usemesh = True, usemods = False, useskel = True, usebbox = True, usecol = False, scale = 1.0, animspecs = None, matfun = (lambda prefix, image: image), derigify = False, boneorder = None, namedmaterialmeshes=False):
     armature = findArmature(context)
     if useskel and not armature:
         print('No armature selected')
@@ -1033,11 +1048,36 @@ def exportIQM(context, filename, usemesh = True, useskel = True, usebbox = True,
             bones = collectBones(context, armature, scale)
     else:
         bones = {}
+
+    if boneorder:
+        try:
+            f = open(bpy_extras.io_utils.path_reference(boneorder, os.path.dirname(bpy.data.filepath), os.path.dirname(filename)), "r", encoding = "utf-8")
+            names = [line.strip() for line in f.readlines()]
+            f.close()
+            names = [name for name in names if name in [bone.name for bone in bones.values()]]
+            if len(names) != len(bones):
+                print('Bone order (%d) does not match skeleton (%d)' % (len(names), len(bones)))
+                return 
+            print('Reordering bones')
+            for bone in bones.values():
+                bone.index = names.index(bone.name)
+        except:
+            print('Failed opening bone order: %s' % boneorder)
+            return
+
+    if armature:
+        oldpose = armature.data.pose_position
+        poseArmature(context, armature, 'REST')
+
     bonelist = sorted(bones.values(), key = lambda bone: bone.index)
     if usemesh:
-        meshes = collectMeshes(context, bones, scale, matfun, useskel, usecol, filetype)
+        meshes = collectMeshes(context, bones, scale, matfun, useskel, usecol, usemods, filetype, namedmaterialmeshes)
     else:
         meshes = []
+
+    if armature:
+        poseArmature(context, armature, oldpose)
+
     if useskel and animspecs:
         anims = collectAnims(context, armature, scale, bonelist, animspecs)
     else:
@@ -1070,31 +1110,32 @@ def exportIQM(context, filename, usemesh = True, useskel = True, usebbox = True,
         print('No %s file was generated' % (filetype))
 
 
-class ExportIQM(bpy.types.Operator, ExportHelper):
+class ExportIQM(bpy.types.Operator, bpy_extras.io_utils.ExportHelper):
     '''Export an Inter-Quake Model IQM or IQE file'''
     bl_idname = "export.iqm"
     bl_label = 'Export IQM'
     filename_ext = ".iqm"
-    animspec = StringProperty(name="Animations", description="Animations to export", maxlen=1024, default="")
-    usemesh = BoolProperty(name="Meshes", description="Generate meshes", default=True)
-    useskel = BoolProperty(name="Skeleton", description="Generate skeleton", default=True)
-    usebbox = BoolProperty(name="Bounding boxes", description="Generate bounding boxes", default=True)
-    usecol = BoolProperty(name="Vertex colors", description="Export vertex colors", default=False)
-    usescale = FloatProperty(name="Scale", description="Scale of exported model", default=1.0, min=0.0, step=50, precision=2)
-    #usetrans = FloatVectorProperty(name="Translate", description="Translate position of exported model", step=50, precision=2, size=3)
-    matfmt = EnumProperty(name="Materials", description="Material name format", items=[("m+i-e", "material+image-ext", ""), ("m|i.e", "material|image.ext", ""), ("m", "material", ""), ("i", "image", "")], default="m|i.e")
-    derigify = BoolProperty(name="De-rigify", description="Export only deformation bones from rigify", default=False)
+    animspec: bpy.props.StringProperty(name="Animations", description="Animations to export", maxlen=1024, default="")
+    usemesh: bpy.props.BoolProperty(name="Meshes", description="Generate meshes", default=True)
+    usemods: bpy.props.BoolProperty(name="Modifiers", description="Apply modifiers", default=True)
+    useskel: bpy.props.BoolProperty(name="Skeleton", description="Generate skeleton", default=True)
+    usebbox: bpy.props.BoolProperty(name="Bounding boxes", description="Generate bounding boxes", default=True)
+    usecol: bpy.props.BoolProperty(name="Vertex colors", description="Export vertex colors", default=False)
+    usescale: bpy.props.FloatProperty(name="Scale", description="Scale of exported model", default=1.0, min=0.0, step=50, precision=2)
+    #usetrans: bpy.props.FloatVectorProperty(name="Translate", description="Translate position of exported model", step=50, precision=2, size=3)
+    matfmt: bpy.props.EnumProperty(name="Materials", description="Material name format", items=[("m+i-e", "material+image-ext", ""), ("m", "material", ""), ("i", "image", "")], default="m+i-e")
+    derigify: bpy.props.BoolProperty(name="De-rigify", description="Export only deformation bones from rigify", default=False)
+    namedmaterialmeshes: bpy.props.BoolProperty(name="Named material meshes", description="Append material names to individual exported mesh objects, for meshes with multiple materials", default=False)
+    boneorder: bpy.props.StringProperty(name="Bone order", description="Override ordering of bones", subtype="FILE_NAME", default="")
 
     def execute(self, context):
         if self.properties.matfmt == "m+i-e":
             matfun = lambda prefix, image: prefix + os.path.splitext(image)[0]
-        elif self.properties.matfmt == "m|i.e":
-            matfun = lambda prefix, image: prefix + "|" + image
         elif self.properties.matfmt == "m":
             matfun = lambda prefix, image: prefix
         else:
             matfun = lambda prefix, image: image
-        exportIQM(context, self.properties.filepath, self.properties.usemesh, self.properties.useskel, self.properties.usebbox, self.properties.usecol, self.properties.usescale, self.properties.animspec, matfun, self.properties.derigify)
+        exportIQM(context, self.properties.filepath, self.properties.usemesh, self.properties.usemods, self.properties.useskel, self.properties.usebbox, self.properties.usecol, self.properties.usescale, self.properties.animspec, matfun, self.properties.derigify, self.properties.boneorder, self.properties.namedmaterialmeshes)
         return {'FINISHED'}
 
     def check(self, context):
@@ -1112,14 +1153,13 @@ def menu_func(self, context):
 
 
 def register():
-    bpy.utils.register_module(__name__)
-    bpy.types.INFO_MT_file_export.append(menu_func)
+    bpy.utils.register_class(ExportIQM)
+    bpy.types.TOPBAR_MT_file_export.append(menu_func)
 
 def unregister():
-    bpy.utils.unregister_module(__name__)
-    bpy.types.INFO_MT_file_export.remove(menu_func)
+    bpy.utils.unregister_class(ExportIQM)
+    bpy.types.TOPBAR_MT_file_export.remove(menu_func)
 
 
 if __name__ == "__main__":
     register()
-

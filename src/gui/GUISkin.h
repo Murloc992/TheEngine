@@ -1,7 +1,5 @@
 #pragma once
 
-using namespace tinyxml2;
-
 enum gui_style
 {
 	gui_skin_whole_texture,
@@ -84,13 +82,13 @@ public:
 	void print()
 	{
 	}
+public:
+	std::string name, atlas;
+	uint32_t atlas_size;
 private:
 	std::vector<Rect2D<int> > rects;
 	std::vector<glm::vec2> uvs;
 	std::vector<int> margins;
-
-	std::string name, atlas;
-	uint32_t atlas_size;
 
 	void generate_uv();
 };

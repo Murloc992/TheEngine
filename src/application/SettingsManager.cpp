@@ -36,4 +36,6 @@ void ApplicationSettingsManager::InitSettings()
 	videoVarGroup.AddVar(Var("windowed", true));
 	videoVarGroup.AddVar(Var("fullscreen", false));
 	videoVarGroup.AddVar(Var("msaa", 0));
+	videoVarGroup.AddVar(Var("vsync", false));
+	videoVarGroup.AddVar(Var("frame_limit", 60));
 }

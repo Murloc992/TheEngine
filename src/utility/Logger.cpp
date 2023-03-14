@@ -50,8 +50,8 @@ std::string Logger::FormatMessage(loglevel lev, const char* formatString, va_lis
 
 	switch (lev)
 	{
-	case LOG_LOG:
-		message += "LOG: ";
+	case LOG_INFO:
+		message += "INFO: ";
 		break;
 	case LOG_DEBUG:
 		message += "DEBUG: ";

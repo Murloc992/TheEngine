@@ -7,7 +7,7 @@
 ///REFACTOR: bitwise levels, verbosity from config, separate verbosity for file, console.
 enum loglevel
 {
-	LOG_LOG = 0, //just logging
+	LOG_INFO = 0, //just logging
 	LOG_DEBUG, //output for debugging
 	LOG_WARN, //warnings               ///Why the **** is this the only enum that has the word cut off half way..
 	LOG_ERROR, //errors

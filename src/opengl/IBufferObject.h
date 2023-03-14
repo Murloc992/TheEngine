@@ -24,6 +24,7 @@ struct IBufferObject
 	virtual ~IBufferObject();
 
 	virtual void Init() = 0;
+	virtual void Bind() = 0;
 	virtual void Upload() = 0;
 	virtual void Free() = 0;
 	virtual void Clear() = 0;

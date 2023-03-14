@@ -40,6 +40,7 @@ public:
 	uint32_t imageFormat;
 	uint32_t internalFormat;
 	uint32_t dataType;
+	bool is_array;
 
 	static uint32_t current, active_slot;
 

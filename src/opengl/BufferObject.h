@@ -20,6 +20,11 @@ void BufferObject<type>::Init() \
 	glGenBuffers(1, &this->Id); \
 } \
 template <> \
+void BufferObject<type>::Bind() \
+{ \
+	glBindBuffer(GL_ARRAY_BUFFER, this->Id); \
+} \
+template <> \
 void BufferObject<type>::UploadOrphan(size_t size) \
 { \
 	glBindBuffer(GL_ARRAY_BUFFER, this->Id); \
@@ -63,6 +68,7 @@ struct BufferObject : public IBufferObject
 
 	//void Init_buffers();
 	virtual void Init();
+	virtual void Bind();
 	virtual void Upload();
 	virtual void UploadOrphan(size_t size);
 	virtual void UploadSubData(const std::vector<T> &subdata, uint32_t offset);
@@ -108,6 +114,11 @@ void IndexBufferObject<type>::Init() \
 	glGenBuffers(1, &this->Id); \
 } \
 template <> \
+void IndexBufferObject<type>::Bind() \
+{ \
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->Id); \
+} \
+template <> \
 void IndexBufferObject<type>::UploadOrphan(size_t size) \
 { \
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->Id); \
@@ -150,6 +161,7 @@ struct IndexBufferObject : public IBufferObject
 
 	//void Init_buffers();
 	virtual void Init();
+	virtual void Bind();
 	virtual void Upload();
 	virtual void UploadOrphan(size_t size);
 	virtual void UploadSubData(const std::vector<T> &subdata, uint32_t offset);

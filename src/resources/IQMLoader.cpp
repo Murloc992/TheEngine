@@ -144,7 +144,7 @@ MeshPtr IQMLoader::Load(const char* data, const uint32_t size)
 			m.start = sm.first_triangle * 3;
 			m.num_indices = sm.num_triangles * 3;
 
-			m_logger->log(LOG_DEBUG, "TEST MESH LOADER INFO:\nName:%s\nMaterial:%s\nF.Vert:%i\nN.Verts:%i\nF.Ind:%i\nN.Inds:%i", m.name.c_str(), m.material_name.c_str(), sm.first_vertex, sm.num_vertexes, sm.first_triangle * 3, sm.num_triangles * 3);
+			m_logger->log(LOG_DEBUG, "MESH LOADER INFO:\n\tName:%s\n\tMaterial:%s\n\tF.Vert:%i\n\tN.Verts:%i\n\tF.Ind:%i\n\tN.Inds:%i", m.name.c_str(), m.material_name.c_str(), sm.first_vertex, sm.num_vertexes, sm.first_triangle * 3, sm.num_triangles * 3);
 		}
 	}
 

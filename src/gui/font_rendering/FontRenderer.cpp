@@ -37,7 +37,6 @@ FontRenderer::FontRenderer()
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 	_fontShader = GetContext().GetResourceManager()->LoadShader(Path("res/engine/shaders/font"));
-	printf("Font shader id:%d\n", _fontShader->GetProgramId());
 }
 
 FontRenderer::~FontRenderer()
@@ -62,7 +61,7 @@ Font* FontRenderer::_CreateFont(const std::string& name, const std::string& file
 
 	uint32_t fl = helpers::read(filename, buf);
 
-	_logger->log(LOG_DEBUG, "BUF: %u\n", fl);
+	_logger->log(LOG_DEBUG, "Loaded a font: %s | %s | %u bytes", filename.c_str(), name.c_str(), fl);
 
 	if (fl <= 0) {
 		_logger->log(LOG_ERROR, "Font file appears to be empty or corrupt.\n");

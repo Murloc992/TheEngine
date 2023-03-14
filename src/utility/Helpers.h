@@ -11,7 +11,7 @@
 #define loopxyzr(cx,sx,ex,cy,sy,ey,cz,sz,ez) loopr((cz),sz,ez) loopr((cy),sy,ey) loopr((cx),sx,ex)
 #define loopxyzrv(cx,cy,cz,sv,ev) loopri((cz),sv.z,ev.z) loopri((cy),sv.y,ev.y) loopri((cx),sv.x,ev.x)
 #define components(vec) (vec).x, (vec).y, (vec).z
-#define SetBindingSafe(shader,binding,value) if(shader->HasBinding((binding))) { shader->GetBinding((binding)).Set((value)); }
+#define SetBindingSafe(shader,binding,value) if(shader->HasBinding((binding))){shader->GetBinding((binding)).Set((value));}
 #define ROUNDING_ERROR 0.00001f
 
 #define MOVABLE_NOT_COPYABLE(class_name) class_name(const class_name&) = delete;\

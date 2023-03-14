@@ -18,11 +18,13 @@ ShaderPtr ShaderLoader::Load(const Path & vertex_file_name, const Path & fragmen
 {
 	Path resourceName = vertex_file_name.filename().generic_string() + fragment_file_name.filename().generic_string();
 
+	GetContext().GetLogger()->log(LOG_INFO, "Loading shader: '%s'", resourceName.generic_string().c_str());
+
 	Resource<Shader> existingResource = this->GetResource(resourceName);
 
 	if (existingResource.resource && !replaceCached)
 	{
-		GetContext().GetLogger()->log(LOG_LOG, "Shader returned from cache.");
+		GetContext().GetLogger()->log(LOG_INFO, "Shader returned from cache.");
 		return existingResource.resource;
 	}
 
@@ -34,7 +36,7 @@ ShaderPtr ShaderLoader::Load(const Path & vertex_file_name, const Path & fragmen
 		return ShaderPtr();
 	}
 
-	GetContext().GetLogger()->log(LOG_LOG, "Shader resource name: %s", resourceName.generic_string().c_str());
+	GetContext().GetLogger()->log(LOG_INFO, "Shader resource name: %s", resourceName.generic_string().c_str());
 
 	ByteBufferPtr vertexBuffer = vertexFile->ReadText();
 	ByteBufferPtr fragmentBuffer = fragmentFile->ReadText();
@@ -47,10 +49,10 @@ ShaderPtr ShaderLoader::Load(const Path & vertex_file_name, const Path & fragmen
 		if (existingResource.resource)
 		{
 			RemoveResource(existingResource.path);
-			GetContext().GetLogger()->log(LOG_LOG, "Removed cached shader: '%s'.", resourceName.c_str());
+			GetContext().GetLogger()->log(LOG_INFO, "Removed cached shader: '%s'.", resourceName.c_str());
 		}
 
-		GetContext().GetLogger()->log(LOG_LOG, "Shader loaded: '%s'.", resourceName.c_str());
+		GetContext().GetLogger()->log(LOG_INFO, "Shader loaded: '%s'.", resourceName.c_str());
 
 		Resource<Shader> res(ShaderPtr(shader), resourceName);
 		this->AddResource(res);
@@ -72,10 +74,11 @@ ShaderPtr ShaderLoader::Load(const Path & vertex_file_name, const Path & fragmen
 ShaderPtr ShaderLoader::Load(const Path & fileName, bool replaceCached)
 {
 	Resource<Shader> existingResource = this->GetResource(fileName);
+	GetContext().GetLogger()->log(LOG_INFO, "Loading shader: '%s'", fileName.generic_string().c_str());
 
 	if (existingResource.resource && replaceCached == false)
 	{
-		GetContext().GetLogger()->log(LOG_LOG, "Found shader in cache, skipping loading.");
+		GetContext().GetLogger()->log(LOG_INFO, "Found shader in cache, skipping loading.");
 		return existingResource.resource;
 	}
 
@@ -119,9 +122,9 @@ ShaderPtr ShaderLoader::Load(const Path & fileName, bool replaceCached)
 		if (existingResource.resource)
 		{
 			RemoveResource(existingResource.path);
-			GetContext().GetLogger()->log(LOG_LOG, "Removed cached shader: '%s'.", fileName.generic_string().c_str());
+			GetContext().GetLogger()->log(LOG_INFO, "Removed cached shader: '%s'.", fileName.generic_string().c_str());
 		}
-		GetContext().GetLogger()->log(LOG_LOG, "Shader loaded: '%s'.", fileName.generic_string().c_str());
+		GetContext().GetLogger()->log(LOG_INFO, "Shader loaded: '%s'.", fileName.generic_string().c_str());
 
 		Resource<Shader> res(ShaderPtr(sh), fileName);
 		this->AddResource(res);

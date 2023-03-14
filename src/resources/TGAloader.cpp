@@ -22,7 +22,7 @@ ImagePtr tgaloader::Load(void * buffer, const uint32_t size)
 	if (m_header.datatypecode == 2)/// load the uncompressed TGA
 		return ImagePtr(this->loadUncompressedTGA(buffer, size));
 	else
-		GetContext().GetLogger()->log(LOG_WARN, "bad tga header: %i\n", (int)m_header.datatypecode);
+		GetContext().GetLogger()->log(LOG_WARN, "bad tga header: %i", (int)m_header.datatypecode);
 
 	return ImagePtr(NULL);
 }
@@ -33,7 +33,7 @@ Image * tgaloader::loadUncompressedTGA(void * buffer, const uint32_t size)
 	uint8_t components = m_header.bitsperpixel / 8;
 	if (m_header.width <= 0 || m_header.height <= 0 || (components != 3 && components != 4))
 	{
-		GetContext().GetLogger()->log(LOG_LOG, "Ooops, something is wrong with image: %i, %i, %i\n", (int)m_header.width, (int)m_header.height, (int)m_header.bitsperpixel);
+		GetContext().GetLogger()->log(LOG_INFO, "Ooops, something is wrong with image: %i, %i, %i", (int)m_header.width, (int)m_header.height, (int)m_header.bitsperpixel);
 		return 0;
 	}
 

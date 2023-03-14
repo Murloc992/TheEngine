@@ -62,6 +62,7 @@ struct Triangle
 };
 
 struct IBufferObject;
+
 class Mesh
 {
 public:
@@ -172,7 +173,7 @@ public:
 		}
 	}
 
-	const std::vector<glm::mat4>& GetCurrentFrame()
+	const std::vector<glm::mat4> GetCurrentFrame()
 	{
 		if (current_animation)
 		{

@@ -50,7 +50,7 @@ GUIEnvironment::GUIEnvironment() : GUIElement(nullptr, Rect2D<int>(0, 0, GetCont
 
     skin_atlas = share(new Texture());
     ImageLoader* imgl = new ImageLoader();
-    auto img = std::shared_ptr<Image>(imgl->Load("res/gui/skins/skin_default2.png"));
+    auto img = std::shared_ptr<Image>(imgl->Load(skin->atlas));
     skin_atlas->Init(img);
     delete imgl;
 
@@ -114,9 +114,9 @@ GUISlider* GUIEnvironment::AddGUISlider(Rect2D<int> dimensions, float min, float
     return ret;
 }
 
-GUIImage* GUIEnvironment::AddGUIImage(Rect2D<int> dimensions, TexturePtr tex, bool multichannel, bool glTex)
+GUIImage* GUIEnvironment::AddGUIImage(Rect2D<int> dimensions, TexturePtr tex, bool multichannel, bool glTex, uint8_t layer)
 {
-    auto ret = new GUIImage(this, dimensions, tex, multichannel, glTex);
+    auto ret = new GUIImage(this, dimensions, tex, multichannel, glTex, layer);
     ret->SetParent(this);
     return ret;
 }
@@ -318,11 +318,9 @@ FontRenderer* GUIEnvironment::GetFontRenderer()
     return m_font_renderer;
 }
 
-void GUIEnvironment::DrawGUIQuad(Rect2D<int> dims, TexturePtr tex, bool tile, bool multichannel, bool glTex)
+void GUIEnvironment::DrawGUIQuad(Rect2D<int> dims, TexturePtr tex, uint8_t layer, bool multichannel, bool glTex)
 {
     Rect2D<float> scaled_dims = ScaleGUIRect(dims.as<float>());
-
-    tex->Set(0);
 
     gui_quad->SetUV(skin->get_uv(glTex ? gui_skin_whole_texture_gl : gui_skin_whole_texture));
 
@@ -331,17 +329,32 @@ void GUIEnvironment::DrawGUIQuad(Rect2D<int> dims, TexturePtr tex, bool tile, bo
     M = glm::translate(M, glm::vec3(scaled_dims.x, scaled_dims.y, 0));
     M = glm::scale(M, glm::vec3(scaled_dims.w, scaled_dims.h, 0));
 
-    SetBindingSafe(gui_shader, "tex", 0);
+    uint8_t tex_slot = 0;
+
+    if (tex->Type == GL_TEXTURE_2D_ARRAY || tex->Type == GL_TEXTURE_3D)
+    {
+        SetBindingSafe(gui_shader, "subtexture", 1);
+        SetBindingSafe(gui_shader, "texarray", 1);
+        SetBindingSafe(gui_shader, "layer", static_cast<float>(layer));
+    }
+    else
+    {
+        SetBindingSafe(gui_shader, "subtexture", 0);
+        SetBindingSafe(gui_shader, "tex", 0);
+    }
+
     SetBindingSafe(gui_shader, "M", M);
     SetBindingSafe(gui_shader, "singlechannel", !multichannel);
     SetBindingSafe(gui_shader, "colored", GL_FALSE);
     SetBindingSafe(gui_shader, "color", glm::vec4(0.f));
     SetBindingSafe(gui_shader, "alpha", 1.0f);
 
+    tex->Set(tex_slot);
+
     gui_shader->Set();
     gui_quad->Render();
 
-    tex->Unset(0);
+    tex->Unset(tex_slot);
 }
 
 void GUIEnvironment::DrawGUIQuad(Rect2D<int> dims, uint32_t style, bool tile)
@@ -357,6 +370,7 @@ void GUIEnvironment::DrawGUIQuad(Rect2D<int> dims, uint32_t style, bool tile)
     M = glm::translate(M, glm::vec3(scaled_dims.x, scaled_dims.y, 0));
     M = glm::scale(M, glm::vec3(scaled_dims.w, scaled_dims.h, 0));
 
+    SetBindingSafe(gui_shader, "subtexture", 0);
     SetBindingSafe(gui_shader, "tex", 0);
     SetBindingSafe(gui_shader, "M", M);
     SetBindingSafe(gui_shader, "singlechannel", GL_FALSE);
@@ -379,6 +393,7 @@ void GUIEnvironment::DrawGUIQuad(Rect2D<int> dims, glm::vec4 col)
     M = glm::translate(M, glm::vec3(scaled_dims.x, scaled_dims.y, 0));
     M = glm::scale(M, glm::vec3(scaled_dims.w, scaled_dims.h, 0));
 
+    SetBindingSafe(gui_shader, "subtexture", 0);
     SetBindingSafe(gui_shader, "tex", 0);
     SetBindingSafe(gui_shader, "M", M);
     SetBindingSafe(gui_shader, "singlechannel", GL_FALSE);
@@ -390,29 +405,42 @@ void GUIEnvironment::DrawGUIQuad(Rect2D<int> dims, glm::vec4 col)
     gui_quad->Render();
 }
 
-void GUIEnvironment::DrawSlicedGUIQuad(Rect2D<int> size, TexturePtr tex, bool tile)
+void GUIEnvironment::DrawSlicedGUIQuad(Rect2D<int> size, TexturePtr tex, uint8_t layer)
 {
     Rect2D<float> scaled_dims = ScaleGUIRect(size.as<float>());
-
-    tex->Set(0);
 
     glm::mat4 M = glm::mat4(1.0f);
 
     M = glm::translate(M, glm::vec3(scaled_dims.x, scaled_dims.y, 0));
     M = glm::scale(M, glm::vec3(scaled_dims.w, scaled_dims.h, 0));
 
-    SetBindingSafe(gui_shader, "tex", 0);
+    uint8_t tex_slot = 0;
+
+    if (tex->Type == GL_TEXTURE_2D_ARRAY || tex->Type == GL_TEXTURE_3D)
+    {
+        SetBindingSafe(gui_shader, "subtexture", 1);
+        SetBindingSafe(gui_shader, "texarray", 1);
+        SetBindingSafe(gui_shader, "layer", static_cast<float>(layer));
+    }
+    else
+    {
+        SetBindingSafe(gui_shader, "subtexture", 0);
+        SetBindingSafe(gui_shader, "tex", 0);
+    }
+
     SetBindingSafe(gui_shader, "M", M);
     SetBindingSafe(gui_shader, "singlechannel", GL_FALSE);
     SetBindingSafe(gui_shader, "colored", GL_FALSE);
     SetBindingSafe(gui_shader, "color", glm::vec4(0.f));
     SetBindingSafe(gui_shader, "alpha", 1.0f);
 
+    tex->Set(tex_slot);
+
     sliced_quad->SetRatio(glm::vec2(size.w, size.h));
     gui_shader->Set();
     sliced_quad->Render();
 
-    tex->Unset(0);
+    tex->Unset(tex_slot);
 }
 
 void GUIEnvironment::DrawSlicedGUIQuad(Rect2D<int> size, uint32_t style)
@@ -432,6 +460,7 @@ void GUIEnvironment::DrawSlicedGUIQuad(Rect2D<int> size, uint32_t style)
     M = glm::translate(M, glm::vec3(scaled_dims.x, scaled_dims.y, 0));
     M = glm::scale(M, glm::vec3(scaled_dims.w, scaled_dims.h, 0));
 
+    SetBindingSafe(gui_shader, "subtexture", 0);
     SetBindingSafe(gui_shader, "tex", 0);
     SetBindingSafe(gui_shader, "M", M);
     SetBindingSafe(gui_shader, "singlechannel", GL_FALSE);
@@ -454,6 +483,7 @@ void GUIEnvironment::DrawSlicedGUIQuad(Rect2D<int> size, glm::vec4 col)
     M = glm::translate(M, glm::vec3(scaled_dims.x, scaled_dims.y, 0));
     M = glm::scale(M, glm::vec3(scaled_dims.w, scaled_dims.h, 0));
 
+    SetBindingSafe(gui_shader, "subtexture", 0);
     SetBindingSafe(gui_shader, "tex", 0);
     SetBindingSafe(gui_shader, "M", M);
     SetBindingSafe(gui_shader, "singlechannel", GL_FALSE);

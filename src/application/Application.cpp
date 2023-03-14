@@ -118,16 +118,19 @@ bool Application::InitWindowAndOpenGL(const std::string& title)
 		height = GetContext().GetApplicationSettingsManager()->GetGroup("video").GetVar("window_height").ValueI();
 	bool windowed = GetContext().GetApplicationSettingsManager()->GetGroup("video").GetVar("windowed").ValueB();
 	bool fullscreen = GetContext().GetApplicationSettingsManager()->GetGroup("video").GetVar("fullscreen").ValueB();
+	bool vsync = GetContext().GetApplicationSettingsManager()->GetGroup("video").GetVar("vsync").ValueB();
 	uint32_t msaa = GetContext().GetApplicationSettingsManager()->GetGroup("video").GetVar("msaa").ValueI();
 
-	if (!GetContext().GetWindow()->Init(title, width, height, fullscreen, windowed, msaa))
+	if (!GetContext().GetWindow()->Init(title, width, height, fullscreen, windowed, vsync, msaa))
 	{
-		GetContext().GetLogger()->log(LOG_LOG, "Could not initialize ApplicationWindow with dimensions %ix%i", width, height);
+		GetContext().GetLogger()->log(LOG_INFO, "Could not initialize ApplicationWindow with dimensions %ix%i", width, height);
 		delete GetContext().p_window;
 		GetContext().p_window = nullptr;
 		return false;
 	}
 
+	GetContext().GetWindow()->SigWindowResized().connect(sigc::mem_fun(*this, &Application::OnWindowResized));
+	GetContext().GetWindow()->SigFramebufferResized().connect(sigc::mem_fun(*this, &Application::OnFramebufferResized));
 	GetContext().GetWindow()->SigWindowClosed().connect(sigc::mem_fun(*this, &Application::OnWindowClose));
 
 	///REFACTOR: Opengl initialization should have it's own place, worst case: extract method.
@@ -167,7 +170,7 @@ bool Application::DestroyContext()
 {
 	if (GetContext().p_logger)
 	{
-		GetContext().p_logger->log(LOG_LOG, "Exitting.");
+		GetContext().p_logger->log(LOG_INFO, "Exitting.");
 	}
 
 	if (GetContext().p_guiEnv)

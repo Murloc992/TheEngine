@@ -131,7 +131,7 @@ struct FrameBufferObject : public GLObject
 		if (obj->GetType() == GLO_TEXTURE)
 		{
 			TexturePtr tex = std::static_pointer_cast<Texture>(obj);
-			glFramebufferTexture2D(target, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, tex->Id, level);
+			glFramebufferTexture(target, GL_DEPTH_ATTACHMENT, tex->Id, level);
 		}
 		else if (obj->GetType() == GLO_RENDERBUFFER)
 		{
@@ -147,7 +147,7 @@ struct FrameBufferObject : public GLObject
 		if (obj->GetType() == GLO_TEXTURE)
 		{
 			TexturePtr tex = std::static_pointer_cast<Texture>(obj);
-			glFramebufferTexture2D(target, GL_STENCIL_ATTACHMENT, tex->Type, tex->Id, level);
+			glFramebufferTexture(target, GL_STENCIL_ATTACHMENT, tex->Id, level);
 		}
 		else if (obj->GetType() == GLO_RENDERBUFFER)
 		{
@@ -163,7 +163,7 @@ struct FrameBufferObject : public GLObject
 		if (obj->GetType() == GLO_TEXTURE)
 		{
 			TexturePtr tex = std::static_pointer_cast<Texture>(obj);
-			glFramebufferTexture2D(target, GL_DEPTH_STENCIL_ATTACHMENT, tex->Type, tex->Id, level);
+			glFramebufferTexture(target, GL_DEPTH_STENCIL_ATTACHMENT, tex->Id, level);
 		}
 		else if (obj->GetType() == GLO_RENDERBUFFER)
 		{
@@ -181,7 +181,7 @@ struct FrameBufferObject : public GLObject
 			if (obj->GetType() == GLO_TEXTURE)
 			{
 				TexturePtr tex = std::static_pointer_cast<Texture>(obj);
-				glFramebufferTexture2D(target, attachment_point + GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex->Id, level);
+				glFramebufferTexture(target, attachment_point + GL_COLOR_ATTACHMENT0, tex->Id, level);
 			}
 			else if (obj->GetType() == GLO_RENDERBUFFER)
 			{
@@ -198,25 +198,25 @@ struct FrameBufferObject : public GLObject
 		if (attachment_point < 8)
 		{
 			color_binding[attachment_point] = nullptr;
-			glFramebufferTexture2D(target, attachment_point + GL_COLOR_ATTACHMENT0, 0, 0, 0);
+			glFramebufferTexture(target, attachment_point + GL_COLOR_ATTACHMENT0, 0, 0);
 		}
 	}
 
 	void DetachDepthTexture()
 	{
-		glFramebufferTexture2D(target, GL_DEPTH_ATTACHMENT, 0, 0, 0);
+		glFramebufferTexture(target, GL_DEPTH_ATTACHMENT, 0, 0);
 		depth_buffer_binding = nullptr;
 	}
 
 	void DetachStencilTexture()
 	{
-		glFramebufferTexture2D(target, GL_DEPTH_ATTACHMENT, 0, 0, 0);
+		glFramebufferTexture(target, GL_DEPTH_ATTACHMENT, 0, 0);
 		stencil_buffer_binding = nullptr;
 	}
 
 	void DetachDepthStencilTexture()
 	{
-		glFramebufferTexture2D(target, GL_DEPTH_STENCIL_ATTACHMENT, 0, 0, 0);
+		glFramebufferTexture(target, GL_DEPTH_STENCIL_ATTACHMENT, 0, 0);
 		depth_stencil_buffer_binding = nullptr;
 	}
 

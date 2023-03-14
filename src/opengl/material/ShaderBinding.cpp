@@ -56,6 +56,16 @@ void ShaderBinding::Set(float value)
 	m_value = share(new TBindingValue<float>(value));
 }
 
+void ShaderBinding::Set(std::vector<float> value)
+{
+	if (m_value)
+	{
+		static_cast<TBindingValue<std::vector<float>>*>(m_value.get())->Update(value);
+		return;
+	}
+	m_value = share(new TBindingValue<std::vector<float>>(value));
+}
+
 void ShaderBinding::Set(int32_t value)
 {
 	if (m_value)

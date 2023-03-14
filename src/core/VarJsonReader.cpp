@@ -126,7 +126,7 @@ void LoadGroup(VarGroup & g, Json::Value & jg, Logger * logger)
 		return;
 
 	if (logger)
-		logger->log(LOG_LOG, "Loading group: %s", g.Name());
+		logger->log(LOG_INFO, "Loading group: %s", g.Name());
 
 	for (Var & var : g.Vars())
 	{

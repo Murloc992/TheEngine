@@ -15,6 +15,12 @@ void TBindingValue<float>::Set(int32_t index)
 }
 
 template <>
+void TBindingValue<std::vector<float>>::Set(int32_t index)
+{
+	glUniform1fv(index, m_value.size(), &m_value[0]);
+}
+
+template <>
 void TBindingValue<glm::mat4>::Set(int32_t index) 
 {
 	glUniformMatrix4fv(index, 1, GL_FALSE, glm::value_ptr(m_value));

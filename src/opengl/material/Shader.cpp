@@ -24,7 +24,7 @@ void Shader::ShowCompilationInfo(uint32_t obj, const std::string& tname, const s
 		else
 			glGetShaderInfoLog(obj, length, &length, log);
 
-		GetContext().GetLogger()->log(LOG_ERROR, "GLSL ERROR (%s:%s): [%i] %s\n", tname.c_str(), name.c_str(), length, log);
+		GetContext().GetLogger()->log(LOG_ERROR, "GLSL ERROR (%s:%s): [%i] %s", tname.c_str(), name.c_str(), length, log);
 
 		delete[] log;
 	}
@@ -126,7 +126,7 @@ void Shader::Set()
 {
 	if (program != Shader::currentProgram)
 	{
-		//GetContext().GetLogger()->log(loglevel::LOG_LOG, "stuff is set");
+		//GetContext().GetLogger()->log(loglevel::LOG_INFO, "stuff is set");
 		glUseProgram(program);
 		Shader::currentProgram = program;
 	}
@@ -172,7 +172,7 @@ void Shader::QueryAllBindingLocations()
 	int32_t total = -1;
 	glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &total);
 
-	GetContext().GetLogger()->log(LOG_LOG, "Binding count: %i\n", total);
+	GetContext().GetLogger()->log(LOG_INFO, "Binding count: %i", total);
 
 	for (int i = 0; i < total; ++i)
 	{
@@ -183,7 +183,7 @@ void Shader::QueryAllBindingLocations()
 		GLint location = glGetUniformLocation(program, name);
 
 		m_bindings.push_back(ShaderBinding(location, name, type));
-		GetContext().GetLogger()->log(LOG_LOG, "Binding index=%i; Name='%s'; Type=%i;\n", location, name, type);
+		GetContext().GetLogger()->log(LOG_INFO, "\tBinding index=%i; Name='%s'; Type=%i;", location, name, type);
 	}
 }
 

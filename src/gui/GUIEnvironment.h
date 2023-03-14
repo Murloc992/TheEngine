@@ -37,11 +37,11 @@ public:
 
 	virtual bool OnEvent(const GUIEvent & e);
 
-	void DrawGUIQuad(Rect2D<int> size, std::shared_ptr<Texture> tex, bool tile = false, bool multichannel = true, bool glTex = false);
+	void DrawGUIQuad(Rect2D<int> size, TexturePtr tex, uint8_t layer = 0, bool multichannel = true, bool glTex = false);
 	void DrawGUIQuad(Rect2D<int> size, uint32_t style = gui_style::gui_skin_background, bool tile = false);
 	void DrawGUIQuad(Rect2D<int> size, glm::vec4 col = glm::vec4(1.f));
 
-	void DrawSlicedGUIQuad(Rect2D<int> size, std::shared_ptr<Texture> tex, bool tile = false);
+	void DrawSlicedGUIQuad(Rect2D<int> size, TexturePtr tex, uint8_t layer = 0);
 	void DrawSlicedGUIQuad(Rect2D<int> size, uint32_t style = gui_style::gui_skin_background);
 	void DrawSlicedGUIQuad(Rect2D<int> size, glm::vec4 col = glm::vec4(1.f));
 
@@ -111,7 +111,7 @@ public:
 	GUICheckbox* AddGUICheckbox(Rect2D<int> dimensions, bool checked);
 	GUIEditBox* AddGUIEditBox(Rect2D<int> dimensions, std::wstring text = L"text", glm::vec4 text_color = glm::vec4(1, 1, 1, 1), bool drawbackground = false, bool drawshadow = false, bool clearonsubmit = false);
 	GUISlider* AddGUISlider(Rect2D<int> dimensions, float min, float max, float pos, bool drawValue = false, bool snap = false, bool wide = false, bool vertical = false, bool dark = false);
-	GUIImage* AddGUIImage(Rect2D<int> dimensions, TexturePtr tex, bool multichannel = true, bool glTex = false);
+	GUIImage* AddGUIImage(Rect2D<int> dimensions, TexturePtr tex, bool multichannel = true, bool glTex = false, uint8_t layer = 0);
 	GUIWindow* AddGUIWindow(Rect2D<int> dimensions, std::wstring titlebar_text = L"Window", bool clip = true, bool showclose = true, bool modal = false, bool movable = true);
 	GUIPane* AddGUIPane(Rect2D<int> dimensions, bool draw = true);
 private:
