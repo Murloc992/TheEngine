@@ -14,10 +14,6 @@
 	path = libs/glad
 	url = https://github.com/Murloc992/glad.git
 	branch = master
-[submodule "libs/libccd"]
-	path = libs/libccd
-	url = https://github.com/danfis/libccd.git
-	branch = master
 [submodule "libs/jsoncpp"]
 	path = libs/jsoncpp
 	url = https://github.com/Murloc992/jsoncpp.git
