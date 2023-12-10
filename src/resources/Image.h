@@ -4,19 +4,17 @@
 class Image
 {
 public:
-	uint8_t * data;
+	std::vector<uint8_t> data;
 	uint32_t width, height, num_channels;
 
 	Image()
 	{
-		data = nullptr;
+		data.clear();
 		width = 0, height = 0, num_channels = 0;
 	}
 
 	~Image()
 	{
-		if (data)
-			delete[] data;
 	}
 
 	void Init(uint32_t width, uint32_t height, uint8_t channels)
@@ -25,7 +23,7 @@ public:
 		this->height = height;
 		this->num_channels = channels;
 
-		data = new uint8_t[width*height*channels];
+		data.resize(static_cast<size_t>(width * height * channels));
 		loop(i, width)
 			loop(j, height)
 		{

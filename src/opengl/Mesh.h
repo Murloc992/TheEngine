@@ -75,7 +75,8 @@ public:
 		BLENDINDEXES = 4,
 		BLENDWEIGHTS = 5,
 		COLOR = 6,
-		INDICES = 7,
+		INSTPOS = 7,
+		INDICES = 8,
 		BUFFER_COUNT,
 	};
 

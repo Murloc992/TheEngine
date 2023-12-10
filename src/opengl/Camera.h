@@ -39,6 +39,7 @@ public:
 	const glm::vec3& GetLook() const;
 	const glm::vec3& GetDirection() const;
 	const glm::vec3& GetRight() const;
+	const glm::vec3& GetUp() const;
 	const glm::vec3& GetPosition() const;
 	const glm::quat& GetRotation() const;
 	void SetPosition(glm::vec3 pos);

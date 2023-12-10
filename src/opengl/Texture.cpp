@@ -51,7 +51,7 @@ void Texture::Init(ImagePtr img)
 	imageFormat = img->num_channels == 4 ? GL_RGBA : GL_RGB;
 	internalFormat = GL_RGBA;
 
-	glTexImage2D(Type, 0, internalFormat, img->width, img->height, 0, imageFormat, dataType, img->data);
+	glTexImage2D(Type, 0, internalFormat, img->width, img->height, 0, imageFormat, dataType, img->data.data());
 
 	glGenerateMipmap(Type);
 
@@ -202,7 +202,7 @@ void Texture::InitArray(ImagePtr img, uint32_t tile_size_x, uint32_t tile_size_y
 	{
 		for (auto y = 0; y < tile_count_y; y++)
 		{
-			glTexSubImage3D(Type, 0, 0, 0, x * tile_count_y + y, tile_size_x, tile_size_y, 1, imageFormat, dataType, data + (x * tile_size_y * img->width + y * tile_size_x) * img->num_channels);
+			glTexSubImage3D(Type, 0, 0, 0, x * tile_count_y + y, tile_size_x, tile_size_y, 1, imageFormat, dataType, data.data() + (x * tile_size_y * img->width + y * tile_size_x) * img->num_channels);
 		}
 	}
 

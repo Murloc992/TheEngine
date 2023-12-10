@@ -209,6 +209,11 @@ const glm::vec3& Camera::GetRight() const
 	return m_right;
 }
 
+const glm::vec3& Camera::GetUp() const
+{
+	return m_up;
+}
+
 const glm::vec3& Camera::GetPosition() const
 {
 	return m_pos;

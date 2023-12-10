@@ -113,7 +113,7 @@ void GUIColorSwatches::UpdateSwatchImage()
 		}
 	}
 
-	texBuf->SetSubImage2D(imgBuf->data, 0, 0, imgBuf->width, imgBuf->height);
+	texBuf->SetSubImage2D(imgBuf->data.data(), 0, 0, imgBuf->width, imgBuf->height);
 }
 
 bool GUIColorSwatches::OnEvent(const GUIEvent &e)

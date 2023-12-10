@@ -27,7 +27,8 @@ ImagePtr png_loader::Load(void * buffer, const uint32_t size)
 	if (data)
 	{
 		Image * image = new Image();
-		image->data = data;
+		std::copy(&data[0], &data[x*y*comp], std::back_inserter(image->data));
+		// image->data = data;
 		image->num_channels = comp;
 		image->width = x;
 		image->height = y;

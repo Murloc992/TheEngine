@@ -104,7 +104,7 @@ void GUIColorPicker::GenerateHSVMap(float s)
 			imgBuf->SetPixel(x, y, 255.f*co.x, 255.f*co.y, 255.f*co.z);
 		}
 	}
-	texBuf->SetSubImage2D(imgBuf->data, 0, 0, imgBuf->width, imgBuf->height);
+	texBuf->SetSubImage2D(imgBuf->data.data(), 0, 0, imgBuf->width, imgBuf->height);
 }
 
 bool GUIColorPicker::OnEvent(const GUIEvent &e)

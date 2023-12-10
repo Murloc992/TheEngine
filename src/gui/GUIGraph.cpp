@@ -160,7 +160,7 @@ void GUIGraph::UpdateImage()
 			DrawLine(0, 0, 0, height, borderColor);
 		}
 	}
-	tex->SetSubImage2D(img->data, 0, 0, img->width, img->height);
+	tex->SetSubImage2D(img->data.data(), 0, 0, img->width, img->height);
 }
 
 /* Generalized Bresenham's Algorithm */

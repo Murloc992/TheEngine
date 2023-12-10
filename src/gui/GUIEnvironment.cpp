@@ -50,7 +50,7 @@ GUIEnvironment::GUIEnvironment() : GUIElement(nullptr, Rect2D<int>(0, 0, GetCont
 
     skin_atlas = share(new Texture());
     ImageLoader* imgl = new ImageLoader();
-    auto img = std::shared_ptr<Image>(imgl->Load(skin->atlas));
+    auto img = imgl->Load(skin->atlas);
     skin_atlas->Init(img);
     delete imgl;
 

@@ -15,7 +15,9 @@
 #define ROUNDING_ERROR 0.00001f
 
 #define MOVABLE_NOT_COPYABLE(class_name) class_name(const class_name&) = delete;\
-										 class_name& operator=(const class_name&) = delete
+										 class_name& operator=(const class_name&) & = delete;\
+										 class_name(class_name&&) = delete;\
+										 class_name& operator=(class_name&&) & = delete
 
 namespace helpers
 {

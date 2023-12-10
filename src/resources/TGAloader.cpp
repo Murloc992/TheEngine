@@ -53,7 +53,8 @@ Image * tgaloader::loadUncompressedTGA(void * buffer, const uint32_t size)
 	if (data)
 	{
 		Image * image = new Image();
-		image->data = data;
+		std::copy(&data[0], &data[m_header.width * m_header.height * components], std::back_inserter(image->data));
+		// image->data = data;
 		image->num_channels = components;
 		image->width = m_header.width;
 		image->height = m_header.height;
