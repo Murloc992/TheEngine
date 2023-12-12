@@ -198,11 +198,11 @@ bool ApplicationWindow::GetKey(uint32_t key)
 	return glfwGetKey(_window, key);
 }
 
-glm::ivec2 ApplicationWindow::GetMousePos()
+glm::vec2 ApplicationWindow::GetMousePos()
 {
 	double x, y;
 	glfwGetCursorPos(_window, &x, &y);
-	return glm::ivec2(x, y);
+	return glm::vec2(x, y);
 }
 
 void ApplicationWindow::SetWindowMode(bool fullscreen, bool windowed)

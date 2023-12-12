@@ -1,5 +1,5 @@
 #ifndef IRENDER_OBJECT_H
-#define IRENDER_OBJECT_h
+#define IRENDER_OBJECT_H
 
 class IRenderObject
 {
