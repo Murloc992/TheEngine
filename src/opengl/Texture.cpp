@@ -36,22 +36,21 @@ void Texture::Init(ImagePtr img)
 	switch (img->num_channels)
 	{
 	case 3:
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		break;
-
 	case 4:
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, (uint32_t)TextureUnpackAlignment::BYTE);
 		break;
 
 	default:
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, (uint32_t)TextureUnpackAlignment::WORD);
 	}
 
 	dataType = GL_UNSIGNED_BYTE;
 	imageFormat = img->num_channels == 4 ? GL_RGBA : GL_RGB;
-	internalFormat = GL_RGBA;
+	internalFormat = img->num_channels == 4 ? GL_RGBA8 : GL_RGB8;
 
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, img->width);
 	glTexImage2D(Type, 0, internalFormat, img->width, img->height, 0, imageFormat, dataType, img->data.data());
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
 	glGenerateMipmap(Type);
 
@@ -174,13 +173,10 @@ void Texture::InitArray(ImagePtr img, uint32_t tile_size_x, uint32_t tile_size_y
 	glTexParameteri(Type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(Type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-	//glTexParameteri(Type, GL_TEXTURE_COMPARE_MODE, GL_NONE);
-
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, img->width);
-
-	const uint32_t tile_count_x = img->width / tile_size_x;
-	const uint32_t tile_count_y = img->height / tile_size_y;
-	const uint32_t bytes_per_subimage = tile_size_x * tile_size_y * img->num_channels;
+	const int32_t tile_count_x = img->width / tile_size_x;
+	const int32_t tile_count_y = img->height / tile_size_y;
+	const int32_t total_tiles = tile_count_x * tile_count_y;
+	const int32_t bytes_per_subimage = tile_size_x * tile_size_y * img->num_channels;
 
 	uint8_t miplevels = 1;
 	uint32_t mipsize = tile_size_x;
@@ -192,19 +188,18 @@ void Texture::InitArray(ImagePtr img, uint32_t tile_size_x, uint32_t tile_size_y
 
 	glTexStorage3D(Type, miplevels, internalFormat, tile_size_x, tile_size_y, tile_count_x * tile_count_y);
 
-	//glPixelStorei(GL_UNPACK_ROW_LENGTH, img->width);
-	//glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, img->height);
-	//glPixelStorei(GL_UNPACK_ALIGNMENT, (uint32_t)TextureUnpackAlignment::BYTE);
+	auto& data = img->data;
 
-	auto data = img->data;
-
-	for (auto x = 0; x < tile_count_x; x++)
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, img->width);
+	for (int32_t x = 0; x < tile_count_x; x++)
 	{
-		for (auto y = 0; y < tile_count_y; y++)
+		for (int32_t y = 0; y < tile_count_y; y++)
 		{
-			glTexSubImage3D(Type, 0, 0, 0, x * tile_count_y + y, tile_size_x, tile_size_y, 1, imageFormat, dataType, data.data() + (x * tile_size_y * img->width + y * tile_size_x) * img->num_channels);
+			int32_t data_offset = (x * tile_size_y * img->width + y * tile_size_x) * img->num_channels;
+			glTexSubImage3D(Type, 0, 0, 0, (tile_count_x - 1 - x) * tile_count_y + y, tile_size_x, tile_size_y, 1, imageFormat, dataType, data.data() + data_offset);
 		}
 	}
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
 	glBindTexture(Type, current);
 }
