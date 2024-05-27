@@ -24,13 +24,14 @@ public:
 		this->num_channels = channels;
 
 		data.resize(static_cast<size_t>(width * height * channels));
-		loop(i, width)
-			loop(j, height)
-		{
-			data[j*width*num_channels + i*num_channels] = 0;
-			data[j*width*num_channels + i*num_channels + 1] = 0;
-			data[j*width*num_channels + i*num_channels + 2] = 0;
-			if (num_channels == 4) data[j*width*num_channels + i*num_channels + 3] = 0;
+		for (int32_t i = 0; i < width; i++) {
+			for (int32_t j = 0; j < height; j++)
+			{
+				data[j * width * num_channels + i * num_channels] = 0;
+				data[j * width * num_channels + i * num_channels + 1] = 0;
+				data[j * width * num_channels + i * num_channels + 2] = 0;
+				if (num_channels == 4) data[j * width * num_channels + i * num_channels + 3] = 0;
+			}
 		}
 	}
 
@@ -38,21 +39,21 @@ public:
 	{
 		if (x > width || y > height) return;
 
-		data[y*width*num_channels + x*num_channels] = r;
-		data[y*width*num_channels + x*num_channels + 1] = g;
-		data[y*width*num_channels + x*num_channels + 2] = b;
-		if (num_channels == 4) data[y*width*num_channels + x*num_channels + 3] = a;
+		data[y * width * num_channels + x * num_channels] = r;
+		data[y * width * num_channels + x * num_channels + 1] = g;
+		data[y * width * num_channels + x * num_channels + 2] = b;
+		if (num_channels == 4) data[y * width * num_channels + x * num_channels + 3] = a;
 	}
 
 	glm::tvec4<uint8_t> GetPixel(uint32_t x, uint32_t y)
 	{
 		if (x > width || y > height) return glm::tvec4<uint8_t>(0, 0, 0, 0);
 
-		uint8_t r = data[y*width*num_channels + x*num_channels];
-		uint8_t g = data[y*width*num_channels + x*num_channels + 1];
-		uint8_t b = data[y*width*num_channels + x*num_channels + 2];
+		uint8_t r = data[y * width * num_channels + x * num_channels];
+		uint8_t g = data[y * width * num_channels + x * num_channels + 1];
+		uint8_t b = data[y * width * num_channels + x * num_channels + 2];
 		uint8_t a = 255;
-		if (num_channels == 4) a = data[y*width*num_channels + x*num_channels + 3];
+		if (num_channels == 4) a = data[y * width * num_channels + x * num_channels + 3];
 
 		return glm::tvec4<uint8_t>(r, g, b, a);
 	}

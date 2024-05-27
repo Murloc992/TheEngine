@@ -5,7 +5,7 @@
 #include "opengl/Texture.h"
 #include "resources/Image.h"
 
-GUIGraph::GUIGraph(GUIEnvironment * env, Rect2D<int> dimensions, bool drawBorders, bool drawCenter, bool drawAxisValues, bool drawBackground, bool drawChart) :GUIElement(env, dimensions)
+GUIGraph::GUIGraph(GUIEnvironment* env, Rect2D<int> dimensions, bool drawBorders, bool drawCenter, bool drawAxisValues, bool drawBackground, bool drawChart) :GUIElement(env, dimensions)
 {
 	this->Type = GUIET_IMAGE;
 
@@ -28,7 +28,7 @@ GUIGraph::~GUIGraph()
 {
 }
 
-void GUIGraph::AddValueGroup(const std::string &valueName, int spacing, const glm::vec4 &color, bool trackMinMax)
+void GUIGraph::AddValueGroup(const std::string& valueName, int spacing, const glm::vec4& color, bool trackMinMax)
 {
 	valueGroups[valueName] = std::vector<float>();
 	valueProperties[valueName] = GraphValueProperties(spacing, color, trackMinMax);
@@ -39,16 +39,16 @@ void GUIGraph::AddValueGroup(const std::string &valueName, int spacing, const gl
 	}
 }
 
-void GUIGraph::AddValue(const std::string &valueName, float value, int spacing, const glm::vec4 &color, bool trackMinMax)
+void GUIGraph::AddValue(const std::string& valueName, float value, int spacing, const glm::vec4& color, bool trackMinMax)
 {
 	if (valueGroups.find(valueName) == valueGroups.end())
 	{
 		AddValueGroup(valueName, spacing, color, trackMinMax);
 	}
 
-	auto &realValues = valueGroups[valueName];
+	auto& realValues = valueGroups[valueName];
 
-	auto &properties = valueProperties[valueName];
+	auto& properties = valueProperties[valueName];
 
 	while (realValues.size() * properties.spacing > relative_rect.w)
 	{
@@ -61,17 +61,17 @@ void GUIGraph::AddValue(const std::string &valueName, float value, int spacing, 
 		properties.maxValue = glm::max(value, properties.maxValue);
 		properties.minValue = glm::min(value, properties.minValue);
 		wchar_t buf[256];
-		#ifdef __linux__
+#ifdef __linux__
 		swprintf(buf, 255, L"['s]['c %d %d %d]%s Min:%4.4f Max:%4.4f Current:%4.4f[c'][s']", (int)properties.color.r, (int)properties.color.g, (int)properties.color.b, helpers::to_wstr(valueName.c_str()).c_str(), properties.minValue, properties.maxValue, value);
-		#else
+#else
 		swprintf(buf, L"['s]['c %d %d %d]%s Min:%4.4f Max:%4.4f Current:%4.4f[c'][s']", (int)properties.color.r, (int)properties.color.g, (int)properties.color.b, helpers::to_wstr(valueName.c_str()).c_str(), properties.minValue, properties.maxValue, value);
-		#endif
+#endif
 		valueTexts[valueName]->SetText(buf);
 	}
 	dataChanged = true;
 }
 
-void GUIGraph::SetValueColor(const std::string & valueName, const glm::vec4 & valueColor)
+void GUIGraph::SetValueColor(const std::string& valueName, const glm::vec4& valueColor)
 {
 	if (valueProperties.find(valueName) != valueProperties.end())
 	{
@@ -93,15 +93,15 @@ void GUIGraph::Render()
 	RenderChildren();
 }
 
-void GUIGraph::SetScale(const glm::vec2 & axisScales)
+void GUIGraph::SetScale(const glm::vec2& axisScales)
 {
 }
 
 void GUIGraph::UpdateImage()
 {
-	loop(x, img->width)
+	for (int32_t x = 0; x < img->width; x++)
 	{
-		loop(y, img->height)
+		for (int32_t y = 0; y < img->height; y++)
 		{
 			img->SetPixel(x, y, 1, 1, 1, drawBackground ? 128 : 0);
 		}
@@ -122,10 +122,10 @@ void GUIGraph::UpdateImage()
 		glm::vec4 borderColor = glm::vec4(0, 0, 0, 255);
 		glm::vec4 markerColor = glm::vec4(255, 255, 255, 255);
 
-		for (auto &group : valueGroups)
+		for (auto& group : valueGroups)
 		{
-			auto &values = group.second;
-			auto &properties = valueProperties[group.first];
+			auto& values = group.second;
+			auto& properties = valueProperties[group.first];
 			auto color = properties.color;
 			auto spacing = properties.spacing;
 
@@ -141,13 +141,13 @@ void GUIGraph::UpdateImage()
 				DrawLine(i * spacing, value1, (i + 1) * spacing, value2, color);
 				if (drawChart)
 				{
-					DrawLine(i*spacing, 0, i*spacing, value1, color);
+					DrawLine(i * spacing, 0, i * spacing, value1, color);
 				}
 
 				if (drawAxisValues)
 				{
-					DrawLine(i * spacing, 0, i*spacing, 8, markerColor);
-					DrawLine((i + 1) * spacing, 0, (i + 1)*spacing, 8, markerColor);
+					DrawLine(i * spacing, 0, i * spacing, 8, markerColor);
+					DrawLine((i + 1) * spacing, 0, (i + 1) * spacing, 8, markerColor);
 				}
 			}
 		}
@@ -164,7 +164,7 @@ void GUIGraph::UpdateImage()
 }
 
 /* Generalized Bresenham's Algorithm */
-void GUIGraph::DrawLine(int x1, int y1, int x2, int y2, const glm::vec4 &color)
+void GUIGraph::DrawLine(int x1, int y1, int x2, int y2, const glm::vec4& color)
 {
 	int dx, dy, x, y, d, s1, s2, swap = 0, temp;
 

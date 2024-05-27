@@ -103,7 +103,7 @@ INTERSECT_RESULT Camera::PointInFrustum(const glm::vec3& point)
 {
 	INTERSECT_RESULT res = INTERSECT_RESULT::IR_INSIDE;
 	int out = 0;
-	loop(i, 6)
+	for (int32_t i = 0; i < 6; i++)
 	{
 		if (frustumPlanes[i].Distance(point, 0.f) <= 0)
 			out++;
@@ -120,7 +120,7 @@ INTERSECT_RESULT Camera::SphereInFrustum(const glm::vec3& center, float radius)
 	INTERSECT_RESULT res = INTERSECT_RESULT::IR_INSIDE;
 
 	int out = 0;
-	loop(i, 6)
+	for (int32_t i = 0; i < 6; i++)
 	{
 		if (frustumPlanes[i].Distance(center, radius) <= 0)
 			return INTERSECT_RESULT::IR_OUTSIDE;
@@ -266,7 +266,7 @@ void Camera::Update(float dt)
 
 	CalculateOrientationVectors();
 
-	if(m_frustumCapable)
+	if (m_frustumCapable)
 		InitFrustum();
 }
 
@@ -330,5 +330,5 @@ void Camera::CalculateOrientationVectors()
 	m_right = glm::cross(m_look, m_up);
 	m_target = m_pos + m_look;
 	// direction is the reverse of look
-	m_direction = glm::normalize(- 1.f * m_look);
+	m_direction = glm::normalize(-1.f * m_look);
 }

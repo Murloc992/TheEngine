@@ -9,7 +9,7 @@
 
 static const char* swatchesFilename = "swatches.dat";
 
-GUIColorSwatches::GUIColorSwatches(GUIEnvironment * env, Rect2D<int> dimensions, const glm::ivec2 & swatchSize, GUIColorPicker* picker) :GUIElement(env, dimensions)
+GUIColorSwatches::GUIColorSwatches(GUIEnvironment* env, Rect2D<int> dimensions, const glm::ivec2& swatchSize, GUIColorPicker* picker) :GUIElement(env, dimensions)
 {
 	this->Type = GUIET_PANE;
 
@@ -18,7 +18,7 @@ GUIColorSwatches::GUIColorSwatches(GUIEnvironment * env, Rect2D<int> dimensions,
 
 	this->picker = picker;
 
-	swatches.resize(xSize*ySize, glm::vec4(0));
+	swatches.resize(xSize * ySize, glm::vec4(0));
 
 	this->swatchSize = swatchSize;
 
@@ -37,7 +37,7 @@ GUIColorSwatches::~GUIColorSwatches()
 	SaveSwatches();
 }
 
-void GUIColorSwatches::AddSwatchColor(const glm::vec4 & color)
+void GUIColorSwatches::AddSwatchColor(const glm::vec4& color)
 {
 	if (std::find(swatches.begin(), swatches.end(), color) == swatches.end())
 	{
@@ -69,7 +69,7 @@ void GUIColorSwatches::LoadSwatches()
 		auto file = fs->OpenRead("swatches.dat");
 		uint32_t size = ((uint32_t*)file->Read(sizeof(uint32_t))->data())[0];
 		swatches.resize(size);
-		loopi(size)
+		for (int32_t i = 0; i < size; i++)
 		{
 			auto data = ((glm::vec4*)file->Read(sizeof(glm::vec4))->data())[0];
 			swatches[i] = data;
@@ -80,15 +80,15 @@ void GUIColorSwatches::LoadSwatches()
 
 void GUIColorSwatches::UpdateSwatchImage()
 {
-	loop(y, ySize)
+	for (int32_t y = 0; y < ySize; y++)
 	{
-		loop(x, xSize)
+		for (int32_t x = 0; x < xSize; x++)
 		{
-			auto index = y*xSize + x;
+			auto index = y * xSize + x;
 			auto swatchColor = swatches[index];
 
-			auto pixelStartX = x*swatchSize.x;
-			auto pixelStartY = (ySize*swatchSize.y - swatchSize.y) - y*swatchSize.y;
+			auto pixelStartX = x * swatchSize.x;
+			auto pixelStartY = (ySize * swatchSize.y - swatchSize.y) - y * swatchSize.y;
 
 			auto pixelEndX = pixelStartX + swatchSize.x;
 			auto pixelEndY = pixelStartY + swatchSize.y;
@@ -116,7 +116,7 @@ void GUIColorSwatches::UpdateSwatchImage()
 	texBuf->SetSubImage2D(imgBuf->data.data(), 0, 0, imgBuf->width, imgBuf->height);
 }
 
-bool GUIColorSwatches::OnEvent(const GUIEvent &e)
+bool GUIColorSwatches::OnEvent(const GUIEvent& e)
 {
 	bool mousePressed = false;
 	bool right = false;
@@ -138,7 +138,7 @@ bool GUIColorSwatches::OnEvent(const GUIEvent &e)
 		auto modx = (int)glm::floor((mousePos.x - absolute_rect.x) / swatchSize.x);
 		auto mody = (int)glm::floor((mousePos.y - absolute_rect.y) / swatchSize.y);
 
-		color = swatches[mody*xSize+modx];
+		color = swatches[mody * xSize + modx];
 
 		if (picker)
 		{

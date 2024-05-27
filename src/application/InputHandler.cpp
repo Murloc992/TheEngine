@@ -5,10 +5,10 @@
 InputHandler::InputHandler(ApplicationWindow* win)
 {
 	//ctor
-	loop(i, GLFW_KEY_LAST) keys[i] = false;
-	loop(i, GLFW_MOUSE_BUTTON_LAST) mouseKeys[i] = false;
+	for (int32_t i = 0; i < GLFW_KEY_LAST; i++) keys[i] = false;
+	for (int32_t i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++) mouseKeys[i] = false;
 
-	_sig_mouse_button = win->SigMouseKey().connect(sigc::mem_fun(*this,&InputHandler::OnMouseButton));
+	_sig_mouse_button = win->SigMouseKey().connect(sigc::mem_fun(*this, &InputHandler::OnMouseButton));
 	_sig_key = win->SigKeyEvent().connect(sigc::mem_fun(*this, &InputHandler::OnKey));
 }
 

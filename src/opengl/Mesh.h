@@ -226,7 +226,7 @@ void Mesh::HardScale(const glm::vec3& scale)
 {
 	BufferObject<T>* verts = (BufferObject<T>*)this->buffers[Mesh::POSITION];
 
-	loop(i, verts->data.size())
+	for (int32_t i = 0; i < verts->data.size(); i++)
 	{
 		verts->data[i] = verts->data[i] * scale;
 	}
@@ -241,7 +241,7 @@ void Mesh::HardMove(const glm::vec3& trans)
 {
 	BufferObject<T>* verts = (BufferObject<T>*)this->buffers[Mesh::POSITION];
 
-	loop(i, verts->data.size())
+	for (int32_t i = 0; i < verts->data.size(); i++)
 	{
 		verts->data[i] = verts->data[i] + trans;
 	}

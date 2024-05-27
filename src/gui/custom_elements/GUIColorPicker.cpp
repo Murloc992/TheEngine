@@ -96,9 +96,9 @@ GUIColorPicker::~GUIColorPicker()
 
 void GUIColorPicker::GenerateHSVMap(float s)
 {
-	loop(x, imgBuf->width)
+	for( int32_t x = 0; x < imgBuf->width; x++)
 	{
-		loop(y, imgBuf->height)
+		for( int32_t y = 0; y<imgBuf->height; y++)
 		{
 			glm::vec3 co = helpers::hsv2rgb(360.f / imgBuf->width * x, s, 1.f / imgBuf->height*y);
 			imgBuf->SetPixel(x, y, 255.f*co.x, 255.f*co.y, 255.f*co.z);

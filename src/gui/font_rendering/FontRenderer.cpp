@@ -295,9 +295,9 @@ Image* FontRenderer::RenderStringToImage(const std::wstring& text, glm::tvec3<ui
 		/* Skip glyphs that have no pixels */
 		if (!w || !h) continue;
 
-		loop(y, h)
+		for (int32_t y = 0; y < h; y++)
 		{
-			loop(x, w)
+			for (int32_t x = 0; x < w; x++)
 			{
 				uint8_t data = bmp[y * (int)w + x];
 
@@ -420,18 +420,18 @@ void FontRenderer::RenderString(const std::wstring& text, const glm::ivec2& pos,
 
 	SubLineInfo inf;
 
-	loop(i, strs.size())
+	for (int32_t i = 0; i < strs.size(); i++)
 	{
 		_FormatTags(linesToDraw[i], strs[i], inf);
 	}
 
 	// ReadAndStripTags(strs,linesToDraw);
 	// printf("LinesToDraw: %d\n",linesToDraw.size());
-	loop(i, linesToDraw.size())
+	for (int32_t i = 0; i < linesToDraw.size(); i++)
 	{
 		glm::vec2 dims = glm::vec2(0, _currentFont->avgheight);
 		TextLine _current = linesToDraw[i];
-		loop(j, _current.content.size())
+		for (int32_t j = 0; j < _current.content.size(); j++)
 		{
 			SubLineInfo& _celem = _current.content[j];
 			if (_celem.bold && canbold && !_celem.italic) {

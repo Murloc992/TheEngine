@@ -36,7 +36,7 @@ struct FrameBufferObject : public GLObject
 
 		DetachDepthStencilTexture();
 
-		loopi(8)
+		for (int32_t i = 0; i < 8; i++)
 		{
 			DetachTexture(0);
 		}
