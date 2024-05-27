@@ -1,6 +1,6 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-//TODO
+// TODO
 
-#endif // MATERIAL_H
+#endif  // MATERIAL_H

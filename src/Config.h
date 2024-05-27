@@ -4,11 +4,11 @@
 #undef __STRICT_ANSI__
 
 /// Uncomment one of these
-//#define STD_VECTOR
+// #define STD_VECTOR
 #define BOOST_VECTOR
-//#define BOOST_VECTOR_WITH_ALOCATOR
+// #define BOOST_VECTOR_WITH_ALOCATOR
 
 #define LOG_OUTPUT
-//#define RELEASE_FS
+// #define RELEASE_FS
 
-#endif // CONFIG_H_INCLUDED
+#endif  // CONFIG_H_INCLUDED

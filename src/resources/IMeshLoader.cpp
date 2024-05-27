@@ -1,9 +1,8 @@
-//#include "Precomp.h"
+// #include "Precomp.h"
 #include "IMeshLoader.h"
-#include "opengl/Mesh.h"
 #include "opengl/BufferObject.h"
+#include "opengl/Mesh.h"
 
-IMeshLoader::~IMeshLoader()
-{
-	//dtor
+IMeshLoader::~IMeshLoader() {
+  // dtor
 }

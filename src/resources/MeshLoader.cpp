@@ -1,78 +1,67 @@
-//#include "Precomp.h"
-#include "application/AppContext.h"
+// #include "Precomp.h"
 #include "MeshLoader.h"
 #include "IQMLoader.h"
+#include "application/AppContext.h"
+#include "core/FileSystem.h"
 #include "opengl/Mesh.h"
 #include "utility/Logger.h"
-#include "core/FileSystem.h"
 
-MeshLoader::MeshLoader()
-{
-	AddLoader(new IQMLoader());
+MeshLoader::MeshLoader() {
+  AddLoader(new IQMLoader());
 }
 
-MeshLoader::~MeshLoader()
-{
-	for (IMeshLoader * l : m_loaders)
-		delete l;
+MeshLoader::~MeshLoader() {
+  for (IMeshLoader* l : m_loaders)
+    delete l;
 }
 
-void MeshLoader::AddLoader(IMeshLoader * loader)
-{
-	auto it = std::find_if(m_loaders.begin(), m_loaders.end(), [&loader](IMeshLoader * l)
-	{
-		return l == loader;
-	});
+void MeshLoader::AddLoader(IMeshLoader* loader) {
+  auto it = std::find_if(m_loaders.begin(), m_loaders.end(), [&loader](IMeshLoader* l) {
+    return l == loader;
+  });
 
-	if (it == m_loaders.end())
-		m_loaders.push_back(loader);
+  if (it == m_loaders.end())
+    m_loaders.push_back(loader);
 }
 
-MeshPtr MeshLoader::Load(const Path & fileName)
-{
-	bool found_usable_loader = false;
-	Resource<Mesh> res;
-	res = this->GetResource(fileName);
+MeshPtr MeshLoader::Load(const Path& fileName) {
+  bool found_usable_loader = false;
+  Resource<Mesh> res;
+  res = this->GetResource(fileName);
 
-	if (res.resource)
-	{
-		GetContext().GetLogger()->log(LOG_INFO, "Found mesh in cache, skipping loading.");
-		return res.resource;
-	}
+  if (res.resource) {
+    GetContext().GetLogger()->log(LOG_INFO, "Found mesh in cache, skipping loading.");
+    return res.resource;
+  }
 
-	std::string ext = fileName.extension().generic_string();
-	GetContext().GetLogger()->log(LOG_INFO, "Mesh extension: '%s'", ext.c_str());
+  std::string ext = fileName.extension().generic_string();
+  GetContext().GetLogger()->log(LOG_INFO, "Mesh extension: '%s'", ext.c_str());
 
-	///REFACTOR: Search loader by extension func, return loader. Then try loading.
-	if (GetContext().GetFileSystem()->FileExists(fileName.c_str()))
-		for (IMeshLoader * l : m_loaders)
-		{
-			if (l->CheckByExtension(ext))
-			{
-				found_usable_loader = true;
+  /// REFACTOR: Search loader by extension func, return loader. Then try loading.
+  if (GetContext().GetFileSystem()->FileExists(fileName.c_str()))
+    for (IMeshLoader* l : m_loaders) {
+      if (l->CheckByExtension(ext)) {
+        found_usable_loader = true;
 
-				FilePtr file = GetContext().GetFileSystem()->OpenRead(fileName);
+        FilePtr file = GetContext().GetFileSystem()->OpenRead(fileName);
 
-				if (file->IsOpen())
-				{
-					ByteBufferPtr buffer = file->Read();
-					GetContext().GetLogger()->log(LOG_INFO, "Mesh file size: %u", buffer->size());
+        if (file->IsOpen()) {
+          ByteBufferPtr buffer = file->Read();
+          GetContext().GetLogger()->log(LOG_INFO, "Mesh file size: %u", buffer->size());
 
-					res.path = fileName;
-					res.resource = MeshPtr(l->Load((const char*)buffer->data(), buffer->size()));
-					this->AddResource(res);
-					res.resource->Init();
-					return res.resource;
-				}
-				else
-				{
-					GetContext().GetLogger()->log(LOG_ERROR, "File %s appears to be empty.", fileName.generic_string().c_str());
-				}
-			}
-		}
+          res.path = fileName;
+          res.resource = MeshPtr(l->Load((const char*)buffer->data(), buffer->size()));
+          this->AddResource(res);
+          res.resource->Init();
+          return res.resource;
+        } else {
+          GetContext().GetLogger()->log(LOG_ERROR, "File %s appears to be empty.", fileName.generic_string().c_str());
+        }
+      }
+    }
 
-	if (!found_usable_loader)
-		GetContext().GetLogger()->log(LOG_ERROR, "No loader can load '%s' mesh files.", ext.c_str());
+  if (!found_usable_loader)
+    GetContext().GetLogger()->log(LOG_ERROR, "No loader can load '%s' mesh files.", ext.c_str());
 
-	return nullptr;
+  return nullptr;
 }

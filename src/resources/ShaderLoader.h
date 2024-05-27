@@ -1,21 +1,20 @@
 #ifndef SHADER_LOADER_H
 #define SHADER_LOADER_H
 
-#include "ResourceCache.h"
 #include "ForwardDecl.h"
+#include "ResourceCache.h"
 
 class AppContext;
-class ShaderLoader : public ResourceCache<Shader>
-{
-public:
-	ShaderLoader();
-	virtual ~ShaderLoader();
+class ShaderLoader : public ResourceCache<Shader> {
+ public:
+  ShaderLoader();
+  virtual ~ShaderLoader();
 
-	ShaderPtr Load(const Path & file, bool replaceCached = false);
-	ShaderPtr Load(const Path & vertex_file, const Path & fragment_file, bool replaceCached = false);
-	ShaderPtr GetShaderByName(const Path & name);
+  ShaderPtr Load(const Path& file, bool replaceCached = false);
+  ShaderPtr Load(const Path& vertex_file, const Path& fragment_file, bool replaceCached = false);
+  ShaderPtr GetShaderByName(const Path& name);
 
-protected:
+ protected:
 };
 
-#endif // SHADER_LOADER_H
+#endif  // SHADER_LOADER_H

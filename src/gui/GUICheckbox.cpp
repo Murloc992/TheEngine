@@ -1,59 +1,55 @@
-//#include "Precomp.h"
-#include "opengl/geometry/Quad.h"
-#include "GUIEnvironment.h"
+// #include "Precomp.h"
 #include "GUICheckbox.h"
+#include "GUIEnvironment.h"
 #include "GUIStaticText.h"
+#include "opengl/geometry/Quad.h"
 
-GUICheckbox::GUICheckbox(GUIEnvironment* env, Rect2D<int> dimensions, bool checked) :GUIElement(env, dimensions)
-{
-	this->Type = GUIET_CHECKBOX;
-	cur_style = checked ? gui_skin_checkbox_c_active : gui_skin_checkbox_u_active;
+GUICheckbox::GUICheckbox(GUIEnvironment* env, Rect2D<int> dimensions, bool checked)
+  : GUIElement(env, dimensions) {
+  this->Type = GUIET_CHECKBOX;
+  cur_style = checked ? gui_skin_checkbox_c_active : gui_skin_checkbox_u_active;
 
-	environment = env;
+  environment = env;
 
-	this->checked = checked;
+  this->checked = checked;
 
-	absolute_rect = dimensions;
-	relative_rect = absolute_rect;
+  absolute_rect = dimensions;
+  relative_rect = absolute_rect;
 }
 
-GUICheckbox::~GUICheckbox()
-{
+GUICheckbox::~GUICheckbox() {
 }
 
-void GUICheckbox::Render()
-{
-	environment->DrawGUIQuad(absolute_rect, enabled ? cur_style : checked ? gui_skin_checkbox_c_disabled : gui_skin_checkbox_u_disabled);
+void GUICheckbox::Render() {
+  environment->DrawGUIQuad(absolute_rect, enabled ? cur_style : checked ? gui_skin_checkbox_c_disabled : gui_skin_checkbox_u_disabled);
 }
 
-bool GUICheckbox::OnEvent(const GUIEvent & e)
-{
-	GUI_BEGIN_ON_EVENT(e)
+bool GUICheckbox::OnEvent(const GUIEvent& e) {
+  GUI_BEGIN_ON_EVENT(e)
 
-		switch (e.GetType())
-		{
-		case element_hovered:
-			cur_style = this->checked ? gui_skin_checkbox_c_hover : gui_skin_checkbox_u_hover;
-			GUI_FIRE_EVENT(GUIEvent(element_hovered, this, this))
-				break;
+  switch (e.GetType()) {
+    case element_hovered:
+      cur_style = this->checked ? gui_skin_checkbox_c_hover : gui_skin_checkbox_u_hover;
+      GUI_FIRE_EVENT(GUIEvent(element_hovered, this, this))
+      break;
 
-		case element_exitted:
-			cur_style = this->checked ? gui_skin_checkbox_c_active : gui_skin_checkbox_u_active;
-			GUI_FIRE_EVENT(GUIEvent(element_exitted, this, this))
-				break;
+    case element_exitted:
+      cur_style = this->checked ? gui_skin_checkbox_c_active : gui_skin_checkbox_u_active;
+      GUI_FIRE_EVENT(GUIEvent(element_exitted, this, this))
+      break;
 
-		case left_mouse_pressed:
-			cur_style = this->checked ? gui_skin_checkbox_c_click : gui_skin_checkbox_u_click;
-			break;
+    case left_mouse_pressed:
+      cur_style = this->checked ? gui_skin_checkbox_c_click : gui_skin_checkbox_u_click;
+      break;
 
-		case left_mouse_released:
-			checked = !checked;
-			cur_style = this->checked ? gui_skin_checkbox_c_hover : gui_skin_checkbox_u_hover;
-			GUI_FIRE_EVENT(GUIEvent(checkbox_state_changed, this, this))
-				break;
-		default:
-			break;
-		}
+    case left_mouse_released:
+      checked = !checked;
+      cur_style = this->checked ? gui_skin_checkbox_c_hover : gui_skin_checkbox_u_hover;
+      GUI_FIRE_EVENT(GUIEvent(checkbox_state_changed, this, this))
+      break;
+    default:
+      break;
+  }
 
-	GUI_END_ON_EVENT(e)
+  GUI_END_ON_EVENT(e)
 }

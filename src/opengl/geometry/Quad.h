@@ -4,20 +4,19 @@
 
 class Plane3d;
 
-class Quad : public Mesh
-{
-private:
-    float m_size;
+class Quad : public Mesh {
+ private:
+  float m_size;
 
-public:
-	Quad(float size = 1.0f);
-	Quad(const Plane3d &plane);
+ public:
+  Quad(float size = 1.0f);
+  Quad(const Plane3d& plane);
 
-    virtual ~Quad(){
+  virtual ~Quad() {
 
-    };
+  };
 
-    void SetUV(std::vector<glm::vec2> uvs);
+  void SetUV(std::vector<glm::vec2> uvs);
 };
 
 typedef std::shared_ptr<Quad> QuadPtr;

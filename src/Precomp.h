@@ -2,49 +2,50 @@
 #define _Precomp_H_
 
 #ifdef _CRT_SECURE_NO_WARNINGS
-#undef _CRT_SECURE_NO_WARNINGS
+  #undef _CRT_SECURE_NO_WARNINGS
 #endif
 
 #include "Config.h"
 
 // C/C++ SUITE INCLUDES
-//#include <stdio.h>
-#include <iostream>
-#include <cstdio>
+// #include <stdio.h>
 #include <stdint.h>
-#include <map>
-#include <unordered_map>
-#include <vector>
-#include <memory>
-#include <thread>
 #include <atomic>
 #include <condition_variable>
+#include <cstdio>
+#include <filesystem>
+#include <iostream>
+#include <map>
+#include <memory>
 #include <mutex>
 #include <random>
-#include <filesystem>
+#include <thread>
+#include <unordered_map>
+#include <vector>
 
+#include <stdarg.h>
 #include <string.h>
 #include <string>
-#include <stdarg.h>
 
 // OPENGL RELATED LIBS
 #include "glad/glad.h"
+
 #include "GLFW/glfw3.h"
 
 #include "glm.hpp"
-#include "gtx/norm.hpp"
-#include "gtc/matrix_transform.hpp"
-#include "gtc/matrix_inverse.hpp"
 #include "gtc/matrix_access.hpp"
-#include "gtx/rotate_vector.hpp"
+#include "gtc/matrix_inverse.hpp"
+#include "gtc/matrix_transform.hpp"
 #include "gtx/matrix_decompose.hpp"
+#include "gtx/norm.hpp"
+#include "gtx/rotate_vector.hpp"
 
 #include "gtc/type_ptr.hpp"
 
 // OTHER LIBRARIES
 #include "physfs.h"
-#include "tinyxml2.h"
 #include "sigc++/sigc++.h"
+#include "tinyxml2.h"
 
 // PROJECT INCLUDES
 #include "utility/Bit.h"

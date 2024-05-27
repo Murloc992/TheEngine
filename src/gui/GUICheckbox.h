@@ -7,23 +7,23 @@ class Rect2D;
 
 class GUIStaticText;
 
-class GUICheckbox :public GUIElement
-{
-private:
-	bool checked;
+class GUICheckbox : public GUIElement {
+ private:
+  bool checked;
 
-	uint32_t cur_style;
-public:
-	GUICheckbox(GUIEnvironment* env, Rect2D<int> dimensions, bool checked);
-	virtual ~GUICheckbox();
+  uint32_t cur_style;
 
-	void Render();
+ public:
+  GUICheckbox(GUIEnvironment* env, Rect2D<int> dimensions, bool checked);
+  virtual ~GUICheckbox();
 
-	bool OnEvent(const GUIEvent & e);
+  void Render();
 
-	bool IsChecked()
-	{
-		return checked;
-	}
-protected:
+  bool OnEvent(const GUIEvent& e);
+
+  bool IsChecked() {
+    return checked;
+  }
+
+ protected:
 };

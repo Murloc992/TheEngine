@@ -2,19 +2,18 @@
 #define FORWARD_DECL_H
 
 #define DECLARE_SHARED_PTR(var) \
-    class var;           \
-    typedef std::shared_ptr<var> var##Ptr;
+  class var;                    \
+  typedef std::shared_ptr<var> var##Ptr;
 
 #define DECLARE_UNIQUE_PTR(var) \
-    class var;           \
-    typedef std::unique_ptr<var> var##Ptr;
+  class var;                    \
+  typedef std::unique_ptr<var> var##Ptr;
 
 #define DECLARE_WEAK_PTR(var) \
-    class var;           \
-    typedef std::weak_ptr<var> var##Ptr;
+  class var;                  \
+  typedef std::weak_ptr<var> var##Ptr;
 
-namespace std
-{
+namespace std {
 template <class T>
 class shared_ptr;
 }
@@ -59,29 +58,23 @@ typedef std::shared_ptr<VarGroup> VarGroupPtr;
 typedef uint32_t GLEnum;
 
 #ifdef __linux__
-namespace std
-{
-namespace filesystem
-{
-namespace __cxx11
-{
-    class path;
+namespace std {
+namespace filesystem {
+namespace __cxx11 {
+class path;
 }
-}
-}
+}  // namespace filesystem
+}  // namespace std
 
 using Path = std::filesystem::__cxx11::path;
 #else
-namespace std
-{
-namespace filesystem
-{
-    class path;
+namespace std {
+namespace filesystem {
+class path;
 }
-}
+}  // namespace std
 
 using Path = std::filesystem::path;
 #endif
-
 
 #endif

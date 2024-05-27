@@ -2,76 +2,60 @@
 #include "ForwardDecl.h"
 
 template <class T>
-struct Resource
-{
-	Path path;
-	std::shared_ptr<T> resource;
+struct Resource {
+  Path path;
+  std::shared_ptr<T> resource;
 
-	Resource()
-	{
+  Resource() {
+  }
 
-	}
-
-	Resource(std::shared_ptr<T> resourcePtr, Path resourcePath)
-	{
-		this->path = resourcePath;
-		this->resource = resourcePtr;
-	}
+  Resource(std::shared_ptr<T> resourcePtr, Path resourcePath) {
+    this->path = resourcePath;
+    this->resource = resourcePtr;
+  }
 };
 
 template <class T>
-class ResourceCache
-{
-public:
+class ResourceCache {
+ public:
+  void AddResource(Resource<T> res) {
+    m_resources.push_back(res);
+  }
 
-	void AddResource(Resource<T> res)
-	{
-		m_resources.push_back(res);
-	}
+  Resource<T> GetResource(const Path& path) {
+    auto it = std::find_if(m_resources.begin(), m_resources.end(), [&path](Resource<T> res) {
+      return res.path == path;
+    });
 
-	Resource<T> GetResource(const Path & path)
-	{
-		auto it = std::find_if(m_resources.begin(), m_resources.end(), [&path](Resource<T> res)
-		{
-			return res.path == path;
-		});
+    if (it != m_resources.end()) {
+      return (*it);
+    }
 
-		if (it != m_resources.end())
-		{
-			return (*it);
-		}
+    return Resource<T>();
+  }
 
-		return Resource<T>();
-	}
+  bool RemoveResource(const Path& path) {
+    auto it = std::find_if(m_resources.begin(), m_resources.end(), [&path](Resource<T> res) {
+      return res.path == path;
+    });
 
-	bool RemoveResource(const Path & path)
-	{
-		auto it = std::find_if(m_resources.begin(), m_resources.end(), [&path](Resource<T> res)
-		{
-			return res.path == path;
-		});
+    if (it != m_resources.end()) {
+      m_resources.erase(it);
+      return true;
+    }
 
-		if (it != m_resources.end())
-		{
-			m_resources.erase(it);
-			return true;
-		}
+    return false;
+  }
 
-		return false;
-	}
+  void Clear() {
+    m_resources.clear();
+  }
 
-
-	void Clear()
-	{
-		m_resources.clear();
-	}
-
-protected:
-	std::vector< Resource<T> >  m_resources;
+ protected:
+  std::vector<Resource<T>> m_resources;
 };
 
 template <class T>
-std::vector<std::shared_ptr<T> > * create_resource_cache()
-{
-	return new std::vector<std::shared_ptr<T> >();
+std::vector<std::shared_ptr<T>>* create_resource_cache() {
+  return new std::vector<std::shared_ptr<T>>();
 }

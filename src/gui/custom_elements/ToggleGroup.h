@@ -2,24 +2,24 @@
 
 class GUIButton;
 
-class ToggleGroup
-{
-private:
-	std::map<std::string, GUIButton*> _elements;
-	bool _multiToggle;
-	std::string _currentToggle;
+class ToggleGroup {
+ private:
+  std::map<std::string, GUIButton*> _elements;
+  bool _multiToggle;
+  std::string _currentToggle;
 
-	bool Toggle(GUIButton* btn);
-public:
-	ToggleGroup(bool multitoggle = false);
+  bool Toggle(GUIButton* btn);
 
-	ToggleGroup(std::vector<GUIButton*> predef, bool multitoggle = false);
+ public:
+  ToggleGroup(bool multitoggle = false);
 
-	void AddButton(GUIButton* btn);
+  ToggleGroup(std::vector<GUIButton*> predef, bool multitoggle = false);
 
-	GUIButton* GetToggledButton();
+  void AddButton(GUIButton* btn);
 
-	void SetToggledButton(const std::string &elem);
+  GUIButton* GetToggledButton();
 
-	bool ContainsButton(const std::string &elem);
+  void SetToggledButton(const std::string& elem);
+
+  bool ContainsButton(const std::string& elem);
 };

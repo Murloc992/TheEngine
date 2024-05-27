@@ -6,35 +6,36 @@
 class GUIImage;
 class GUIColorPicker;
 
-class GUIColorSwatches :public GUIElement
-{
-private:
-	GUIImage* swatchImage;
-	GUIColorPicker* picker;
-	ImagePtr imgBuf;
-	TexturePtr texBuf;
+class GUIColorSwatches : public GUIElement {
+ private:
+  GUIImage* swatchImage;
+  GUIColorPicker* picker;
+  ImagePtr imgBuf;
+  TexturePtr texBuf;
 
-	int xSize, ySize;
+  int xSize, ySize;
 
-	glm::vec4 color;
+  glm::vec4 color;
 
-	std::vector<glm::vec4> swatches;
-	glm::ivec2 swatchSize;
-public:
-	GUIColorSwatches(GUIEnvironment* env, Rect2D<int> dimensions, const glm::ivec2 &swatchSize, GUIColorPicker* picker=nullptr);
-	virtual ~GUIColorSwatches();
+  std::vector<glm::vec4> swatches;
+  glm::ivec2 swatchSize;
 
-	void AddSwatchColor(const glm::vec4 &color);
-	glm::vec4 GetActiveSwatchColor();
+ public:
+  GUIColorSwatches(GUIEnvironment* env, Rect2D<int> dimensions, const glm::ivec2& swatchSize, GUIColorPicker* picker = nullptr);
+  virtual ~GUIColorSwatches();
 
-	void Render();
+  void AddSwatchColor(const glm::vec4& color);
+  glm::vec4 GetActiveSwatchColor();
 
-	void SaveSwatches();
-	void LoadSwatches();
+  void Render();
 
-	virtual bool OnEvent(const GUIEvent & e);
-private:
-	void UpdateSwatchImage();
-protected:
+  void SaveSwatches();
+  void LoadSwatches();
+
+  virtual bool OnEvent(const GUIEvent& e);
+
+ private:
+  void UpdateSwatchImage();
+
+ protected:
 };
-

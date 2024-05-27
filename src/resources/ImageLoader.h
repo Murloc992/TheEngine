@@ -5,14 +5,14 @@
 #include "application/AppContext.h"
 
 class AppContext;
-class ImageLoader : public ResourceCache<Image>
-{
-protected:
-	std::vector<IImageLoader*> m_loaders;
-public:
-	ImageLoader();
-	virtual ~ImageLoader();
+class ImageLoader : public ResourceCache<Image> {
+ protected:
+  std::vector<IImageLoader*> m_loaders;
 
-	virtual void AddLoader(IImageLoader * loader);
-	virtual ImagePtr Load(const Path & file);
+ public:
+  ImageLoader();
+  virtual ~ImageLoader();
+
+  virtual void AddLoader(IImageLoader* loader);
+  virtual ImagePtr Load(const Path& file);
 };

@@ -3,9 +3,9 @@
 
 #include "Image.h"
 #include "ImageLoader.h"
-#include "ResourceCache.h"
-#include "ShaderLoader.h"
 #include "MeshLoader.h"
+#include "ResourceCache.h"
 #include "ResourceManager.h"
+#include "ShaderLoader.h"
 
 #endif

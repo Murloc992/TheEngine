@@ -1,155 +1,133 @@
-//#include "Precomp.h"
+// #include "Precomp.h"
 #include "ShaderLoader.h"
-#include "opengl/material/Shader.h"
-#include "utility/Logger.h"
 #include "application/AppContext.h"
 #include "core/FileSystem.h"
+#include "opengl/material/Shader.h"
+#include "utility/Logger.h"
 
-ShaderLoader::ShaderLoader()
-{
+ShaderLoader::ShaderLoader() {
 }
 
-ShaderLoader::~ShaderLoader()
-{
-	//dtor
+ShaderLoader::~ShaderLoader() {
+  // dtor
 }
 
-ShaderPtr ShaderLoader::Load(const Path & vertex_file_name, const Path & fragment_file_name, bool replaceCached)
-{
-	Path resourceName = vertex_file_name.filename().generic_string() + fragment_file_name.filename().generic_string();
+ShaderPtr ShaderLoader::Load(const Path& vertex_file_name, const Path& fragment_file_name, bool replaceCached) {
+  Path resourceName = vertex_file_name.filename().generic_string() + fragment_file_name.filename().generic_string();
 
-	GetContext().GetLogger()->log(LOG_INFO, "Loading shader: '%s'", resourceName.generic_string().c_str());
+  GetContext().GetLogger()->log(LOG_INFO, "Loading shader: '%s'", resourceName.generic_string().c_str());
 
-	Resource<Shader> existingResource = this->GetResource(resourceName);
+  Resource<Shader> existingResource = this->GetResource(resourceName);
 
-	if (existingResource.resource && !replaceCached)
-	{
-		GetContext().GetLogger()->log(LOG_INFO, "Shader returned from cache.");
-		return existingResource.resource;
-	}
+  if (existingResource.resource && !replaceCached) {
+    GetContext().GetLogger()->log(LOG_INFO, "Shader returned from cache.");
+    return existingResource.resource;
+  }
 
-	FilePtr vertexFile = GetContext().GetFileSystem()->OpenRead(vertex_file_name);
-	FilePtr fragmentFile = GetContext().GetFileSystem()->OpenRead(fragment_file_name);
+  FilePtr vertexFile = GetContext().GetFileSystem()->OpenRead(vertex_file_name);
+  FilePtr fragmentFile = GetContext().GetFileSystem()->OpenRead(fragment_file_name);
 
-	if (!vertexFile->IsOpen() || !fragmentFile->IsOpen())
-	{
-		return ShaderPtr();
-	}
+  if (!vertexFile->IsOpen() || !fragmentFile->IsOpen()) {
+    return ShaderPtr();
+  }
 
-	GetContext().GetLogger()->log(LOG_INFO, "Shader resource name: %s", resourceName.generic_string().c_str());
+  GetContext().GetLogger()->log(LOG_INFO, "Shader resource name: %s", resourceName.generic_string().c_str());
 
-	ByteBufferPtr vertexBuffer = vertexFile->ReadText();
-	ByteBufferPtr fragmentBuffer = fragmentFile->ReadText();
+  ByteBufferPtr vertexBuffer = vertexFile->ReadText();
+  ByteBufferPtr fragmentBuffer = fragmentFile->ReadText();
 
-	Shader * shader = new Shader(resourceName.generic_string(), (char*)vertexBuffer->data(), (char*)fragmentBuffer->data(), "");
-	shader->Compile();
+  Shader* shader = new Shader(resourceName.generic_string(), (char*)vertexBuffer->data(), (char*)fragmentBuffer->data(), "");
+  shader->Compile();
 
-	if (shader->IsCompiledAndLinked())
-	{
-		if (existingResource.resource)
-		{
-			RemoveResource(existingResource.path);
-			GetContext().GetLogger()->log(LOG_INFO, "Removed cached shader: '%s'.", resourceName.c_str());
-		}
+  if (shader->IsCompiledAndLinked()) {
+    if (existingResource.resource) {
+      RemoveResource(existingResource.path);
+      GetContext().GetLogger()->log(LOG_INFO, "Removed cached shader: '%s'.", resourceName.c_str());
+    }
 
-		GetContext().GetLogger()->log(LOG_INFO, "Shader loaded: '%s'.", resourceName.c_str());
+    GetContext().GetLogger()->log(LOG_INFO, "Shader loaded: '%s'.", resourceName.c_str());
 
-		Resource<Shader> res(ShaderPtr(shader), resourceName);
-		this->AddResource(res);
-		return res.resource;
-	}
-	else
-	{
-		delete shader;
+    Resource<Shader> res(ShaderPtr(shader), resourceName);
+    this->AddResource(res);
+    return res.resource;
+  } else {
+    delete shader;
 
-		if (existingResource.resource)
-			GetContext().GetLogger()->log(LOG_ERROR, "Shader failed to load: '%s', using cached version.", resourceName.generic_string().c_str());
-		else
-			GetContext().GetLogger()->log(LOG_ERROR, "Shader failed to load: '%s'.", resourceName.generic_string().c_str());
+    if (existingResource.resource)
+      GetContext().GetLogger()->log(LOG_ERROR, "Shader failed to load: '%s', using cached version.", resourceName.generic_string().c_str());
+    else
+      GetContext().GetLogger()->log(LOG_ERROR, "Shader failed to load: '%s'.", resourceName.generic_string().c_str());
 
-		return existingResource.resource;
-	}
+    return existingResource.resource;
+  }
 }
 
-ShaderPtr ShaderLoader::Load(const Path & fileName, bool replaceCached)
-{
-	Resource<Shader> existingResource = this->GetResource(fileName);
-	GetContext().GetLogger()->log(LOG_INFO, "Loading shader: '%s'", fileName.generic_string().c_str());
+ShaderPtr ShaderLoader::Load(const Path& fileName, bool replaceCached) {
+  Resource<Shader> existingResource = this->GetResource(fileName);
+  GetContext().GetLogger()->log(LOG_INFO, "Loading shader: '%s'", fileName.generic_string().c_str());
 
-	if (existingResource.resource && replaceCached == false)
-	{
-		GetContext().GetLogger()->log(LOG_INFO, "Found shader in cache, skipping loading.");
-		return existingResource.resource;
-	}
+  if (existingResource.resource && replaceCached == false) {
+    GetContext().GetLogger()->log(LOG_INFO, "Found shader in cache, skipping loading.");
+    return existingResource.resource;
+  }
 
-	ByteBufferPtr vertexBuffer = nullptr, fragmentBuffer = nullptr, geometryBuffer = nullptr;
+  ByteBufferPtr vertexBuffer = nullptr, fragmentBuffer = nullptr, geometryBuffer = nullptr;
 
-	FilePtr vertexFile = GetContext().GetFileSystem()->OpenRead(Path(fileName).replace_extension(".vert"));
-	vertexBuffer = vertexFile->ReadText();
+  FilePtr vertexFile = GetContext().GetFileSystem()->OpenRead(Path(fileName).replace_extension(".vert"));
+  vertexBuffer = vertexFile->ReadText();
 
-	FilePtr fragmentFile = GetContext().GetFileSystem()->OpenRead(Path(fileName).replace_extension(".frag"));
-	fragmentBuffer = fragmentFile->ReadText();
+  FilePtr fragmentFile = GetContext().GetFileSystem()->OpenRead(Path(fileName).replace_extension(".frag"));
+  fragmentBuffer = fragmentFile->ReadText();
 
-	if (GetContext().GetFileSystem()->FileExists(Path(fileName).replace_extension(".geom")))
-	{
-		FilePtr geometryFile = GetContext().GetFileSystem()->OpenRead(Path(fileName).replace_extension(".geom"));
+  if (GetContext().GetFileSystem()->FileExists(Path(fileName).replace_extension(".geom"))) {
+    FilePtr geometryFile = GetContext().GetFileSystem()->OpenRead(Path(fileName).replace_extension(".geom"));
 
-		if (geometryFile)
-		{
-			geometryBuffer = geometryFile->ReadText();
-		}
-	}
+    if (geometryFile) {
+      geometryBuffer = geometryFile->ReadText();
+    }
+  }
 
-	Path resourceName = fileName.filename();
-	Shader * sh = nullptr;
+  Path resourceName = fileName.filename();
+  Shader* sh = nullptr;
 
-	if (!vertexBuffer && !fragmentBuffer)
-		return existingResource.resource;
+  if (!vertexBuffer && !fragmentBuffer)
+    return existingResource.resource;
 
-	if (geometryBuffer)
-	{
-		sh = new Shader(resourceName.generic_string(), (char*)vertexBuffer->data(), (char*)fragmentBuffer->data(), (char*)geometryBuffer->data());
-	}
-	else
-	{
-		sh = new Shader(resourceName.generic_string(), (char*)vertexBuffer->data(), (char*)fragmentBuffer->data());
-	}
+  if (geometryBuffer) {
+    sh = new Shader(resourceName.generic_string(), (char*)vertexBuffer->data(), (char*)fragmentBuffer->data(), (char*)geometryBuffer->data());
+  } else {
+    sh = new Shader(resourceName.generic_string(), (char*)vertexBuffer->data(), (char*)fragmentBuffer->data());
+  }
 
-	sh->Compile();
+  sh->Compile();
 
-	if (sh->IsCompiledAndLinked())
-	{
-		if (existingResource.resource)
-		{
-			RemoveResource(existingResource.path);
-			GetContext().GetLogger()->log(LOG_INFO, "Removed cached shader: '%s'.", fileName.generic_string().c_str());
-		}
-		GetContext().GetLogger()->log(LOG_INFO, "Shader loaded: '%s'.", fileName.generic_string().c_str());
+  if (sh->IsCompiledAndLinked()) {
+    if (existingResource.resource) {
+      RemoveResource(existingResource.path);
+      GetContext().GetLogger()->log(LOG_INFO, "Removed cached shader: '%s'.", fileName.generic_string().c_str());
+    }
+    GetContext().GetLogger()->log(LOG_INFO, "Shader loaded: '%s'.", fileName.generic_string().c_str());
 
-		Resource<Shader> res(ShaderPtr(sh), fileName);
-		this->AddResource(res);
-		return res.resource;
-	}
-	else
-	{
-		delete sh;
+    Resource<Shader> res(ShaderPtr(sh), fileName);
+    this->AddResource(res);
+    return res.resource;
+  } else {
+    delete sh;
 
-		if (existingResource.resource)
-			GetContext().GetLogger()->log(LOG_ERROR, "Shader failed to load: '%s', using cached version.", resourceName.generic_string().c_str());
-		else
-			GetContext().GetLogger()->log(LOG_ERROR, "Shader failed to load: '%s'.", resourceName.generic_string().c_str());
+    if (existingResource.resource)
+      GetContext().GetLogger()->log(LOG_ERROR, "Shader failed to load: '%s', using cached version.", resourceName.generic_string().c_str());
+    else
+      GetContext().GetLogger()->log(LOG_ERROR, "Shader failed to load: '%s'.", resourceName.generic_string().c_str());
 
-		return existingResource.resource;
-	}
+    return existingResource.resource;
+  }
 }
 
-ShaderPtr ShaderLoader::GetShaderByName(const Path & name)
-{
-	for (Resource<Shader> & res : m_resources)
-	{
-		if (res.resource->GetName() == name)
-			return res.resource;
-	}
+ShaderPtr ShaderLoader::GetShaderByName(const Path& name) {
+  for (Resource<Shader>& res : m_resources) {
+    if (res.resource->GetName() == name)
+      return res.resource;
+  }
 
-	return ShaderPtr();
+  return ShaderPtr();
 }
