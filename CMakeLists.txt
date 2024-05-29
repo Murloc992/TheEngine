@@ -63,12 +63,18 @@ file(GLOB_RECURSE ENGINE_SOURCES
 		)
 
 #Generates files
-add_definitions(/w)
-add_definitions(-w)
+if(WIN32 AND MSVC)
+	add_definitions(/w)
+else()
+	add_definitions(-w)
+endif()
 add_subdirectory(libs/glad)
 add_subdirectory(libs/libsigcplusplus)
-remove_definitions(/w)
-remove_definitions(-w)
+if(WIN32 AND MSVC)
+	remove_definitions(/w)
+else()
+	remove_definitions(-w)
+endif()
 
 add_library(engine STATIC
 	${ENGINE_SOURCES}
