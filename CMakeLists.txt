@@ -14,7 +14,7 @@ set(CPP_NMAKE_COMPILE_FLAGS
 "/Gy"			# Enables function-level linking
 "/MD"			# MTDLL (MSVCRT.lib)
 # "/MP"			# multicore compilation
-"/Ox"			# optimizations (favor speed), O2, Ox
+"/O2"			# optimizations (favor speed), O2, Ox
 "/Ob2"			# force inline anything it can, Ob1 Ob2 Ob3
 "/Oi"			# generate intrinsic functions where applicable
 "/Ot"			# favor fast code
