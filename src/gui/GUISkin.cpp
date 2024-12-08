@@ -78,11 +78,13 @@ std::vector<glm::vec2> GUISkin::get_uv(uint32_t style) {
 }
 
 void GUISkin::generate_uv() {
+  // normal texture
   uvs[0] = glm::vec2(0, 0);
   uvs[1] = glm::vec2(1, 0);
   uvs[2] = glm::vec2(1, 1);
   uvs[3] = glm::vec2(0, 1);
 
+  // flipped texture
   uvs[4] = glm::vec2(0, 1);
   uvs[5] = glm::vec2(1, 1);
   uvs[6] = glm::vec2(1, 0);
@@ -92,10 +94,12 @@ void GUISkin::generate_uv() {
   for (int32_t i = 2; i < gui_skin_style_count; i++) {
     Rect2D<float> ir = rects[i].as<float>();
 
-    uvs[j + 0] = glm::vec2(ir.x / 256.f, ir.y2 / 256.f);
-    uvs[j + 1] = glm::vec2(ir.x2 / 256.f, ir.y2 / 256.f);
-    uvs[j + 2] = glm::vec2(ir.x2 / 256.f, ir.y / 256.f);
-    uvs[j + 3] = glm::vec2(ir.x / 256.f, ir.y / 256.f);
+    // opengl textures are flipped vertically, adjust to skin coordinate space
+    // which is upside-down in opengl UV space
+    uvs[j + 0] = glm::vec2(ir.x / 256.f, 1.f - ir.y2 / 256.f);
+    uvs[j + 1] = glm::vec2(ir.x2 / 256.f, 1.f - ir.y2 / 256.f);
+    uvs[j + 2] = glm::vec2(ir.x2 / 256.f, 1.f - ir.y / 256.f);
+    uvs[j + 3] = glm::vec2(ir.x / 256.f, 1.f - ir.y / 256.f);
 
     j += 4;
   }

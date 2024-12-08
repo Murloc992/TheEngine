@@ -5,8 +5,8 @@
 #include "opengl/AABB.h"
 #include "utility/Logger.h"
 
-Camera::Camera(const glm::vec3& pos, const glm::vec3& target, const glm::vec3& up, float aspect_ratio, float field_of_view, float near_z, float far_z,
-               bool frustum_capable) {
+Camera::Camera(const glm::vec3 pos, const glm::vec3 target, const glm::vec3 up, const float aspect_ratio, const float field_of_view,
+               const float near_z, const float far_z, const bool frustum_capable) {
   m_fps = true;
   m_hasFrustum = false;
   m_frustumCapable = frustum_capable;
@@ -94,7 +94,7 @@ Plane3d* Camera::GetFrustumPlanes() {
   return frustumPlanes;
 }
 
-INTERSECT_RESULT Camera::PointInFrustum(const glm::vec3& point) {
+INTERSECT_RESULT Camera::PointInFrustum(const glm::vec3 point) {
   INTERSECT_RESULT res = INTERSECT_RESULT::IR_INSIDE;
   int out = 0;
   for (int32_t i = 0; i < 6; i++) {
@@ -107,7 +107,7 @@ INTERSECT_RESULT Camera::PointInFrustum(const glm::vec3& point) {
   return res;
 }
 
-INTERSECT_RESULT Camera::SphereInFrustum(const glm::vec3& center, float radius) {
+INTERSECT_RESULT Camera::SphereInFrustum(const glm::vec3 center, float radius) {
   INTERSECT_RESULT res = INTERSECT_RESULT::IR_INSIDE;
 
   int out = 0;
@@ -148,11 +148,11 @@ INTERSECT_RESULT Camera::BoxInFrustum(const AABB& box) {
   return res;
 }
 
-glm::mat4& Camera::GetProjectionMat() {
+glm::mat4 Camera::GetProjectionMat() {
   return m_P;
 }
 
-const float& Camera::GetFOV() const {
+const float Camera::GetFOV() const {
   return m_fov;
 }
 
@@ -161,39 +161,39 @@ void Camera::SetFOV(const float& fov) {
   m_P = glm::perspective(glm::radians(m_fov), m_aspect_ratio, m_near, m_far);
 }
 
-const float& Camera::GetFar() const {
+const float Camera::GetFar() const {
   return m_far;
 }
 
-const float& Camera::GetNear() const {
+const float Camera::GetNear() const {
   return m_near;
 }
 
-const float& Camera::GetAspectRatio() const {
+const float Camera::GetAspectRatio() const {
   return m_aspect_ratio;
 }
 
-const glm::vec3& Camera::GetLook() const {
+const glm::vec3 Camera::GetLook() const {
   return m_look;
 }
 
-const glm::vec3& Camera::GetDirection() const {
+const glm::vec3 Camera::GetDirection() const {
   return m_direction;
 }
 
-const glm::vec3& Camera::GetRight() const {
+const glm::vec3 Camera::GetRight() const {
   return m_right;
 }
 
-const glm::vec3& Camera::GetUp() const {
+const glm::vec3 Camera::GetUp() const {
   return m_up;
 }
 
-const glm::vec3& Camera::GetPosition() const {
+const glm::vec3 Camera::GetPosition() const {
   return m_pos;
 }
 
-const glm::quat& Camera::GetRotation() const {
+const glm::quat Camera::GetRotation() const {
   return m_rot;
 }
 
@@ -201,7 +201,7 @@ void Camera::SetPosition(glm::vec3 pos) {
   m_pos = pos;
 }
 
-const glm::vec3& Camera::GetTarget() const {
+const glm::vec3 Camera::GetTarget() const {
   return m_target;
 }
 
@@ -209,11 +209,11 @@ void Camera::SetTarget(glm::vec3 target) {
   m_target = target;
 }
 
-void Camera::SetRotation(const glm::quat& rotation) {
+void Camera::SetRotation(const glm::quat rotation) {
   m_rot = rotation;
 }
 
-void Camera::SetProjection(const glm::mat4& projection) {
+void Camera::SetProjection(const glm::mat4 projection) {
   m_P = projection;
 }
 

@@ -27,29 +27,29 @@ class AABB;
 
 class Camera {
  public:
-  Camera(const glm::vec3& pos, const glm::vec3& target, const glm::vec3& up, float aspect_ratio = 1.777777f, float field_of_view = 45.0f,
-         float near_z = 1.0f, float far_z = 4096.0f, bool frustum_capable = false);
+  Camera(const glm::vec3 pos, const glm::vec3 target, const glm::vec3 up, const float aspect_ratio = 1.777777f, const float field_of_view = 45.0f,
+         const float near_z = 1.0f, const float far_z = 4096.0f, const bool frustum_capable = false);
   virtual ~Camera();
 
-  virtual glm::mat4& GetProjectionMat();
+  virtual glm::mat4 GetProjectionMat();
 
-  const glm::vec3& GetLook() const;
-  const glm::vec3& GetDirection() const;
-  const glm::vec3& GetRight() const;
-  const glm::vec3& GetUp() const;
-  const glm::vec3& GetPosition() const;
-  const glm::quat& GetRotation() const;
+  const glm::vec3 GetLook() const;
+  const glm::vec3 GetDirection() const;
+  const glm::vec3 GetRight() const;
+  const glm::vec3 GetUp() const;
+  const glm::vec3 GetPosition() const;
+  const glm::quat GetRotation() const;
   void SetPosition(glm::vec3 pos);
-  const glm::vec3& GetTarget() const;
+  const glm::vec3 GetTarget() const;
   void SetTarget(glm::vec3 target);
-  void SetRotation(const glm::quat& rotation);
-  void SetProjection(const glm::mat4& projection);
+  void SetRotation(const glm::quat rotation);
+  void SetProjection(const glm::mat4 projection);
   void ResetOrientation(glm::vec3 lookDir);
-  const float& GetFar() const;
-  const float& GetNear() const;
-  const float& GetFOV() const;
+  const float GetFar() const;
+  const float GetNear() const;
+  const float GetFOV() const;
   void SetFOV(const float& fov);
-  const float& GetAspectRatio() const;
+  const float GetAspectRatio() const;
 
   virtual void Update(float dt);
 
@@ -67,12 +67,12 @@ class Camera {
   void Walk(const float amount);
   void Strafe(const float amount);
   void Lift(const float amount);
-  virtual glm::mat4x4 GetViewMat();
-  virtual glm::mat4x4 GetViewProjMat();
+  virtual glm::mat4 GetViewMat();
+  virtual glm::mat4 GetViewProjMat();
   void Orbit(glm::vec3 point, float distance, float verticalAngle, float horizontalAngle);
 
-  INTERSECT_RESULT PointInFrustum(const glm::vec3& point);
-  INTERSECT_RESULT SphereInFrustum(const glm::vec3& center, float radius);
+  INTERSECT_RESULT PointInFrustum(const glm::vec3 point);
+  INTERSECT_RESULT SphereInFrustum(const glm::vec3 center, float radius);
   INTERSECT_RESULT BoxInFrustum(const AABB& box);
   void InitFrustum();
   Plane3d* GetFrustumPlanes();
