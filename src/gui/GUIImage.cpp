@@ -6,7 +6,7 @@
 
 GUIImage::GUIImage(GUIEnvironment* env, Rect2D<int> dimensions, std::shared_ptr<Texture> tex, bool multichannel, bool glTex, uint8_t layer)
   : GUIElement(env, dimensions) {
-  this->Type = GUIET_ELEMENT;
+  this->Type = GUIET_IMAGE;
   environment = env;
 
   absolute_rect = dimensions;

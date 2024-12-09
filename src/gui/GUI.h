@@ -8,6 +8,7 @@
 #include "GUIButton.h"
 #include "GUICheckbox.h"
 #include "GUIEditBox.h"
+#include "GUIIcon.h"
 #include "GUIImage.h"
 #include "GUIPane.h"
 #include "GUISlider.h"

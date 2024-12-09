@@ -1,5 +1,7 @@
 // #include "Precomp.h"
 #include "GUI.h"
+#include "GUITitlebar.h"
+#include "GUIIcon.h"
 #include "opengl/geometry/Quad.h"
 
 GUIWindow::GUIWindow(GUIEnvironment* env, Rect2D<int> dimensions, std::wstring tittleBarText, bool clip, bool showClose, bool modal, bool draggable)
@@ -19,7 +21,7 @@ GUIWindow::GUIWindow(GUIEnvironment* env, Rect2D<int> dimensions, std::wstring t
   absolute_rect = dimensions;
   relative_rect = absolute_rect;
 
-  _titlebar = env->AddGUIPane(Rect2D<int>(0, 0, absolute_rect.w, 24), true);
+  _titlebar = new GUITitlebar(env, Rect2D<int>(0, 0, absolute_rect.w, 24), true);
   _titlebar->SetListening(false);
   _titlebar->SetParent(this);
 
@@ -34,10 +36,14 @@ GUIWindow::GUIWindow(GUIEnvironment* env, Rect2D<int> dimensions, std::wstring t
   _titlebarText->SetAlignment(HALIGN_CENTER, VALIGN_CENTER);
 
   if (_showClose) {
-    _closeButton = new GUIButton(env, Rect2D<int>(4, 0, 16, 16), L"['s]X[s']");
+    _closeButton = new GUIButton(env, Rect2D<int>(4, 0, 16, 16), L"");
     _closeButton->SetParent(_titlebar);
     _closeButton->SetEventListener(this);
     _closeButton->SetAlignment(HALIGN_RIGHT, VALIGN_CENTER);
+    auto closeIcon = new GUIIcon(env, Rect2D<int>(0, 0, 8, 8), gui_skin_icon_close, true);
+    closeIcon->SetListening(false);
+    closeIcon->SetParent(_closeButton);
+    closeIcon->SetAlignment(HALIGN_CENTER, VALIGN_CENTER);
   }
 }
 

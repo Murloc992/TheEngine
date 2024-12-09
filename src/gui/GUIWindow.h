@@ -5,13 +5,15 @@
 class GUIButton;
 class GUIPane;
 class GUIStaticText;
+class GUITitlebar;
 
 class GUIWindow : public GUIElement {
  private:
   bool _clipping, _showClose, _dragging, _draggable;
 
   glm::mat4 m_transform;
-  GUIPane *_titlebar, *_background;
+  GUITitlebar* _titlebar;
+  GUIPane *_background;
   GUIStaticText* _titlebarText;
   GUIButton* _closeButton;
 
