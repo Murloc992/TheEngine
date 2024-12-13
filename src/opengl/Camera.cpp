@@ -224,9 +224,9 @@ void Camera::Update(float dt) {
   if (m_fps) {
     auto window = GetContext().GetWindow();
     glm::ivec2 s = window->GetWindowSize();
-    m_current_mouse_pos = window->GetMousePos();
+    m_current_mouse_pos = window->GetMousePos() * 0.1f;
     window->SetMousePos(s / 2);
-    m_last_mouse_pos = window->GetMousePos();
+    m_last_mouse_pos = window->GetMousePos() * 0.1f;
     HandleMouse();
   }
 
@@ -267,7 +267,7 @@ void Camera::Orbit(glm::vec3 point, float distance, float verticalAngle, float h
 }
 
 void Camera::HandleMouse() {
-  glm::ivec2 delta_pos = m_current_mouse_pos - m_last_mouse_pos;
+  glm::vec2 delta_pos = m_current_mouse_pos - m_last_mouse_pos;
 
   if (glm::abs(delta_pos.x) > 64 || glm::abs(delta_pos.y) > 64)  /// probably some random shit happened, discard
     return;

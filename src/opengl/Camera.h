@@ -109,7 +109,7 @@ class Camera {
 
   void CalculateOrientationVectors();
 
-  glm::ivec2 m_last_mouse_pos, m_current_mouse_pos;
+  glm::vec2 m_last_mouse_pos, m_current_mouse_pos;
   glm::vec3 m_translation;
 
   bool m_fps;
