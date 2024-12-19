@@ -9,22 +9,22 @@ set(CPP_NMAKE_COMPILE_FLAGS
 "${CMAKE_CXX_FLAGS}"
 "/std:c++20"	# the C++ standard to be uysed
 "/FC"			# Display full compiled file path
-# "/GL"			# Whole program optimization
+#"/GL"			# Whole program optimization
 "/GS-"			# Disables buffer security
-"/Gy"			# Enables function-level linking
-"/MD"			# MTDLL (MSVCRT.lib)
-# "/MP"			# multicore compilation
-"/O2"			# optimizations (favor speed), O2, Ox
-"/Ob2"			# force inline anything it can, Ob1 Ob2 Ob3
-"/Oi"			# generate intrinsic functions where applicable
-"/Ot"			# favor fast code
-"/Zi"			# generate debug information
-"/Zc:inline"	# remove unreferenced functions or data
-"/Zc:forScope"	# enforce `for` scoping rules
-"/sdl-"			# disable security features and warnings
-"/fp:fast"		# fast floating point
+#"/Gy"			# Enables function-level linking
+#"/MD"			# MTDLL (MSVCRT.lib)
+"/MP"			# multicore compilation
+#"/O2"			# optimizations (favor speed), O2, Ox
+#"/Ob2"			# force inline anything it can, Ob1 Ob2 Ob3
+#"/Oi"			# generate intrinsic functions where applicable
+#"/Ot"			# favor fast code
+#"/Zi"			# generate debug information
+#"/Zc:inline"	# remove unreferenced functions or data
+#"/Zc:forScope"	# enforce `for` scoping rules
+#"/sdl-"			# disable security features and warnings
+#"/fp:fast"		# fast floating point
 "/arch:AVX2"	# we support AVX2
-"-DNDEBUG"		# Not Debug
+# "-DNDEBUG"		# Not Debug
 )
 
 # Due to CMAKE using semicolon separation for lists, replace it with spaces instead
