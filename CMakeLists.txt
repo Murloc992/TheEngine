@@ -13,7 +13,7 @@ set(CPP_NMAKE_COMPILE_FLAGS
 "/GS-"			# Disables buffer security
 #"/Gy"			# Enables function-level linking
 #"/MD"			# MTDLL (MSVCRT.lib)
-"/MP"			# multicore compilation
+#"/MP"			# multicore compilation
 #"/O2"			# optimizations (favor speed), O2, Ox
 #"/Ob2"			# force inline anything it can, Ob1 Ob2 Ob3
 #"/Oi"			# generate intrinsic functions where applicable

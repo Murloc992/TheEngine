@@ -6,6 +6,14 @@
 class AppContext;
 AppContext& GetContext();
 
+#define LOG(level, formatString, ...) GetContext().GetLogger()->log(level, formatString, ##__VA_ARGS__)
+#define LOG_INFO(formatString, ...) LOG(LOG_INFO, formatString, ##__VA_ARGS__)
+#define LOG_DEBUG(formatString, ...) LOG(LOG_DEBUG, formatString, ##__VA_ARGS__)
+#define LOG_WARN(formatString, ...) LOG(LOG_WARN, formatString, ##__VA_ARGS__)
+#define LOG_ERROR(formatString, ...) LOG(LOG_ERROR, formatString, ##__VA_ARGS__)
+#define LOG_CRITICAL(formatString, ...) LOG(LOG_CRITICAL, formatString, ##__VA_ARGS__)
+
+
 class AppContext {
  protected:
   AppContext();

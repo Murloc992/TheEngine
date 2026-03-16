@@ -123,6 +123,17 @@ struct FrameBufferObject : public GLObject {
     depth_buffer_binding = obj;
   }
 
+  void AttachDepthTextureLayers(gl_object_ptr obj, uint32_t layers, uint32_t level = 0) {
+    if (obj->GetType() == GLO_TEXTURE) {
+      TexturePtr tex = std::static_pointer_cast<Texture>(obj);
+      for (int i = 0; i < layers; ++i) {
+        glFramebufferTextureLayer(target, GL_DEPTH_ATTACHMENT, tex->Id, level, i);
+      }
+    }
+
+    depth_buffer_binding = obj;
+  }
+
   void AttachStencilTexture(gl_object_ptr obj, uint32_t level = 0) {
     if (obj->GetType() == GLO_TEXTURE) {
       TexturePtr tex = std::static_pointer_cast<Texture>(obj);

@@ -4,6 +4,7 @@
 struct IBufferObject {
   enum IBO_TYPE {
     DATA = 0,
+    UNIFORM,
     INDEX
   };
 

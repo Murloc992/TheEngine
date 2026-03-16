@@ -43,7 +43,7 @@ Font::Font(FT_Face face, int height, std::string name) {
   w = helpers::MakePOT(w);
   h = helpers::MakePOT(h);
 
-  atlas->Init(nullptr, GL_TEXTURE_2D, GL_BGR, GL_RGB, w, h);
+  atlas->Init(nullptr, GL_TEXTURE_2D, GL_BGR, GL_RGB8, w, h);
   atlas->SetClampMode(TextureClamp::EDGE, TextureClamp::EDGE);
   atlas->SetFilters(TextureFilterMin::NEAREST_MIPMAP, TextureFilterMag::LINEAR);
 

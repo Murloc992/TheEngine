@@ -36,6 +36,8 @@ class Texture : public GLObject {
   uint32_t internalFormat;
   uint32_t dataType;
   bool is_array;
+  uint32_t views[256];
+  uint32_t viewsCount;
 
   static uint32_t current, active_slot;
 

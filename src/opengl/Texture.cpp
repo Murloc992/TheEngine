@@ -5,7 +5,9 @@
 uint32_t Texture::active_slot = 0;
 uint32_t Texture::current = 0;
 
-Texture::Texture() {
+Texture::Texture()
+  : views(0U)
+  , viewsCount(0U) {
   Id = -1;
   Type = GL_TEXTURE_2D;
   dataType = GL_UNSIGNED_BYTE;
@@ -15,6 +17,10 @@ Texture::Texture() {
 }
 
 Texture::~Texture() {
+  if (viewsCount > 0)
+    for (int i = 0; i < viewsCount; i++) {
+      glDeleteTextures(1, &views[i]);
+    }
   glDeleteTextures(1, &Id);
 }
 
@@ -46,11 +52,12 @@ void Texture::Init(ImagePtr img) {
 
   glPixelStorei(GL_UNPACK_ROW_LENGTH, img->width);
   glTexImage2D(Type, 0, internalFormat, img->width, img->height, 0, imageFormat, dataType, img->data.data());
+  glTexStorage2D(Type, 1, internalFormat, img->width, img->height);
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
   glGenerateMipmap(Type);
 
-  glBindTexture(Type, current);
+  glBindTexture(Type, 0);
 }
 
 /**
@@ -72,8 +79,13 @@ void Texture::Init(const uint8_t* data, uint32_t target, uint32_t image_format, 
   if (Type == GL_TEXTURE_2D_ARRAY && image_format == GL_DEPTH_COMPONENT) {
     glTexParameteri(Type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(Type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(Type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(Type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTexParameteri(Type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(Type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  } else if (Type == GL_TEXTURE_2D_ARRAY && image_format == GL_RG) {
+    glTexParameteri(Type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(Type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(Type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(Type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   } else {
     glTexParameteri(Type, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(Type, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -98,9 +110,6 @@ void Texture::Init(const uint8_t* data, uint32_t target, uint32_t image_format, 
       break;
 
     case GL_RG:
-      glPixelStorei(GL_UNPACK_ALIGNMENT, (uint32_t)TextureUnpackAlignment::EVEN_BYTE);
-      break;
-
     case GL_DEPTH_COMPONENT:
       glPixelStorei(GL_UNPACK_ALIGNMENT, (uint32_t)TextureUnpackAlignment::WORD);
       break;
@@ -113,6 +122,7 @@ void Texture::Init(const uint8_t* data, uint32_t target, uint32_t image_format, 
   switch (internalFormat) {
     case GL_RGBA16F:
     case GL_RGBA32F:
+    case GL_RG32F:
     case GL_DEPTH_COMPONENT:
     case GL_DEPTH_COMPONENT16:
     case GL_DEPTH_COMPONENT24:
@@ -127,15 +137,23 @@ void Texture::Init(const uint8_t* data, uint32_t target, uint32_t image_format, 
   switch (Type) {
     case GL_TEXTURE_2D:
       glTexImage2D(Type, 0, internalFormat, w, h, 0, imageFormat, dataType, data);
+      glTexStorage2D(Type, 1, internalFormat, w, h);
       break;
     case GL_TEXTURE_2D_ARRAY:
     case GL_TEXTURE_3D:
       glTexImage3D(Type, 0, internalFormat, w, h, d, 0, imageFormat, dataType, data);
+      glTexStorage3D(Type, 1, internalFormat, w, h, d);
       break;
   }
-  // glinitMipmap(Type);
 
-  glBindTexture(Type, current);
+  if (d > 0) {
+    glGenTextures(d, views);
+    for (int i = 0; i < d; i++) {
+      glTextureView(views[i], GL_TEXTURE_2D, Id, internalFormat, 0, 1, i, 1);
+      viewsCount++;
+    }
+  }
+  // glinitMipmap(Type);
 }
 
 void Texture::InitArray(ImagePtr img, uint32_t tile_size_x, uint32_t tile_size_y) {
@@ -183,8 +201,6 @@ void Texture::InitArray(ImagePtr img, uint32_t tile_size_x, uint32_t tile_size_y
     }
   }
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-
-  glBindTexture(Type, current);
 }
 
 void Texture::SetFilters(TextureFilterMin fmin, TextureFilterMag fmag) {

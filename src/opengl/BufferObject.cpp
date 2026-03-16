@@ -16,3 +16,5 @@ RegisterBufferObject(glm::vec3, GL_FLOAT, 3);
 RegisterBufferObject(glm::vec4, GL_FLOAT, 4);
 
 RegisterBufferObject(glm::tvec4<uint8_t>, GL_UNSIGNED_BYTE, 4);
+
+RegisterUniformBufferObject(glm::mat4, GL_FLOAT, 16);

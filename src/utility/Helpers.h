@@ -95,7 +95,7 @@ inline void CheckOpenGLError(const char* stmt, const char* fname, int line) {
         errorName = "UnspecifiedError";
         break;
     }
-    printf("OpenGL error %s(%x), at %s:%i - for %s\n", errorName.c_str(), err, fname, line, stmt);
+    printf("------ !!!! OpenGL error %s(%x), at %s:%i - for %s !!!! ------\n", errorName.c_str(), err, fname, line, stmt);
     abort();
   }
 }
@@ -110,6 +110,7 @@ inline void APIENTRY openglCallbackFunction(GLenum source, GLenum type, GLuint i
                                             const void* userParam) {
   if (severity == GL_DEBUG_SEVERITY_LOW || severity == GL_DEBUG_SEVERITY_MEDIUM || severity == GL_DEBUG_SEVERITY_HIGH) {
     std::cout << "---------------------opengl-callback-start------------" << std::endl;
+    std::cout << "source: " << source << std::endl;
     std::cout << "message: " << message << std::endl;
     std::cout << "type: ";
     switch (type) {
